@@ -15,7 +15,7 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <button className="relative h-9 w-9 rounded-md inline-flex items-center justify-center transition-colors hover:bg-accent">
+      <button className="relative h-9 w-9 rounded-md inline-flex items-center justify-center transition-colors hover:bg-accent hover:text-primary">
         <Sun className="h-[1.2rem] w-[1.2rem]" />
         <span className="sr-only">Toggle theme</span>
       </button>

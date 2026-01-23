@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
-import { Menu } from 'lucide-react'
+import { Menu, Github, User, Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -78,7 +78,25 @@ export function BasicLayout({
 
           {/* Right Actions */}
           <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" className="hover:text-primary">
+              <Search className="h-5 w-5" />
+              <span className="sr-only">搜索</span>
+            </Button>
+            <Link
+              href="https://github.com/StephenQiu30"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button variant="ghost" size="icon" className="hover:text-primary">
+                <Github className="h-5 w-5" />
+                <span className="sr-only">GitHub</span>
+              </Button>
+            </Link>
             <ThemeToggle />
+            <Button variant="ghost" size="icon" className="hover:text-primary">
+              <User className="h-5 w-5" />
+              <span className="sr-only">登录</span>
+            </Button>
           </div>
         </div>
       </header>

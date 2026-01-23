@@ -12,6 +12,7 @@
 /.shared
 /.tare
 /.claude
+/.trae
 
 # testing
 /coverage
