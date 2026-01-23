@@ -10,7 +10,8 @@
 !.yarn/releases
 !.yarn/versions
 /.shared
-
+/.tare
+/.claude
 
 # testing
 /coverage
