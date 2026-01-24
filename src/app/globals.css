@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @layer base {
   :root {
@@ -89,4 +89,3 @@
   --color-ring: hsl(var(--ring));
   --font-sans: var(--font-geist-sans);
 }
-

@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-import { cn } from "@/lib/utils"
+import * as React from 'react'
+import { Moon, Sun } from 'lucide-react'
+import { useTheme } from 'next-themes'
+import { cn } from '@/lib/utils'
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme()
@@ -15,48 +15,46 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <button className="relative h-9 w-9 rounded-md inline-flex items-center justify-center transition-colors hover:bg-accent hover:text-primary">
+      <button className="hover:bg-accent hover:text-primary relative inline-flex h-9 w-9 items-center justify-center rounded-md transition-colors">
         <Sun className="h-[1.2rem] w-[1.2rem]" />
         <span className="sr-only">Toggle theme</span>
       </button>
     )
   }
 
-  const isDark = theme === "dark"
+  const isDark = theme === 'dark'
 
   const toggleTheme = () => {
-    setTheme(isDark ? "light" : "dark")
+    setTheme(isDark ? 'light' : 'dark')
   }
 
   return (
     <button
       onClick={toggleTheme}
       className={cn(
-        "relative h-9 w-9 rounded-md inline-flex items-center justify-center overflow-hidden",
-        "transition-all duration-300",
-        "hover:bg-accent"
+        'relative inline-flex h-9 w-9 items-center justify-center overflow-hidden rounded-md',
+        'transition-all duration-300',
+        'hover:bg-accent'
       )}
       aria-label="Toggle theme"
     >
       <Sun
         className={cn(
-          "h-[1.2rem] w-[1.2rem] transition-all duration-300 absolute",
+          'absolute h-[1.2rem] w-[1.2rem] transition-all duration-300',
           isDark
-            ? "translate-y-10 opacity-0 rotate-90 scale-0"
-            : "translate-y-0 opacity-100 rotate-0 scale-100"
+            ? 'translate-y-10 scale-0 rotate-90 opacity-0'
+            : 'translate-y-0 scale-100 rotate-0 opacity-100'
         )}
       />
       <Moon
         className={cn(
-          "h-[1.2rem] w-[1.2rem] transition-all duration-300 absolute",
+          'absolute h-[1.2rem] w-[1.2rem] transition-all duration-300',
           !isDark
-            ? "-translate-y-10 opacity-0 rotate-90 scale-0"
-            : "translate-y-0 opacity-100 rotate-0 scale-100"
+            ? '-translate-y-10 scale-0 rotate-90 opacity-0'
+            : 'translate-y-0 scale-100 rotate-0 opacity-100'
         )}
       />
       <span className="sr-only">Toggle theme</span>
     </button>
   )
 }
-
-
