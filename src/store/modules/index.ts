@@ -1,3 +1,3 @@
-import userReducer, { setLoginUser, clearLoginUser } from './user/userSlice'
+import userReducer, { clearLoginUser, setLoginUser } from '@/store/modules/user/userSlice'
 
 export { userReducer, setLoginUser, clearLoginUser }

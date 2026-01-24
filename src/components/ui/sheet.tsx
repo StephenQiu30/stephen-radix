@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import * as Portal from '@radix-ui/react-portal'
 import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { X } from 'lucide-react'
@@ -84,7 +85,7 @@ const SheetContent = ({ className, side = 'right', children, ...props }: SheetCo
   if (!open) return null
 
   return (
-    <>
+    <Portal.Root>
       <div className="fixed inset-0 z-40 bg-black/80" onClick={() => onOpenChange(false)} />
       <div className={cn(sheetVariants({ side }), className)} {...props}>
         {children}
@@ -96,7 +97,7 @@ const SheetContent = ({ className, side = 'right', children, ...props }: SheetCo
           <span className="sr-only">Close</span>
         </button>
       </div>
-    </>
+    </Portal.Root>
   )
 }
 

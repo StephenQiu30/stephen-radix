@@ -7,6 +7,7 @@ interface FooterProps {
   author?: string
   githubUrl?: string
   email?: string
+  icpNumber?: string
 }
 
 export function Footer({
@@ -14,6 +15,7 @@ export function Footer({
   author = process.env.NEXT_PUBLIC_AUTHOR_NAME || 'StephenQiu30',
   githubUrl = process.env.NEXT_PUBLIC_AUTHOR_GITHUB || 'https://github.com/StephenQiu30',
   email = `mailto:${process.env.NEXT_PUBLIC_AUTHOR_EMAIL || 'Popcornqhd@gmail.com'}`,
+  icpNumber = process.env.NEXT_PUBLIC_ICP_NUMBER || '',
 }: FooterProps) {
   return (
     <footer className={cn('bg-muted/30 border-t', className)}>
@@ -24,6 +26,18 @@ export function Footer({
             <p className="text-muted-foreground text-sm">
               &copy; {new Date().getFullYear()} {author}. All rights reserved.
             </p>
+            {icpNumber && (
+              <p className="text-muted-foreground text-xs">
+                <a
+                  href="https://beian.miit.gov.cn/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-foreground transition-colors"
+                >
+                  备案号：{icpNumber}
+                </a>
+              </p>
+            )}
           </div>
 
           {/* Social Links */}
