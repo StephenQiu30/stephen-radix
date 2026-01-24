@@ -2,7 +2,7 @@ import './globals.css'
 import { ThemeProvider } from '@/components/theme/theme-provider'
 import { BasicLayout } from '@/components/layout/basic-layout'
 import { Footer } from '@/components/layout/footer'
-import React from 'react'
+import { StoreProvider } from '@/components/providers/store-provider'
 
 export default function RootLayout({
   children,
@@ -12,12 +12,14 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
-          <BasicLayout>
-            {children}
-            <Footer />
-          </BasicLayout>
-        </ThemeProvider>
+        <StoreProvider>
+          <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
+            <BasicLayout>
+              {children}
+              <Footer />
+            </BasicLayout>
+          </ThemeProvider>
+        </StoreProvider>
       </body>
     </html>
   )
