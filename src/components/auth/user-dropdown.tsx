@@ -9,11 +9,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { User, LogOut, Settings, UserCircle } from 'lucide-react'
+import { LogOut, Settings, User, UserCircle } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { clearLoginUser } from '@/store/modules'
 import { userLogout } from '@/api/userController'
-import { cn } from '@/lib/utils'
 
 export function UserDropdown() {
   const dispatch = useAppDispatch()

@@ -1,131 +1,249 @@
-import Link from 'next/link'
-import { ArrowRight, BarChart3, FileText, Settings, Users, Zap } from 'lucide-react'
+'use client'
+
+import * as React from 'react'
+import { MessageSquare, Sparkles, Zap, Brain, Shield, Globe, ArrowRight, Bot } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function Home() {
+  const [animatedText, setAnimatedText] = React.useState('')
+  const [isTyping, setIsTyping] = React.useState(false)
+  
+  const fullText = "你好！我是AI助手，有什么可以帮助你的吗？"
+  
+  React.useEffect(() => {
+    let timeout: NodeJS.Timeout
+    let index = 0
+    
+    const startTyping = () => {
+      setIsTyping(true)
+      setAnimatedText('')
+      index = 0
+      
+      const typeNextChar = () => {
+        if (index < fullText.length) {
+          setAnimatedText(fullText.slice(0, index + 1))
+          index++
+          timeout = setTimeout(typeNextChar, 50)
+        } else {
+          setIsTyping(false)
+        }
+      }
+      
+      typeNextChar()
+    }
+    
+    startTyping()
+    const interval = setInterval(startTyping, 5000)
+    
+    return () => {
+      clearTimeout(timeout)
+      clearInterval(interval)
+    }
+  }, [])
+  
+  const features = [
+    {
+      icon: <Brain className="h-6 w-6" />,
+      title: '智能对话',
+      description: '基于先进的大语言模型，理解自然语言，提供准确回答'
+    },
+    {
+      icon: <Sparkles className="h-6 w-6" />,
+      title: '创意生成',
+      description: '生成文本、代码、图像等多种创意内容'
+    },
+    {
+      icon: <Zap className="h-6 w-6" />,
+      title: '即时响应',
+      description: '毫秒级响应速度，流畅的交互体验'
+    },
+    {
+      icon: <Shield className="h-6 w-6" />,
+      title: '安全可靠',
+      description: '端到端加密，保护您的隐私和数据安全'
+    },
+    {
+      icon: <Globe className="h-6 w-6" />,
+      title: '多语言支持',
+      description: '支持100+种语言，打破语言障碍'
+    },
+    {
+      icon: <MessageSquare className="h-6 w-6" />,
+      title: '持续学习',
+      description: '不断优化模型，提供更智能的服务'
+    }
+  ]
+  
+  const messages = [
+    { role: 'user', content: '帮我写一段代码' },
+    { role: 'assistant', content: '当然！请告诉我你想要实现什么功能？' },
+    { role: 'user', content: '一个简单的待办事项应用' },
+    { role: 'assistant', content: '好的，我来帮你创建一个待办事项应用...' }
+  ]
+  
   return (
-    <div className="space-y-12">
-      {/* Hero Section */}
-      <section className="py-12 md:py-20">
-        <div className="mx-auto max-w-3xl space-y-6 text-center">
-          <div className="bg-primary/10 text-primary inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium">
-            <Zap className="h-4 w-4" />
-            欢迎使用 Stephen Radix
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      <div className="container mx-auto px-4 py-12 md:py-20">
+        <div className="grid lg:grid-cols-2 gap-12 items-center mb-20">
+          <div className="space-y-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">
+              <Sparkles className="h-4 w-4" />
+              全新AI助手上线
+            </div>
+            
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+              下一代{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">
+                AI聊天平台
+              </span>
+            </h1>
+            
+            <p className="text-xl text-muted-foreground max-w-lg">
+              体验最先进的AI助手，智能对话、创意生成、问题解决，一切尽在掌握
+            </p>
+            
+            <div className="flex flex-wrap gap-4">
+              <Button size="lg" className="gap-2 text-lg px-8">
+                现在试用
+                <ArrowRight className="h-5 w-5" />
+              </Button>
+              <Button size="lg" variant="outline" className="text-lg px-8">
+                了解更多
+              </Button>
+            </div>
+            
+            <div className="flex items-center gap-6 pt-4">
+              <div className="flex -space-x-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <div
+                    key={i}
+                    className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/60 border-2 border-background flex items-center justify-center text-white text-sm font-medium"
+                  >
+                    {i}
+                  </div>
+                ))}
+              </div>
+              <div>
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <span key={i} className="text-yellow-500">★</span>
+                  ))}
+                </div>
+                <p className="text-sm text-muted-foreground">10,000+ 用户信赖</p>
+              </div>
+            </div>
           </div>
-          <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
-            现代化响应式
-            <span className="text-primary"> 前端解决方案</span>
-          </h1>
-          <p className="text-muted-foreground mx-auto max-w-2xl text-lg md:text-xl">
-            基于 Next.js、React、Radix UI 和 shadcn/ui Yellow 主题构建的完整前端项目架构。
-            提供开箱即用的布局、组件和状态管理。
-          </p>
-          <div className="flex flex-col justify-center gap-4 pt-4 sm:flex-row">
-            <Button size="lg" className="gap-2" asChild>
-              <Link href="/dashboard">
-                开始使用
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/docs">查看文档</Link>
-            </Button>
+          
+          <div className="relative">
+            <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-primary/5 rounded-2xl blur-2xl" />
+            <Card className="relative border-2 shadow-2xl">
+              <CardHeader className="border-b bg-gradient-to-r from-primary/10 to-primary/5">
+                <div className="flex items-center gap-2">
+                  <Bot className="h-5 w-5 text-primary" />
+                  <CardTitle className="text-lg">AI助手</CardTitle>
+                  <span className="ml-auto text-xs px-2 py-1 rounded-full bg-green-500/10 text-green-500">
+                    在线
+                  </span>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4 space-y-4 h-80 overflow-y-auto">
+                <div className="space-y-3">
+                  {messages.map((msg, idx) => (
+                    <div
+                      key={idx}
+                      className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div
+                        className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                          msg.role === 'user'
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-muted'
+                        }`}
+                      >
+                        <p className="text-sm">{msg.content}</p>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="flex justify-start">
+                    <div className="max-w-[80%] rounded-2xl px-4 py-3 bg-primary/10 border-2 border-primary/20">
+                      <p className="text-sm">
+                        {animatedText}
+                        {isTyping && <span className="inline-block w-2 h-4 ml-1 bg-primary animate-pulse" />}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+              <div className="border-t p-4">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="输入消息..."
+                    className="flex-1 px-4 py-2 rounded-lg bg-muted border-0 focus:outline-none focus:ring-2 focus:ring-primary"
+                    disabled
+                  />
+                  <Button size="icon">
+                    <MessageSquare className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </Card>
           </div>
         </div>
-      </section>
-
-      {/* Features Grid */}
-      <section>
-        <div className="mb-12 text-center">
-          <h2 className="mb-4 text-3xl font-bold">核心特性</h2>
-          <p className="text-muted-foreground mx-auto max-w-2xl">
-            完整的前端解决方案，包含现代化的 UI 组件和响应式布局
+        
+        <div className="mb-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">强大的AI功能</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              集成最新AI技术，为您提供全方位的智能服务
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {features.map((feature, idx) => (
+              <Card key={idx} className="group hover:border-primary/50 transition-all hover:shadow-lg">
+                <CardHeader>
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                    {feature.icon}
+                  </div>
+                  <CardTitle>{feature.title}</CardTitle>
+                  <CardDescription className="text-base">{feature.description}</CardDescription>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        </div>
+        
+        <div className="text-center space-y-6">
+          <h2 className="text-3xl md:text-4xl font-bold">准备好开始了吗？</h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            加入数万用户，体验AI带来的革命性变化
           </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Button size="lg" className="gap-2 text-lg px-8 py-6">
+              <Sparkles className="h-5 w-5" />
+              免费开始使用
+              <ArrowRight className="h-5 w-5" />
+            </Button>
+          </div>
+          
+          <div className="flex flex-wrap justify-center items-center gap-8 pt-8">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary">10M+</div>
+              <div className="text-sm text-muted-foreground">消息处理</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary">99.9%</div>
+              <div className="text-sm text-muted-foreground">可用性</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary">100+</div>
+              <div className="text-sm text-muted-foreground">语言支持</div>
+            </div>
+          </div>
         </div>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Feature Cards */}
-          <FeatureCard
-            icon={<BarChart3 className="h-8 w-8" />}
-            title="数据统计"
-            description="强大的数据可视化和分析工具，帮助你深入了解业务指标"
-            href="/analytics"
-          />
-          <FeatureCard
-            icon={<Users className="h-8 w-8" />}
-            title="用户管理"
-            description="完整的用户管理系统，支持认证、授权和角色管理"
-            href="/users"
-          />
-          <FeatureCard
-            icon={<FileText className="h-8 w-8" />}
-            title="内容管理"
-            description="灵活的文章和内容管理系统，支持富文本和媒体文件"
-            href="/articles"
-          />
-          <FeatureCard
-            icon={<Settings className="h-8 w-8" />}
-            title="系统设置"
-            description="全面的系统配置选项，轻松自定义应用行为和外观"
-            href="/settings"
-          />
-          <FeatureCard
-            icon={<Zap className="h-8 w-8" />}
-            title="高性能"
-            description="基于 Next.js 16 和 React 19，提供极致的性能表现"
-            href="/docs"
-          />
-          <FeatureCard
-            icon={<div className="h-8 w-8 rounded bg-yellow-400" />}
-            title="Yellow 主题"
-            description="精美的 shadcn/ui Yellow 主题，支持亮色和暗色模式切换"
-            href="/docs"
-          />
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-12">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-          <StatCard number="99.9%" label="系统可用性" />
-          <StatCard number="10k+" label="活跃用户" />
-          <StatCard number="50+" label="UI 组件" />
-          <StatCard number="24/7" label="技术支持" />
-        </div>
-      </section>
-    </div>
-  )
-}
-
-interface FeatureCardProps {
-  icon: React.ReactNode
-  title: string
-  description: string
-  href: string
-}
-
-function FeatureCard({ icon, title, description, href }: FeatureCardProps) {
-  return (
-    <Link
-      href={href}
-      className="group bg-card cursor-pointer rounded-xl border p-6 transition-all hover:-translate-y-1 hover:shadow-lg"
-    >
-      <div className="text-primary mb-4 transition-transform group-hover:scale-110">{icon}</div>
-      <h3 className="mb-2 text-xl font-semibold">{title}</h3>
-      <p className="text-muted-foreground">{description}</p>
-    </Link>
-  )
-}
-
-interface StatCardProps {
-  number: string
-  label: string
-}
-
-function StatCard({ number, label }: StatCardProps) {
-  return (
-    <div className="text-center">
-      <div className="text-primary mb-2 text-3xl font-bold md:text-4xl">{number}</div>
-      <div className="text-muted-foreground">{label}</div>
+      </div>
     </div>
   )
 }
