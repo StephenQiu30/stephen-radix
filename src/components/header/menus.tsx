@@ -3,7 +3,7 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Users, Settings, FileText, BarChart3 } from 'lucide-react'
+import { Home, FileText } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export interface MenuItem {
@@ -16,10 +16,7 @@ export interface MenuItem {
 
 const menuItems: MenuItem[] = [
   { title: '首页', href: '/', icon: <Home className="h-4 w-4" /> },
-  { title: '用户管理', href: '/users', icon: <Users className="h-4 w-4" /> },
-  { title: '文章管理', href: '/articles', icon: <FileText className="h-4 w-4" /> },
-  { title: '数据统计', href: '/analytics', icon: <BarChart3 className="h-4 w-4" /> },
-  { title: '系统设置', href: '/settings', icon: <Settings className="h-4 w-4" /> },
+  { title: 'Markdown 编辑器', href: '/editor', icon: <FileText className="h-4 w-4" /> },
 ]
 
 export function Menus({ className, vertical = false }: { className?: string; vertical?: boolean }) {

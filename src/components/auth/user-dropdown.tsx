@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -67,14 +68,18 @@ export function UserDropdown() {
           </div>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <User className="mr-2 h-4 w-4" />
-          个人信息
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Settings className="mr-2 h-4 w-4" />
-          账号设置
-        </DropdownMenuItem>
+        <Link href="/user/profile" onClick={() => setOpen(false)}>
+          <DropdownMenuItem>
+            <User className="mr-2 h-4 w-4" />
+            个人信息
+          </DropdownMenuItem>
+        </Link>
+        <Link href="/user/settings" onClick={() => setOpen(false)}>
+          <DropdownMenuItem>
+            <Settings className="mr-2 h-4 w-4" />
+            账号设置
+          </DropdownMenuItem>
+        </Link>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={handleLogout}

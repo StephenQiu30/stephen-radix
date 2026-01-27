@@ -9,6 +9,10 @@ import { SiteLogo } from '@/components/header/site-logo'
 import { Menus } from '@/components/header/menus'
 import { MobileMenuContent } from '@/components/header/mobile-menu-content'
 import { HeaderActions } from '@/components/header/header-actions'
+import { useAppDispatch } from '@/store/hooks'
+import { setLoginUser, clearLoginUser } from '@/store/modules/user/userSlice'
+import { getLoginUser } from '@/api/userController'
+import { useEffect, useState } from 'react'
 
 interface BasicLayoutProps {
   children: React.ReactNode
@@ -16,8 +20,34 @@ interface BasicLayoutProps {
 }
 
 export function BasicLayout({ children, className }: BasicLayoutProps) {
-  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
-  const [authModalOpen, setAuthModalOpen] = React.useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [authModalOpen, setAuthModalOpen] = useState(false)
+  const dispatch = useAppDispatch()
+
+  // 在组件挂载时获取当前登录用户信息
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      const token = localStorage.getItem('token')
+
+      // 如果有 token，尝试获取当前用户信息
+      if (token) {
+        try {
+          const res = (await getLoginUser()) as unknown as API.BaseResponseLoginUserVO
+          if (res.code === 0 && res.data) {
+            dispatch(setLoginUser(res.data))
+          } else {
+            // 如果获取失败，清除登录状态
+            dispatch(clearLoginUser())
+          }
+        } catch (error) {
+          // 如果请求失败，清除登录状态
+          console.error('获取用户信息失败:', error)
+          dispatch(clearLoginUser())
+        }
+      }
+    }
+    fetchCurrentUser()
+  }, [dispatch])
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
@@ -44,10 +74,7 @@ export function BasicLayout({ children, className }: BasicLayoutProps) {
             <Menus />
           </div>
 
-          <HeaderActions
-            authModalOpen={authModalOpen}
-            onAuthModalOpenChange={setAuthModalOpen}
-          />
+          <HeaderActions authModalOpen={authModalOpen} onAuthModalOpenChange={setAuthModalOpen} />
         </div>
       </header>
 

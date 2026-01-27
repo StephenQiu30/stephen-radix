@@ -59,7 +59,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
     }
 
     try {
-      const res = await userLogin(loginForm)
+      const res = (await userLogin(loginForm)) as unknown as API.BaseResponseLoginUserVO
       if (res.code === 0 && res.data) {
         dispatch(setLoginUser(res.data))
         onOpenChange(false)
@@ -100,11 +100,11 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
     setLoading(true)
 
     try {
-      const res = await userRegister({
+      const res = (await userRegister({
         userAccount: registerForm.userAccount,
         userPassword: registerForm.userPassword,
         checkPassword: registerForm.checkPassword,
-      })
+      })) as unknown as API.BaseResponseLong
       if (res.code === 0) {
         setActiveTab('login')
         setError('注册成功，请登录')

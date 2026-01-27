@@ -1,9 +1,8 @@
 import { cn } from '@/lib/utils'
 import { UserCircle } from 'lucide-react'
-import type { UserVO } from '@/api/typings'
 
 interface UserAvatarProps {
-  user?: UserVO | null
+  user?: API.UserVO | null
   size?: 'sm' | 'md' | 'lg'
   className?: string
   alt?: string

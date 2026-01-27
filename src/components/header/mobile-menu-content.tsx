@@ -13,11 +13,7 @@ export function MobileMenuContent({ onClose }: MobileMenuContentProps) {
 
   return (
     <div className="flex flex-col gap-4 pt-2">
-      <Link
-        href="/"
-        onClick={onClose}
-        className="flex items-center gap-2 border-b pb-4"
-      >
+      <Link href="/" onClick={onClose} className="flex items-center gap-2 border-b pb-4">
         <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-lg">
           <span className="text-primary-foreground text-lg font-bold">{logoLetter}</span>
         </div>
