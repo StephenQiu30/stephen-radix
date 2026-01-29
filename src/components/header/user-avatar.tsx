@@ -3,7 +3,7 @@ import { UserCircle } from 'lucide-react'
 
 interface UserAvatarProps {
   user?: API.UserVO | null
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'sm' | 'md' | 'lg' | 'xl'
   className?: string
   alt?: string
 }
@@ -12,12 +12,14 @@ const sizeMap = {
   sm: 'h-5 w-5',
   md: 'h-10 w-10',
   lg: 'h-16 w-16',
+  xl: 'h-32 w-32',
 }
 
 const iconSizeMap = {
   sm: 'h-4 w-4',
   md: 'h-6 w-6',
   lg: 'h-10 w-10',
+  xl: 'h-20 w-20',
 }
 
 export function UserAvatar({ user, size = 'md', className, alt }: UserAvatarProps) {
@@ -40,13 +42,16 @@ export function UserAvatar({ user, size = 'md', className, alt }: UserAvatarProp
     <div
       className={cn(
         'flex flex-shrink-0 items-center justify-center rounded-full',
-        size === 'lg' ? 'bg-primary/10' : 'bg-muted',
+        size === 'lg' || size === 'xl' ? 'bg-primary/10' : 'bg-muted',
         sizeClass,
         className
       )}
     >
       <UserCircle
-        className={cn(size === 'lg' ? 'text-primary' : 'text-muted-foreground', iconSizeClass)}
+        className={cn(
+          size === 'lg' || size === 'xl' ? 'text-primary' : 'text-muted-foreground',
+          iconSizeClass
+        )}
       />
     </div>
   )
