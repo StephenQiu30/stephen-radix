@@ -126,7 +126,10 @@ export default function SettingsPage() {
 
     setUploading(true)
     try {
-      const res = (await uploadFile({ biz: 'user_avatar' }, file)) as unknown as API.BaseResponseString
+      const res = (await uploadFile(
+        { biz: 'user_avatar' },
+        file
+      )) as unknown as API.BaseResponseString
       if (res.code === 0 && res.data) {
         setFormData(prev => ({ ...prev, userAvatar: res.data! }))
         setChanges(prev => new Set(prev).add('userAvatar'))
@@ -198,7 +201,10 @@ export default function SettingsPage() {
       animate="visible"
     >
       {/* 顶部导航 */}
-      <motion.div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between" variants={itemVariants}>
+      <motion.div
+        className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+        variants={itemVariants}
+      >
         <div className="flex items-center gap-4">
           <Link href="/user/profile">
             <Button
@@ -236,7 +242,7 @@ export default function SettingsPage() {
         {/* 左侧 - 预览与头像 (4cols) */}
         <motion.div className="lg:col-span-4" variants={itemVariants}>
           <Card className="sticky top-24 overflow-hidden border-2 shadow-lg">
-            <div className="from-primary/40 via-primary/20 to-transparent relative h-32 bg-gradient-to-br">
+            <div className="from-primary/40 via-primary/20 relative h-32 bg-gradient-to-br to-transparent">
               <div className="bg-grid-white/10 absolute inset-0" />
             </div>
 
@@ -261,7 +267,11 @@ export default function SettingsPage() {
                     onClick={() => fileInputRef.current?.click()}
                     disabled={uploading}
                   >
-                    {uploading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Camera className="h-5 w-5" />}
+                    {uploading ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      <Camera className="h-5 w-5" />
+                    )}
                   </Button>
                 </motion.div>
               </div>
@@ -272,7 +282,7 @@ export default function SettingsPage() {
                   {user.userRole === 'admin' ? '✨ 管理员' : '成员档案'}
                 </p>
                 <div className="bg-muted/50 mt-4 rounded-xl p-4">
-                  <p className="text-muted-foreground text-xs italic leading-relaxed">
+                  <p className="text-muted-foreground text-xs leading-relaxed italic">
                     "{formData.userProfile || '还没写个人简介...'}"
                   </p>
                 </div>
@@ -330,7 +340,13 @@ export default function SettingsPage() {
                         />
                         <div className="flex justify-between px-1 text-xs">
                           <span className="text-muted-foreground">支持 Markdown 语法建议</span>
-                          <span className={formData.userProfile.length > 180 ? 'text-red-500 font-bold' : 'text-muted-foreground'}>
+                          <span
+                            className={
+                              formData.userProfile.length > 180
+                                ? 'font-bold text-red-500'
+                                : 'text-muted-foreground'
+                            }
+                          >
                             {formData.userProfile.length}/200
                           </span>
                         </div>
@@ -383,10 +399,11 @@ export default function SettingsPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className={`mt-6 rounded-xl border-2 p-5 ${message.type === 'success'
+                  className={`mt-6 rounded-xl border-2 p-5 ${
+                    message.type === 'success'
                       ? 'border-green-500/20 bg-green-500/5 text-green-600 dark:text-green-400'
                       : 'border-red-500/20 bg-red-500/5 text-red-600 dark:text-red-400'
-                    }`}
+                  }`}
                 >
                   <div className="flex items-center gap-3">
                     {message.type === 'success' ? (
@@ -470,11 +487,17 @@ function FormField({
   return (
     <div className="space-y-3">
       <Label className="flex items-center gap-2 text-base font-bold">
-        <div className={`rounded-lg p-1.5 transition-colors ${isActive ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'}`}>
+        <div
+          className={`rounded-lg p-1.5 transition-colors ${isActive ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'}`}
+        >
           {icon}
         </div>
         {label}
-        {hasChanged && <Badge variant="secondary" className="ml-auto text-xs font-medium">已修改</Badge>}
+        {hasChanged && (
+          <Badge variant="secondary" className="ml-auto text-xs font-medium">
+            已修改
+          </Badge>
+        )}
       </Label>
       <motion.div animate={{ scale: isActive ? 1.005 : 1 }}>
         <Input
@@ -485,7 +508,7 @@ function FormField({
           required={required}
           onFocus={onFocus}
           onBlur={onBlur}
-          className="h-14 border-2 text-base transition-all focus:border-primary focus:ring-0"
+          className="focus:border-primary h-14 border-2 text-base transition-all focus:ring-0"
         />
       </motion.div>
     </div>

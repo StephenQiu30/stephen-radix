@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@plugin "@tailwindcss/typography";
+@plugin '@tailwindcss/typography';
 
 @layer base {
   :root {
@@ -72,7 +72,9 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

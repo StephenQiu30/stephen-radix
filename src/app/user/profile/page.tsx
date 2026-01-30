@@ -110,10 +110,15 @@ export default function ProfilePage() {
           <h1 className="from-foreground to-foreground/70 bg-gradient-to-r bg-clip-text text-4xl font-extrabold tracking-tight text-transparent">
             个人档案
           </h1>
-          <p className="text-muted-foreground text-lg">你好，{user.userName || '探索者'}。这是你的个人中心。</p>
+          <p className="text-muted-foreground text-lg">
+            你好，{user.userName || '探索者'}。这是你的个人中心。
+          </p>
         </div>
         <Link href="/user/settings">
-          <Button size="lg" className="gap-2 shadow-lg transition-all hover:scale-105 active:scale-95">
+          <Button
+            size="lg"
+            className="gap-2 shadow-lg transition-all hover:scale-105 active:scale-95"
+          >
             <Edit className="h-4 w-4" />
             编辑资料
           </Button>
@@ -125,7 +130,7 @@ export default function ProfilePage() {
         <motion.div className="lg:col-span-4" variants={itemVariants}>
           <Card className="overflow-hidden border-2 transition-all duration-500 hover:shadow-2xl">
             {/* 炫酷背景 */}
-            <div className="from-primary/30 via-primary/10 to-transparent relative h-40 bg-gradient-to-br">
+            <div className="from-primary/30 via-primary/10 relative h-40 bg-gradient-to-br to-transparent">
               <div className="bg-grid-white/10 absolute inset-0" />
               <div className="absolute top-4 right-4 animate-pulse">
                 <Badge variant="secondary" className="bg-background/50 backdrop-blur-md">
@@ -148,7 +153,7 @@ export default function ProfilePage() {
                     size="xl"
                     className="ring-background border-background h-32 w-32 border-4 shadow-2xl ring-4"
                   />
-                  <div className="bg-green-500 border-background absolute right-2 bottom-2 h-6 w-6 rounded-full border-4 shadow-sm" />
+                  <div className="border-background absolute right-2 bottom-2 h-6 w-6 rounded-full border-4 bg-green-500 shadow-sm" />
                 </motion.div>
               </div>
 
@@ -176,8 +181,8 @@ export default function ProfilePage() {
                   </Badge>
                 </div>
 
-                <div className="bg-muted/30 relative mt-6 rounded-xl p-6 transition-colors hover:bg-muted/50">
-                  <p className="text-muted-foreground text-sm italic leading-relaxed">
+                <div className="bg-muted/30 hover:bg-muted/50 relative mt-6 rounded-xl p-6 transition-colors">
+                  <p className="text-muted-foreground text-sm leading-relaxed italic">
                     "{user.userProfile || '这个人很懒，什么都没留下，也许正在积蓄力量 ⚡️'}"
                   </p>
                 </div>
@@ -197,7 +202,7 @@ export default function ProfilePage() {
         <motion.div className="space-y-8 lg:col-span-8" variants={itemVariants}>
           {/* 基本信息网格 */}
           <Card className="border-2 shadow-sm">
-            <CardHeader className="border-b bg-muted/20 pb-4">
+            <CardHeader className="bg-muted/20 border-b pb-4">
               <CardTitle className="flex items-center gap-2 text-xl font-bold">
                 <AtSign className="text-primary h-5 w-5" />
                 联系方式 & 身份
@@ -235,7 +240,7 @@ export default function ProfilePage() {
 
           {/* 账户历程 */}
           <Card className="border-2 shadow-sm">
-            <CardHeader className="border-b bg-muted/20 pb-4">
+            <CardHeader className="bg-muted/20 border-b pb-4">
               <CardTitle className="flex items-center gap-2 text-xl font-bold">
                 <Calendar className="text-primary h-5 w-5" />
                 账户历程
@@ -283,7 +288,7 @@ export default function ProfilePage() {
             <Link href="/user/settings" className="flex-1">
               <Button
                 variant="outline"
-                className="h-20 w-full flex-col gap-2 rounded-2xl border-2 transition-all hover:border-primary hover:bg-primary/5"
+                className="hover:border-primary hover:bg-primary/5 h-20 w-full flex-col gap-2 rounded-2xl border-2 transition-all"
               >
                 <Edit className="h-6 w-6" />
                 <span>完善个人资料</span>
@@ -292,7 +297,7 @@ export default function ProfilePage() {
             <Button
               variant="outline"
               disabled
-              className="h-20 flex-1 flex-col gap-2 rounded-2xl border-2 transition-all opacity-60"
+              className="h-20 flex-1 flex-col gap-2 rounded-2xl border-2 opacity-60 transition-all"
             >
               <Shield className="h-6 w-6" />
               <span>实验室功能</span>
@@ -320,7 +325,7 @@ function StatItem({
         {icon && <span className="text-primary h-3.5 w-3.5">{icon}</span>}
         <span className="text-2xl font-black">{value}</span>
       </div>
-      <span className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest leading-none">
+      <span className="text-muted-foreground text-[10px] leading-none font-bold tracking-widest uppercase">
         {label}
       </span>
     </div>
@@ -341,15 +346,15 @@ function InfoItem({
 }) {
   return (
     <motion.div
-      className="group relative flex items-start gap-4 rounded-2xl border border-transparent p-4 transition-all hover:border-primary/20 hover:bg-primary/5"
+      className="group hover:border-primary/20 hover:bg-primary/5 relative flex items-start gap-4 rounded-2xl border border-transparent p-4 transition-all"
       whileHover={{ y: -2 }}
     >
       <div className="bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground mt-1 flex-shrink-0 rounded-xl p-2.5 transition-colors">
         {icon}
       </div>
       <div className="min-w-0 flex-1 space-y-0.5">
-        <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest">{label}</p>
-        <p className="text-lg font-bold truncate leading-tight">{value}</p>
+        <p className="text-muted-foreground text-xs font-bold tracking-widest uppercase">{label}</p>
+        <p className="truncate text-lg leading-tight font-bold">{value}</p>
         {description && <p className="text-muted-foreground text-xs">{description}</p>}
       </div>
     </motion.div>

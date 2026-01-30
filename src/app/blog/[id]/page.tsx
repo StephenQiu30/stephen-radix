@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion, useScroll, useSpring } from 'framer-motion'
-import { MarkdownRenderer, PostHeader, TOC } from '@/components/blog'
+import { MarkdownRender, PostHeader, MarkdownToc } from '@/components/blog'
 import { Button } from '@/components/ui/button'
 import { getPostVoById } from '@/api/postController'
 import { doThumb } from '@/api/postThumbController'
@@ -152,7 +152,7 @@ export default function PostDetailPage() {
           <article className="prose prose-neutral dark:prose-invert mx-auto w-full max-w-3xl">
             <PostHeader post={post} />
 
-            <MarkdownRenderer content={post.content || ''} />
+            <MarkdownRender content={post.content || ''} />
 
             {/* Author Bio Footer */}
             <div className="border-border mt-20 border-t pt-12">
@@ -170,10 +170,10 @@ export default function PostDetailPage() {
             </div>
           </article>
 
-          {/* Desktop TOC */}
+          {/* Desktop MarkdownToc */}
           <aside className="hidden lg:block">
             <div className="sticky top-24">
-              <TOC content={post.content || ''} />
+              <MarkdownToc content={post.content || ''} />
             </div>
           </aside>
         </div>

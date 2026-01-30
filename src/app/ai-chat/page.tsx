@@ -116,13 +116,13 @@ export default function AIChatLandingPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
+    <div className="from-background via-background to-muted/20 min-h-screen bg-gradient-to-b">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 py-20">
+      <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-20">
         {/* 背景装饰 */}
         <div className="absolute inset-0 overflow-hidden">
           <motion.div
-            className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"
+            className="bg-primary/5 absolute top-0 left-1/4 h-96 w-96 rounded-full blur-3xl"
             animate={{
               scale: [1, 1.2, 1],
               opacity: [0.3, 0.5, 0.3],
@@ -134,7 +134,7 @@ export default function AIChatLandingPage() {
             }}
           />
           <motion.div
-            className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"
+            className="bg-primary/5 absolute right-1/4 bottom-0 h-96 w-96 rounded-full blur-3xl"
             animate={{
               scale: [1, 1.2, 1],
               opacity: [0.3, 0.5, 0.3],
@@ -148,17 +148,17 @@ export default function AIChatLandingPage() {
           />
         </div>
 
-        <div className="container mx-auto max-w-6xl relative z-10">
+        <div className="relative z-10 container mx-auto max-w-6xl">
           <motion.div
-            className="text-center space-y-8"
+            className="space-y-8 text-center"
             initial="initial"
             animate="animate"
             variants={staggerContainer}
           >
             {/* Badge */}
             <motion.div variants={fadeInUp} className="inline-flex">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm">
-                <Sparkles className="h-4 w-4 text-primary" />
+              <div className="bg-primary/10 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm">
+                <Sparkles className="text-primary h-4 w-4" />
                 <span className="font-medium">AI 驱动的下一代对话体验</span>
               </div>
             </motion.div>
@@ -166,11 +166,11 @@ export default function AIChatLandingPage() {
             {/* Headline */}
             <motion.h1
               variants={fadeInUp}
-              className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.1]"
+              className="text-5xl leading-[1.1] font-bold tracking-tight md:text-7xl lg:text-8xl"
             >
               重新定义
               <br />
-              <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              <span className="from-primary to-primary/60 bg-gradient-to-r bg-clip-text text-transparent">
                 人机对话
               </span>
             </motion.h1>
@@ -178,18 +178,17 @@ export default function AIChatLandingPage() {
             {/* Subtitle */}
             <motion.p
               variants={fadeInUp}
-              className="mx-auto max-w-2xl text-xl md:text-2xl text-muted-foreground leading-relaxed"
+              className="text-muted-foreground mx-auto max-w-2xl text-xl leading-relaxed md:text-2xl"
             >
               强大的 AI 助手，随时为您服务。智能、快速、安全，让沟通变得更加简单。
             </motion.p>
 
             {/* CTA Buttons */}
-            <motion.div variants={fadeInUp} className="flex flex-wrap items-center justify-center gap-4">
-              <Button
-                size="lg"
-                className="h-14 px-8 text-lg gap-2 rounded-full"
-                asChild
-              >
+            <motion.div
+              variants={fadeInUp}
+              className="flex flex-wrap items-center justify-center gap-4"
+            >
+              <Button size="lg" className="h-14 gap-2 rounded-full px-8 text-lg" asChild>
                 <Link href="/editor">
                   立即体验 <ArrowRight className="h-5 w-5" />
                 </Link>
@@ -197,7 +196,7 @@ export default function AIChatLandingPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="h-14 px-8 text-lg rounded-full"
+                className="h-14 rounded-full px-8 text-lg"
                 asChild
               >
                 <Link href="#features">了解更多</Link>
@@ -210,7 +209,7 @@ export default function AIChatLandingPage() {
               className="flex flex-wrap items-center justify-center gap-6 pt-8"
             >
               {benefits.map((benefit, index) => (
-                <div key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div key={index} className="text-muted-foreground flex items-center gap-2 text-sm">
                   <span className="text-primary">{benefit.icon}</span>
                   <span>{benefit.label}</span>
                 </div>
@@ -219,17 +218,14 @@ export default function AIChatLandingPage() {
           </motion.div>
 
           {/* Demo Preview */}
-          <motion.div
-            className="mt-20"
-            style={{ y: y1, opacity: opacity1, scale: scale1 }}
-          >
-            <Card className="mx-auto max-w-3xl border-2 shadow-2xl overflow-hidden">
+          <motion.div className="mt-20" style={{ y: y1, opacity: opacity1, scale: scale1 }}>
+            <Card className="mx-auto max-w-3xl overflow-hidden border-2 shadow-2xl">
               <div className="bg-muted/30 flex items-center gap-2 border-b px-6 py-4">
                 <Bot className="text-primary h-5 w-5" />
                 <span className="font-semibold">AI 助手演示</span>
               </div>
               <CardContent className="p-0">
-                <div className="space-y-4 p-6 max-h-96 overflow-y-auto">
+                <div className="max-h-96 space-y-4 overflow-y-auto p-6">
                   {conversations.map((msg, idx) => (
                     <motion.div
                       key={idx}
@@ -240,9 +236,7 @@ export default function AIChatLandingPage() {
                     >
                       <div
                         className={`max-w-[80%] rounded-2xl px-6 py-3 ${
-                          msg.role === 'user'
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-muted'
+                          msg.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'
                         }`}
                       >
                         <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
@@ -257,19 +251,17 @@ export default function AIChatLandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-32 px-4">
+      <section id="features" className="px-4 py-32">
         <div className="container mx-auto max-w-6xl">
           <motion.div
-            className="text-center mb-20"
+            className="mb-20 text-center"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
-              为什么选择我们
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl">为什么选择我们</h2>
+            <p className="text-muted-foreground mx-auto max-w-2xl text-xl">
               我们致力于提供最优秀的 AI 对话体验
             </p>
           </motion.div>
@@ -284,10 +276,10 @@ export default function AIChatLandingPage() {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 whileHover={{ y: -8 }}
               >
-                <Card className="h-full border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-lg">
+                <Card className="hover:border-primary/50 h-full border-2 transition-all duration-300 hover:shadow-lg">
                   <CardContent className="p-8">
                     <div className="text-primary mb-6">{feature.icon}</div>
-                    <h3 className="text-2xl font-semibold mb-4">{feature.title}</h3>
+                    <h3 className="mb-4 text-2xl font-semibold">{feature.title}</h3>
                     <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
                   </CardContent>
                 </Card>
@@ -298,22 +290,19 @@ export default function AIChatLandingPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 px-4 bg-muted/30">
+      <section className="bg-muted/30 px-4 py-20">
         <div className="container mx-auto max-w-6xl">
-          <div
-            ref={statsRef}
-            className="grid gap-12 text-center md:grid-cols-3"
-          >
+          <div ref={statsRef} className="grid gap-12 text-center md:grid-cols-3">
             <div>
-              <div className="text-5xl md:text-6xl font-bold text-primary mb-2">99.9%</div>
+              <div className="text-primary mb-2 text-5xl font-bold md:text-6xl">99.9%</div>
               <div className="text-muted-foreground">可用性</div>
             </div>
             <div>
-              <div className="text-5xl md:text-6xl font-bold text-primary mb-2">100K+</div>
+              <div className="text-primary mb-2 text-5xl font-bold md:text-6xl">100K+</div>
               <div className="text-muted-foreground">活跃用户</div>
             </div>
             <div>
-              <div className="text-5xl md:text-6xl font-bold text-primary mb-2">10M+</div>
+              <div className="text-primary mb-2 text-5xl font-bold md:text-6xl">10M+</div>
               <div className="text-muted-foreground">对话次数</div>
             </div>
           </div>
@@ -321,22 +310,20 @@ export default function AIChatLandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 px-4">
+      <section className="px-4 py-32">
         <div className="container mx-auto max-w-4xl">
           <motion.div
-            className="text-center space-y-8"
+            className="space-y-8 text-center"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-              准备好开始了吗？
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="text-4xl font-bold tracking-tight md:text-5xl">准备好开始了吗？</h2>
+            <p className="text-muted-foreground mx-auto max-w-2xl text-xl">
               加入成千上万的用户，体验 AI 带来的革命性变化
             </p>
-            <Button size="lg" className="h-14 px-8 text-lg gap-2 rounded-full" asChild>
+            <Button size="lg" className="h-14 gap-2 rounded-full px-8 text-lg" asChild>
               <Link href="/editor">
                 免费开始使用 <ArrowRight className="h-5 w-5" />
               </Link>

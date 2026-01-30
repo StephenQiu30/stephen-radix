@@ -1,4 +1,4 @@
-export { MarkdownRenderer } from './MarkdownRenderer'
-export { PostCard } from './PostCard'
-export { PostHeader } from './PostHeader'
-export { TOC } from './TOC'
+export { MarkdownRender } from '@/components/blog/markdown-render'
+export { PostCard } from '@/components/blog/post-card'
+export { PostHeader } from '@/components/blog/post-header'
+export { MarkdownToc } from '@/components/blog/markdown-toc'

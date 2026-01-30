@@ -8,12 +8,12 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { MarkdownEditor } from '@/components/blog/MarkdownEditor'
+import { MarkdownEditor } from '@/components/blog/markdown-editor'
 import { addPost } from '@/api/postController'
 import { toast } from 'sonner'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
-import { ImageUploader } from '@/components/common/ImageUploader'
+import { ImageUploader } from '@/components/common/image-uploader'
 
 export default function CreatePostPage() {
   const router = useRouter()
