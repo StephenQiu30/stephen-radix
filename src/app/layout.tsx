@@ -7,6 +7,7 @@ import { Footer } from '@/components/footer/footer'
 import React from 'react'
 import { Provider } from 'react-redux'
 import store from '@/store'
+import { Toaster } from 'sonner'
 
 export default function RootLayout({
   children,
@@ -22,6 +23,7 @@ export default function RootLayout({
               {children}
               <Footer />
             </BasicLayout>
+            <Toaster position="top-center" richColors />
           </ThemeProvider>
         </Provider>
       </body>

@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import { useEffect, useState } from 'react'
 import { Menu } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -10,9 +11,8 @@ import { Menus } from '@/components/header/menus'
 import { MobileMenuContent } from '@/components/header/mobile-menu-content'
 import { HeaderActions } from '@/components/header/header-actions'
 import { useAppDispatch } from '@/store/hooks'
-import { setLoginUser, clearLoginUser } from '@/store/modules/user/userSlice'
+import { clearLoginUser, setLoginUser } from '@/store/modules/user/userSlice'
 import { getLoginUser } from '@/api/userController'
-import { useEffect, useState } from 'react'
 
 interface BasicLayoutProps {
   children: React.ReactNode

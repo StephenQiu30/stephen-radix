@@ -3,10 +3,7 @@
 import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useGSAP } from '@gsap/react'
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 import {
   MessageSquare,
   Sparkles,
@@ -14,19 +11,17 @@ import {
   Shield,
   ArrowRight,
   Bot,
-  Users,
-  Clock,
-  CheckCircle2,
+  Globe,
+  Code2,
+  Cpu,
+  Fingerprint
 } from 'lucide-react'
 import Link from 'next/link'
+import { cn } from '@/lib/utils'
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger)
-}
-
-// 动画变体
+// Animation variants
 const fadeInUp = {
-  initial: { opacity: 0, y: 60 },
+  initial: { opacity: 0, y: 40 },
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
 }
@@ -34,313 +29,259 @@ const fadeInUp = {
 const staggerContainer = {
   animate: {
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.12,
     },
   },
 }
 
 export default function AIChatLandingPage() {
   const { scrollY } = useScroll()
-  const y1 = useTransform(scrollY, [0, 300], [0, -50])
-  const opacity1 = useTransform(scrollY, [0, 300], [1, 0])
-  const scale1 = useTransform(scrollY, [0, 300], [1, 0.95])
+  const yHero = useTransform(scrollY, [0, 500], [0, 150])
+  const opacityHero = useTransform(scrollY, [0, 400], [1, 0])
 
-  // GSAP 数字动画
-  const statsRef = React.useRef<HTMLDivElement>(null)
-
-  useGSAP(() => {
-    if (statsRef.current) {
-      gsap.from(statsRef.current.children, {
-        scrollTrigger: {
-          trigger: statsRef.current,
-          start: 'top 80%',
-          once: true,
-        },
-        y: 50,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.2,
-        ease: 'power3.out',
-      })
-    }
-  }, [])
+  const springConfig = { stiffness: 100, damping: 30, restDelta: 0.001 }
+  const scale = useSpring(useTransform(scrollY, [0, 500], [1, 0.9]), springConfig)
 
   const features = [
     {
-      icon: <MessageSquare className="h-8 w-8" />,
-      title: '智能对话',
-      description: '基于最先进的大语言模型，理解自然语言，提供准确回答',
+      icon: <MessageSquare className="h-6 w-6" />,
+      title: 'Natural Conversation',
+      description: 'Interact with AI that understands context and nuance like a human.',
+      className: 'md:col-span-2',
+      bg: 'bg-gradient-to-br from-blue-500/10 to-purple-500/10'
     },
     {
-      icon: <Zap className="h-8 w-8" />,
-      title: '即时响应',
-      description: '毫秒级响应速度，流畅的对话体验，无需等待',
+      icon: <Zap className="h-6 w-6" />,
+      title: 'Lightning Fast',
+      description: 'Real-time processing for instant responses.',
+      className: 'md:col-span-1',
+      bg: 'bg-gradient-to-br from-orange-500/10 to-red-500/10'
     },
     {
-      icon: <Shield className="h-8 w-8" />,
-      title: '安全可靠',
-      description: '端到端加密，保护您的隐私和数据安全，符合安全标准',
+      icon: <Shield className="h-6 w-6" />,
+      title: 'Secure by Design',
+      description: 'Enterprise-grade encryption protecting your data.',
+      className: 'md:col-span-1',
+      bg: 'bg-gradient-to-br from-green-500/10 to-emerald-500/10'
     },
     {
-      icon: <Sparkles className="h-8 w-8" />,
-      title: '持续学习',
-      description: '不断优化模型，提供更智能的服务，越用越好用',
-    },
-  ]
-
-  const benefits = [
-    { label: '24/7 可用', icon: <Clock className="h-5 w-5" /> },
-    { label: '多语言支持', icon: <Users className="h-5 w-5" /> },
-    { label: '轻松集成', icon: <CheckCircle2 className="h-5 w-5" /> },
-  ]
-
-  // 模拟对话数据
-  const conversations = [
-    {
-      role: 'user' as const,
-      content: '你好，能帮我写一段 Python 代码吗？',
-    },
-    {
-      role: 'assistant' as const,
-      content: '当然可以！我很乐意帮你编写 Python 代码。请告诉我你需要实现什么功能？',
-    },
-    {
-      role: 'user' as const,
-      content: '我需要一个计算器程序',
-    },
-    {
-      role: 'assistant' as const,
-      content:
-        '好的！这是一个简单的 Python 计算器程序：\n\n```python\ndef calculator():\n    print("简单计算器")\n    num1 = float(input("第一个数字: "))\n    num2 = float(input("第二个数字: "))\n    \n    print("\n选择运算:")\n    print("1. 加法")\n    print("2. 减法")\n    print("3. 乘法")\n    print("4. 除法")\n    \n    choice = input("输入选择(1/2/3/4): ")\n    \n    if choice == \'1\':\n        print(num1, "+", num2, "=", num1 + num2)\n    elif choice == \'2\':\n        print(num1, "-", num2, "=", num1 - num2)\n    elif choice == \'3\':\n        print(num1, "*", num2, "=", num1 * num2)\n    elif choice == \'4\':\n        print(num1, "/", num2, "=", num1 / num2)\n    else:\n        print("无效输入")\n\ncalculator()\n```\n\n这个程序支持基本的四则运算。你可以根据需要扩展更多功能！',
+      icon: <Globe className="h-6 w-6" />,
+      title: 'Global Knowledge',
+      description: 'Access to a world of information in any language.',
+      className: 'md:col-span-2',
+      bg: 'bg-gradient-to-br from-cyan-500/10 to-blue-500/10'
     },
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
+    <div className="min-h-screen bg-background font-sans selection:bg-primary/20">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 py-20">
-        {/* 背景装饰 */}
-        <div className="absolute inset-0 overflow-hidden">
-          <motion.div
-            className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.5, 0.3],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          />
-          <motion.div
-            className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.5, 0.3],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: 4,
-            }}
-          />
+      <section className="relative h-screen flex flex-col justify-center items-center overflow-hidden px-6 pt-20">
+        {/* Background Gradients */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] bg-blue-500/20 rounded-full blur-[120px] opacity-40 mix-blend-screen" />
+          <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] bg-purple-500/20 rounded-full blur-[120px] opacity-40 mix-blend-screen" />
         </div>
 
-        <div className="container mx-auto max-w-6xl relative z-10">
-          <motion.div
-            className="text-center space-y-8"
-            initial="initial"
-            animate="animate"
-            variants={staggerContainer}
-          >
-            {/* Badge */}
-            <motion.div variants={fadeInUp} className="inline-flex">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm">
-                <Sparkles className="h-4 w-4 text-primary" />
-                <span className="font-medium">AI 驱动的下一代对话体验</span>
-              </div>
-            </motion.div>
-
-            {/* Headline */}
-            <motion.h1
-              variants={fadeInUp}
-              className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.1]"
-            >
-              重新定义
-              <br />
-              <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                人机对话
-              </span>
-            </motion.h1>
-
-            {/* Subtitle */}
-            <motion.p
-              variants={fadeInUp}
-              className="mx-auto max-w-2xl text-xl md:text-2xl text-muted-foreground leading-relaxed"
-            >
-              强大的 AI 助手，随时为您服务。智能、快速、安全，让沟通变得更加简单。
-            </motion.p>
-
-            {/* CTA Buttons */}
-            <motion.div variants={fadeInUp} className="flex flex-wrap items-center justify-center gap-4">
-              <Button
-                size="lg"
-                className="h-14 px-8 text-lg gap-2 rounded-full"
-                asChild
-              >
-                <Link href="/editor">
-                  立即体验 <ArrowRight className="h-5 w-5" />
-                </Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="h-14 px-8 text-lg rounded-full"
-                asChild
-              >
-                <Link href="#features">了解更多</Link>
-              </Button>
-            </motion.div>
-
-            {/* Benefits */}
-            <motion.div
-              variants={fadeInUp}
-              className="flex flex-wrap items-center justify-center gap-6 pt-8"
-            >
-              {benefits.map((benefit, index) => (
-                <div key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span className="text-primary">{benefit.icon}</span>
-                  <span>{benefit.label}</span>
-                </div>
-              ))}
-            </motion.div>
+        <motion.div
+          style={{ y: yHero, opacity: opacityHero, scale }}
+          variants={staggerContainer}
+          initial="initial"
+          animate="animate"
+          className="relative z-10 max-w-5xl mx-auto text-center flex flex-col items-center gap-8"
+        >
+          <motion.div variants={fadeInUp}>
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/50 backdrop-blur-md border border-white/10 text-sm font-medium text-secondary-foreground shadow-sm">
+              <Sparkles className="h-4 w-4 text-amber-400" />
+              <span>Introducing the new AI Experience</span>
+            </span>
           </motion.div>
 
-          {/* Demo Preview */}
-          <motion.div
-            className="mt-20"
-            style={{ y: y1, opacity: opacity1, scale: scale1 }}
+          <motion.h1
+            variants={fadeInUp}
+            className="text-6xl md:text-8xl font-semibold tracking-tighter text-foreground leading-[1.05]"
           >
-            <Card className="mx-auto max-w-3xl border-2 shadow-2xl overflow-hidden">
-              <div className="bg-muted/30 flex items-center gap-2 border-b px-6 py-4">
-                <Bot className="text-primary h-5 w-5" />
-                <span className="font-semibold">AI 助手演示</span>
-              </div>
-              <CardContent className="p-0">
-                <div className="space-y-4 p-6 max-h-96 overflow-y-auto">
-                  {conversations.map((msg, idx) => (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.2 }}
-                      className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                    >
-                      <div
-                        className={`max-w-[80%] rounded-2xl px-6 py-3 ${
-                          msg.role === 'user'
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-muted'
-                        }`}
-                      >
-                        <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            Intelligence. <br />
+            <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent pb-4">
+              Reimagined.
+            </span>
+          </motion.h1>
+
+          <motion.p
+            variants={fadeInUp}
+            className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed tracking-tight"
+          >
+            The most advanced AI assistant, designed to seamlessly integrate into your workflow.
+            Beautiful, fast, and secure.
+          </motion.p>
+
+          <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 pt-4">
+            <Button size="lg" className="h-14 px-8 text-lg rounded-full bg-foreground text-background hover:bg-foreground/90 transition-all shadow-xl hover:shadow-2xl hover:scale-105" asChild>
+              <Link href="/editor">
+                Get Started
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" className="h-14 px-8 text-lg rounded-full backdrop-blur-sm border-white/20 hover:bg-white/10 transition-all" asChild>
+              <Link href="#features">
+                Learn more
+              </Link>
+            </Button>
           </motion.div>
-        </div>
+        </motion.div>
+
+        {/* Hero Image Mockup (Abstract representation) */}
+        <motion.div
+          className="absolute bottom-0 w-full max-w-6xl mx-auto h-[40vh] bg-gradient-to-t from-background to-transparent z-20 pointer-events-none"
+        />
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-32 px-4">
+      {/* Bento Grid Features Section */}
+      <section id="features" className="py-32 px-6 bg-secondary/30">
         <div className="container mx-auto max-w-6xl">
           <motion.div
-            className="text-center mb-20"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
+            className="mb-16 md:mb-24"
           >
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
-              为什么选择我们
+            <h2 className="text-4xl md:text-6xl font-semibold tracking-tighter mb-6">
+              Everything you need. <span className="text-muted-foreground">Nothing you don&apos;t.</span>
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              我们致力于提供最优秀的 AI 对话体验
-            </p>
           </motion.div>
 
-          <div className="grid gap-8 md:grid-cols-2">
-            {features.map((feature, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {features.map((feature, i) => (
               <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 40 }}
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-100px' }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -8 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                whileHover={{ scale: 1.02 }}
+                className={cn(
+                  "group relative overflow-hidden rounded-3xl border bg-background/50 backdrop-blur-xl p-8 hover:shadow-xl transition-all duration-300",
+                  feature.className
+                )}
               >
-                <Card className="h-full border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-lg">
-                  <CardContent className="p-8">
-                    <div className="text-primary mb-6">{feature.icon}</div>
-                    <h3 className="text-2xl font-semibold mb-4">{feature.title}</h3>
-                    <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
-                  </CardContent>
-                </Card>
+                <div className={cn("absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500", feature.bg)} />
+
+                <div className="relative z-10 flex flex-col h-full justify-between">
+                  <div className="mb-8">
+                    <div className="w-12 h-12 rounded-2xl bg-secondary flex items-center justify-center mb-6 text-foreground group-hover:scale-110 transition-transform duration-300">
+                      {feature.icon}
+                    </div>
+                    <h3 className="text-2xl font-semibold mb-3 tracking-tight">{feature.title}</h3>
+                    <p className="text-muted-foreground leading-relaxed text-lg">{feature.description}</p>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 px-4 bg-muted/30">
-        <div className="container mx-auto max-w-6xl">
-          <div
-            ref={statsRef}
-            className="grid gap-12 text-center md:grid-cols-3"
-          >
-            <div>
-              <div className="text-5xl md:text-6xl font-bold text-primary mb-2">99.9%</div>
-              <div className="text-muted-foreground">可用性</div>
-            </div>
-            <div>
-              <div className="text-5xl md:text-6xl font-bold text-primary mb-2">100K+</div>
-              <div className="text-muted-foreground">活跃用户</div>
-            </div>
-            <div>
-              <div className="text-5xl md:text-6xl font-bold text-primary mb-2">10M+</div>
-              <div className="text-muted-foreground">对话次数</div>
-            </div>
+      {/* Showcase / Parallax Section */}
+      <section className="py-32 px-6 overflow-hidden">
+        <div className="container mx-auto max-w-7xl">
+          <div className="grid md:grid-cols-2 gap-20 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1 }}
+            >
+              <div className="space-y-8">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-500 text-sm font-semibold">
+                  <Code2 className="h-4 w-4" />
+                  <span>Developer Friendly</span>
+                </div>
+                <h2 className="text-4xl md:text-6xl font-semibold tracking-tighter">
+                  Built for <br />
+                  <span className="text-muted-foreground">creators and makers.</span>
+                </h2>
+                <p className="text-xl text-muted-foreground leading-relaxed">
+                  Powerful APIs, comprehensive documentation, and a community of developers ready to help you build the next big thing.
+                </p>
+
+                <ul className="space-y-4 pt-4">
+                  {[
+                    { icon: Fingerprint, text: 'Secure Authentication' },
+                    { icon: Cpu, text: 'Advanced Model Tuning' },
+                    { icon: Globe, text: 'Global Content Delivery' }
+                  ].map((Item, i) => (
+                    <motion.li
+                      key={i}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.2 + (i * 0.1) }}
+                      className="flex items-center gap-3 text-lg font-medium"
+                    >
+                      <div className="p-2 rounded-full bg-secondary">
+                        <Item.icon className="h-5 w-5" />
+                      </div>
+                      {Item.text}
+                    </motion.li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, rotate: -5 }}
+              whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="relative"
+            >
+              <div className="aspect-square rounded-[3rem] bg-gradient-to-tr from-gray-900 to-gray-800 shadow-2xl p-8 relative overflow-hidden border border-white/10">
+                {/* Abstract UI Mockup */}
+                <div className="absolute inset-x-8 top-8 bottom-0 bg-background/90 rounded-t-2xl shadow-2xl border border-white/5 overflow-hidden">
+                  <div className="h-10 border-b flex items-center px-4 gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                  </div>
+                  <div className="p-6 space-y-4">
+                    <div className="h-4 w-1/3 bg-secondary rounded animate-pulse" />
+                    <div className="h-32 bg-secondary/50 rounded-xl" />
+                    <div className="space-y-2">
+                      <div className="h-3 w-3/4 bg-secondary rounded" />
+                      <div className="h-3 w-1/2 bg-secondary rounded" />
+                    </div>
+                  </div>
+                </div>
+                <div className="absolute -inset-1 rounded-[3rem] ring-1 ring-inset ring-white/10" />
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 px-4">
-        <div className="container mx-auto max-w-4xl">
+      <section className="py-40 px-6">
+        <div className="container mx-auto max-w-4xl text-center">
           <motion.div
-            className="text-center space-y-8"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
+            className="space-y-8"
           >
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-              准备好开始了吗？
+            <h2 className="text-5xl md:text-7xl font-semibold tracking-tighter">
+              Start building today.
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              加入成千上万的用户，体验 AI 带来的革命性变化
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
+              Join thousands of developers and businesses who trust our platform.
             </p>
-            <Button size="lg" className="h-14 px-8 text-lg gap-2 rounded-full" asChild>
-              <Link href="/editor">
-                免费开始使用 <ArrowRight className="h-5 w-5" />
-              </Link>
-            </Button>
+            <div className="flex items-center justify-center gap-4 pt-4">
+              <Button size="lg" className="h-16 px-10 text-xl rounded-full shadow-2xl hover:scale-105 transition-transform" asChild>
+                <Link href="/editor">
+                  Get Started Now <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+            </div>
           </motion.div>
         </div>
       </section>
