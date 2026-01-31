@@ -4,7 +4,7 @@ import * as React from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
-import { BookOpen, Home, Activity, User } from 'lucide-react'
+import { Activity, BookOpen, Home, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export interface MenuItem {

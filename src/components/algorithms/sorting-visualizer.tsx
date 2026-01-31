@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Play, Pause, RotateCcw, Settings2, BarChart3 } from 'lucide-react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { BarChart3, Pause, Play, RotateCcw, Settings2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 // Sorting Algorithms

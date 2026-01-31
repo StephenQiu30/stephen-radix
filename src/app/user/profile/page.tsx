@@ -4,23 +4,10 @@ import * as React from 'react'
 import { useAppSelector } from '@/store/hooks'
 import type { RootState } from '@/store'
 import { UserAvatar } from '@/components/header/user-avatar'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { motion } from 'framer-motion'
-import {
-  Mail,
-  Phone,
-  Calendar,
-  Shield,
-  User as UserIcon,
-  MapPin,
-  Link as LinkIcon,
-  Edit,
-  Award,
-  AtSign,
-  Fingerprint,
-  Zap,
-} from 'lucide-react'
+import { AtSign, Award, Calendar, Edit, Shield, User as UserIcon, Zap } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 
@@ -128,11 +115,11 @@ export default function ProfilePage() {
       <div className="grid gap-8 lg:grid-cols-12">
         {/* 左侧 - 用户名片 (4cols) */}
         <motion.div className="lg:col-span-4" variants={itemVariants}>
-          <div className="overflow-hidden rounded-[2rem] border border-border/40 bg-card/50 shadow-sm backdrop-blur-xl transition-all hover:shadow-md">
+          <div className="border-border/40 bg-card/50 overflow-hidden rounded-[2rem] border shadow-sm backdrop-blur-xl transition-all hover:shadow-md">
             {/* 简约背景 */}
             <div className="h-32 bg-gradient-to-b from-blue-500/10 to-transparent dark:from-blue-400/10">
               <div className="absolute top-4 right-4">
-                <Badge variant="secondary" className="bg-background/80 backdrop-blur-md shadow-sm">
+                <Badge variant="secondary" className="bg-background/80 shadow-sm backdrop-blur-md">
                   Active
                 </Badge>
               </div>
@@ -145,16 +132,18 @@ export default function ProfilePage() {
                   <UserAvatar
                     user={user}
                     size="xl"
-                    className="h-32 w-32 border-[6px] border-background shadow-xl"
+                    className="border-background h-32 w-32 border-[6px] shadow-xl"
                   />
-                  <div className="absolute right-2 bottom-2 h-5 w-5 rounded-full border-4 border-background bg-green-500 shadow-sm" />
+                  <div className="border-background absolute right-2 bottom-2 h-5 w-5 rounded-full border-4 bg-green-500 shadow-sm" />
                 </div>
               </div>
 
               {/* 基本信息 */}
               <div className="space-y-4 text-center">
                 <div className="space-y-1">
-                  <h2 className="text-2xl font-bold tracking-tight">{user.userName || '未设置用户名'}</h2>
+                  <h2 className="text-2xl font-bold tracking-tight">
+                    {user.userName || '未设置用户名'}
+                  </h2>
                   <p className="text-muted-foreground flex items-center justify-center gap-1 text-sm font-medium">
                     <AtSign className="h-3 w-3" />
                     {user.userEmail?.split('@')[0] || 'unknown'}
@@ -166,10 +155,7 @@ export default function ProfilePage() {
                     <RoleIcon className="mr-1.5 h-3.5 w-3.5 opacity-70" />
                     {roleInfo.label}
                   </Badge>
-                  <Badge
-                    variant="outline"
-                    className="border-primary/20 text-primary font-medium"
-                  >
+                  <Badge variant="outline" className="border-primary/20 text-primary font-medium">
                     <Award className="mr-1.5 h-3.5 w-3.5" />
                     Lv.1 成员
                   </Badge>
@@ -182,7 +168,7 @@ export default function ProfilePage() {
                 </div>
 
                 {/* 核心数据 */}
-                <div className="mt-8 grid grid-cols-3 gap-4 border-t border-border/40 pt-8">
+                <div className="border-border/40 mt-8 grid grid-cols-3 gap-4 border-t pt-8">
                   <StatItem label="天数" value={accountAge} icon={<Zap />} />
                   <StatItem label="动态" value={0} />
                   <StatItem label="获赞" value={0} />
@@ -195,8 +181,8 @@ export default function ProfilePage() {
         {/* 右侧 - 详情模块 (8cols) */}
         <motion.div className="space-y-6 lg:col-span-8" variants={itemVariants}>
           {/* 基本信息网格 */}
-          <div className="rounded-[2rem] border border-border/40 bg-card/50 shadow-sm backdrop-blur-xl">
-            <div className="border-b border-border/40 px-8 py-6">
+          <div className="border-border/40 bg-card/50 rounded-[2rem] border shadow-sm backdrop-blur-xl">
+            <div className="border-border/40 border-b px-8 py-6">
               <h3 className="flex items-center gap-2 text-lg font-semibold">
                 <UserIcon className="text-primary h-5 w-5" />
                 基本信息
@@ -229,8 +215,8 @@ export default function ProfilePage() {
           </div>
 
           {/* 账户历程 */}
-          <div className="rounded-[2rem] border border-border/40 bg-card/50 shadow-sm backdrop-blur-xl">
-            <div className="border-b border-border/40 px-8 py-6">
+          <div className="border-border/40 bg-card/50 rounded-[2rem] border shadow-sm backdrop-blur-xl">
+            <div className="border-border/40 border-b px-8 py-6">
               <h3 className="flex items-center gap-2 text-lg font-semibold">
                 <Calendar className="text-primary h-5 w-5" />
                 账户历程
@@ -243,21 +229,18 @@ export default function ProfilePage() {
                   value={
                     user.createTime
                       ? new Date(user.createTime).toLocaleDateString('zh-CN', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })
                       : '未知'
                   }
                 />
-                <InfoItem
-                  label="常用活跃地"
-                  value="已开启地理屏蔽"
-                />
+                <InfoItem label="常用活跃地" value="已开启地理屏蔽" />
               </div>
-              <div className="mt-8 flex items-center gap-4 rounded-xl bg-secondary/20 p-4">
+              <div className="bg-secondary/20 mt-8 flex items-center gap-4 rounded-xl p-4">
                 <div className="bg-background flex h-10 w-10 items-center justify-center rounded-full shadow-sm">
-                  <Shield className="text-green-500 h-5 w-5" />
+                  <Shield className="h-5 w-5 text-green-500" />
                 </div>
                 <div>
                   <h4 className="text-sm font-medium">账户状态良好</h4>
@@ -272,7 +255,7 @@ export default function ProfilePage() {
             <Link href="/user/settings" className="flex-1">
               <Button
                 variant="outline"
-                className="h-14 w-full justify-between rounded-xl border-border/40 bg-card/50 px-6 backdrop-blur-xl hover:bg-secondary/50"
+                className="border-border/40 bg-card/50 hover:bg-secondary/50 h-14 w-full justify-between rounded-xl px-6 backdrop-blur-xl"
               >
                 <div className="flex items-center gap-3">
                   <Edit className="h-4 w-4" />

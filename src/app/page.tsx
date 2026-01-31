@@ -2,8 +2,8 @@
 
 import * as React from 'react'
 import { Button } from '@/components/ui/button'
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
-import { Sparkles, ArrowRight, Code2, Cpu, BarChart3, GitBranch, Layers, Zap } from 'lucide-react'
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
+import { ArrowRight, BarChart3, Code2, Cpu, GitBranch, Layers, Sparkles, Zap } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import SortingVisualizer from '@/components/algorithms/sorting-visualizer'

@@ -1,35 +1,20 @@
 'use client'
 
 import * as React from 'react'
-import { useAppSelector, useAppDispatch } from '@/store/hooks'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import type { RootState } from '@/store'
 import { UserAvatar } from '@/components/header/user-avatar'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { motion, AnimatePresence } from 'framer-motion'
-import {
-  Save,
-  ArrowLeft,
-  Mail,
-  Phone,
-  User as UserIcon,
-  FileText,
-  Sparkles,
-  Shield,
-  Camera,
-  CheckCircle2,
-  Loader2,
-  Settings,
-  X,
-  Upload,
-} from 'lucide-react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { ArrowLeft, Camera, CheckCircle2, Loader2, Shield, X } from 'lucide-react'
 import Link from 'next/link'
-import { updateMyUser, getLoginUser } from '@/api/userController'
+import { getLoginUser, updateMyUser } from '@/api/userController'
 import { uploadFile } from '@/api/fileController'
 import { setLoginUser } from '@/store/modules/user/userSlice'
 
@@ -210,15 +195,13 @@ export default function SettingsPage() {
             <Button
               variant="outline"
               size="icon"
-              className="h-10 w-10 rounded-full border-border/40 bg-background/50 backdrop-blur-sm"
+              className="border-border/40 bg-background/50 h-10 w-10 rounded-full backdrop-blur-sm"
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">
-              个人设置
-            </h1>
+            <h1 className="text-foreground text-3xl font-bold tracking-tight">个人设置</h1>
             <p className="text-muted-foreground mt-1 text-base">管理您的账号信息与偏好</p>
           </div>
         </div>
@@ -229,7 +212,7 @@ export default function SettingsPage() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
             >
-              <Badge className="bg-primary text-primary-foreground px-4 py-1.5 text-sm font-medium rounded-full shadow-sm">
+              <Badge className="bg-primary text-primary-foreground rounded-full px-4 py-1.5 text-sm font-medium shadow-sm">
                 {changes.size} 项未保存更改
               </Badge>
             </motion.div>
@@ -240,8 +223,8 @@ export default function SettingsPage() {
       <div className="grid gap-8 lg:grid-cols-12">
         {/* 左侧 - 预览与头像 (4cols) */}
         <motion.div className="lg:col-span-4" variants={itemVariants}>
-          <div className="sticky top-24 overflow-hidden rounded-[2rem] border border-border/40 bg-card/50 shadow-sm backdrop-blur-xl">
-            <div className="h-32 bg-secondary/30"></div>
+          <div className="border-border/40 bg-card/50 sticky top-24 overflow-hidden rounded-[2rem] border shadow-sm backdrop-blur-xl">
+            <div className="bg-secondary/30 h-32"></div>
 
             <div className="relative -mt-16 px-6 pb-8 text-center">
               <div className="group relative mx-auto mb-6 inline-block">
@@ -249,7 +232,7 @@ export default function SettingsPage() {
                   <UserAvatar
                     user={{ ...user, ...formData }}
                     size="xl"
-                    className="h-32 w-32 border-[6px] border-background shadow-xl"
+                    className="border-background h-32 w-32 border-[6px] shadow-xl"
                   />
                   <input
                     type="file"
@@ -260,7 +243,7 @@ export default function SettingsPage() {
                   />
                   <Button
                     size="icon"
-                    className="absolute -right-2 -bottom-2 h-10 w-10 rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-110"
+                    className="bg-primary text-primary-foreground absolute -right-2 -bottom-2 h-10 w-10 rounded-full shadow-lg transition-transform hover:scale-110"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={uploading}
                   >
@@ -278,7 +261,7 @@ export default function SettingsPage() {
                 <p className="text-muted-foreground text-sm font-medium">
                   {user.userRole === 'admin' ? '管理员' : '普通用户'}
                 </p>
-                <div className="mt-4 rounded-2xl bg-secondary/30 p-4">
+                <div className="bg-secondary/30 mt-4 rounded-2xl p-4">
                   <p className="text-muted-foreground text-xs leading-relaxed">
                     "{formData.userProfile || '还没写个人简介...'}"
                   </p>
@@ -292,11 +275,17 @@ export default function SettingsPage() {
         <motion.div className="lg:col-span-8" variants={itemVariants}>
           <form onSubmit={handleSubmit}>
             <Tabs defaultValue="profile" className="space-y-6">
-              <TabsList className="bg-secondary/20 p-1 rounded-full w-full justify-start h-auto">
-                <TabsTrigger value="profile" className="rounded-full px-6 py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <TabsList className="bg-secondary/20 h-auto w-full justify-start rounded-full p-1">
+                <TabsTrigger
+                  value="profile"
+                  className="data-[state=active]:bg-background rounded-full px-6 py-2.5 data-[state=active]:shadow-sm"
+                >
                   档案信息
                 </TabsTrigger>
-                <TabsTrigger value="contact" className="rounded-full px-6 py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                <TabsTrigger
+                  value="contact"
+                  className="data-[state=active]:bg-background rounded-full px-6 py-2.5 data-[state=active]:shadow-sm"
+                >
                   联系方式
                 </TabsTrigger>
               </TabsList>
@@ -306,7 +295,7 @@ export default function SettingsPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="rounded-[2rem] border border-border/40 bg-card/50 p-8 shadow-sm backdrop-blur-xl"
+                  className="border-border/40 bg-card/50 rounded-[2rem] border p-8 shadow-sm backdrop-blur-xl"
                 >
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold">基本资料</h3>
@@ -327,19 +316,21 @@ export default function SettingsPage() {
                     />
 
                     <div className="space-y-3">
-                      <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                      <Label className="text-muted-foreground text-sm font-medium tracking-wider uppercase">
                         个人简介
-                        {changes.has('userProfile') && <span className="ml-2 text-primary text-xs">•</span>}
+                        {changes.has('userProfile') && (
+                          <span className="text-primary ml-2 text-xs">•</span>
+                        )}
                       </Label>
                       <Textarea
                         value={formData.userProfile}
                         onChange={handleInputChange('userProfile')}
                         placeholder="向世界介绍你自己..."
-                        className="min-h-[140px] resize-none rounded-2xl border-border/40 bg-background/50 p-4 text-base focus:border-primary/50 focus:ring-0"
+                        className="border-border/40 bg-background/50 focus:border-primary/50 min-h-[140px] resize-none rounded-2xl p-4 text-base focus:ring-0"
                         onFocus={() => setActiveField('userProfile')}
                         onBlur={() => setActiveField(null)}
                       />
-                      <div className="text-right text-xs text-muted-foreground">
+                      <div className="text-muted-foreground text-right text-xs">
                         {formData.userProfile.length}/200
                       </div>
                     </div>
@@ -352,7 +343,7 @@ export default function SettingsPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="rounded-[2rem] border border-border/40 bg-card/50 p-8 shadow-sm backdrop-blur-xl"
+                  className="border-border/40 bg-card/50 rounded-[2rem] border p-8 shadow-sm backdrop-blur-xl"
                 >
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold">隐私与安全</h3>
@@ -394,10 +385,11 @@ export default function SettingsPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className={`mt-6 rounded-2xl border p-4 text-sm font-medium ${message.type === 'success'
-                    ? 'border-green-500/20 bg-green-500/10 text-green-600'
-                    : 'border-red-500/20 bg-red-500/10 text-red-600'
-                    }`}
+                  className={`mt-6 rounded-2xl border p-4 text-sm font-medium ${
+                    message.type === 'success'
+                      ? 'border-green-500/20 bg-green-500/10 text-green-600'
+                      : 'border-red-500/20 bg-red-500/10 text-red-600'
+                  }`}
                 >
                   <div className="flex items-center gap-3">
                     {message.type === 'success' ? (
@@ -406,11 +398,7 @@ export default function SettingsPage() {
                       <Shield className="h-5 w-5" />
                     )}
                     <span>{message.text}</span>
-                    <button
-                      type="button"
-                      className="ml-auto"
-                      onClick={() => setMessage(null)}
-                    >
+                    <button type="button" className="ml-auto" onClick={() => setMessage(null)}>
                       <X className="h-4 w-4 opacity-50" />
                     </button>
                   </div>

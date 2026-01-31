@@ -3,11 +3,10 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { ArrowRight, Activity, Zap, HardDrive, Clock } from 'lucide-react'
+import { Activity, ArrowRight, Clock, HardDrive } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { AlgorithmMeta } from '@/lib/sorting-algorithms'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
 interface AlgorithmCardProps {

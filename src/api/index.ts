@@ -10,6 +10,7 @@ import * as fileController from '@/api/fileController'
 import * as searchController from '@/api/searchController'
 import * as wxMpController from '@/api/wxMpController'
 import * as encryptController from '@/api/encryptController'
+
 export default {
   userController,
   postThumbController,

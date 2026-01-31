@@ -2,12 +2,10 @@
 
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Sparkles, ArrowLeft } from 'lucide-react'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { Sparkles } from 'lucide-react'
 import { AlgorithmCard } from '@/components/algorithms/algorithm-card'
 import { AlgorithmVisualizerDialog } from '@/components/algorithms/algorithm-visualizer-dialog'
-import { ALGORITHMS, AlgorithmMeta } from '@/lib/sorting-algorithms'
+import { AlgorithmMeta, ALGORITHMS } from '@/lib/sorting-algorithms'
 
 export default function AlgorithmsPage() {
   const [selectedAlgo, setSelectedAlgo] = useState<AlgorithmMeta | null>(null)

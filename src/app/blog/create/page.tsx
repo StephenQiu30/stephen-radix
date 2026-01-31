@@ -1,12 +1,10 @@
 'use client'
 
 import * as React from 'react'
-import { motion } from 'framer-motion'
-import { ArrowLeft, Image as ImageIcon, Loader2, Save, Send, X } from 'lucide-react'
+import { ArrowLeft, Image as ImageIcon, Loader2, Save, Send } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { uploadFile } from '@/api/fileController'
 import { addPost } from '@/api/postController'
 import { toast } from 'sonner'

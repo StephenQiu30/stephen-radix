@@ -1,30 +1,14 @@
 'use client'
 
-import React, { useState, useEffect, useRef, useCallback } from 'react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
-import {
-  Play,
-  Pause,
-  RotateCcw,
-  Maximize2,
-  X,
-  Settings2,
-  StepForward,
-  MonitorPause,
-} from 'lucide-react'
+import { MonitorPause, Play, RotateCcw, Settings2, StepForward, X } from 'lucide-react'
 import { AlgorithmMeta, SortStep } from '@/lib/sorting-algorithms'
 import { SortingCanvas } from './sorting-canvas'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Badge } from '@/components/ui/badge'
 
 interface AlgorithmVisualizerDialogProps {
   algorithm: AlgorithmMeta | null

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
-import { AlertTriangle, Info, CheckCircle, XCircle } from 'lucide-react'
+import { AlertTriangle, CheckCircle, Info, XCircle } from 'lucide-react'
 
 const alertVariants = cva('relative w-full rounded-lg border p-4 flex items-start gap-3', {
   variants: {

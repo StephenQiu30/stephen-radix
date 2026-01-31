@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { UserAvatar } from '@/components/header/user-avatar'
-import { Heart, Bookmark, ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, Bookmark, Heart } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface PostCardProps {

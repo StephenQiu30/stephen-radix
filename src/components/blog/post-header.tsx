@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { Badge } from '@/components/ui/badge'
 import { UserAvatar } from '@/components/header/user-avatar'
-import { Calendar, Clock, Eye } from 'lucide-react'
+import { Calendar, Clock } from 'lucide-react'
 
 interface PostHeaderProps {
   post: API.PostVO
@@ -18,10 +18,10 @@ export function PostHeader({ post }: PostHeaderProps) {
   // 格式化日期
   const formattedDate = createTime
     ? new Date(createTime).toLocaleDateString('zh-CN', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
     : ''
 
   return (
@@ -45,19 +45,17 @@ export function PostHeader({ post }: PostHeaderProps) {
           className="flex flex-col items-center justify-center gap-6 sm:flex-row sm:gap-10"
         >
           {/* 作者胶囊 */}
-          <div className="bg-secondary/10 border-border/5 flex items-center gap-3 rounded-full border p-1.5 pr-6 backdrop-blur-sm transition-colors hover:bg-secondary/20">
+          <div className="bg-secondary/10 border-border/5 hover:bg-secondary/20 flex items-center gap-3 rounded-full border p-1.5 pr-6 backdrop-blur-sm transition-colors">
             <UserAvatar
               user={userVO}
               size="md"
-              className="h-10 w-10 border border-background shadow-sm"
+              className="border-background h-10 w-10 border shadow-sm"
             />
             <div className="text-left">
-              <p className="text-foreground text-sm font-semibold leading-none">
+              <p className="text-foreground text-sm leading-none font-semibold">
                 {userVO?.userName || '匿名用户'}
               </p>
-              <p className="text-muted-foreground mt-0.5 text-xs font-medium">
-                作者
-              </p>
+              <p className="text-muted-foreground mt-0.5 text-xs font-medium">作者</p>
             </div>
           </div>
 

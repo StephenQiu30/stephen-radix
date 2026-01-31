@@ -8,15 +8,15 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
 import {
-  MessageSquare,
-  Sparkles,
-  Zap,
-  Shield,
   ArrowRight,
   Bot,
-  Users,
-  Clock,
   CheckCircle2,
+  Clock,
+  MessageSquare,
+  Shield,
+  Sparkles,
+  Users,
+  Zap,
 } from 'lucide-react'
 import Link from 'next/link'
 

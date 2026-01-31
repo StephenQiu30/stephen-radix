@@ -3,16 +3,7 @@
 import React from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import {
-  ArrowLeft,
-  Clock,
-  HardDrive,
-  Play,
-  CheckCircle,
-  XCircle,
-  BookOpen,
-  Share2,
-} from 'lucide-react'
+import { ArrowLeft, CheckCircle, Clock, HardDrive, Play, XCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { ALGORITHMS } from '@/lib/sorting-algorithms'

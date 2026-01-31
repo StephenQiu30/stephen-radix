@@ -1,17 +1,14 @@
 'use client'
 
 import * as React from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import {
   Bold,
+  Code,
+  Image as ImageIcon,
   Italic,
+  Link as LinkIcon,
   List as ListIcon,
   ListOrdered,
-  Link as LinkIcon,
-  Image as ImageIcon,
-  Code,
-  Eye,
-  Edit3,
   Maximize2,
   Minimize2,
   Type,
@@ -19,7 +16,6 @@ import {
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { MarkdownRender } from '@/components/blog/markdown-render'
 
 import { uploadFile } from '@/api/fileController'
@@ -122,7 +118,7 @@ export function MarkdownEditor({
     {
       icon: ImageIcon,
       label: '图片',
-      action: () => fileInputRef.current?.click()
+      action: () => fileInputRef.current?.click(),
     },
   ]
 
@@ -131,7 +127,7 @@ export function MarkdownEditor({
       className={cn(
         'border-border/40 bg-card/30 flex flex-1 flex-col overflow-hidden rounded-xl border shadow-sm transition-all duration-300',
         isFullscreen &&
-        'bg-background fixed inset-0 z-50 h-screen w-screen rounded-none border-none',
+          'bg-background fixed inset-0 z-50 h-screen w-screen rounded-none border-none',
         className
       )}
     >

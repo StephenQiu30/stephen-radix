@@ -3,14 +3,22 @@
 import * as React from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion, useScroll, useSpring } from 'framer-motion'
-import { MarkdownRender, PostHeader, MarkdownToc } from '@/components/blog'
+import { MarkdownRender, MarkdownToc, PostHeader } from '@/components/blog'
 import { Button } from '@/components/ui/button'
 import { getPostVoById } from '@/api/postController'
 import { doThumb } from '@/api/postThumbController'
 import { doPostFavour } from '@/api/postFavourController'
 import { useAppSelector } from '@/store/hooks'
 import type { RootState } from '@/store'
-import { ArrowLeft, Bookmark, FileWarning, Heart, Loader2, Share2, MessageSquare } from 'lucide-react'
+import {
+  ArrowLeft,
+  Bookmark,
+  FileWarning,
+  Heart,
+  Loader2,
+  MessageSquare,
+  Share2,
+} from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
@@ -158,9 +166,9 @@ export default function PostDetailPage() {
             <div className="border-border/40 mt-16 border-t pt-10">
               <div className="flex flex-col gap-8">
                 {/* User Profile Card */}
-                <div className="flex items-center justify-between gap-6 rounded-[2rem] border border-border/40 bg-card p-8 shadow-sm transition-all hover:shadow-md">
+                <div className="border-border/40 bg-card flex items-center justify-between gap-6 rounded-[2rem] border p-8 shadow-sm transition-all hover:shadow-md">
                   <div className="flex items-center gap-6">
-                    <div className="relative h-20 w-20 overflow-hidden rounded-full border-2 border-background shadow-sm">
+                    <div className="border-background relative h-20 w-20 overflow-hidden rounded-full border-2 shadow-sm">
                       {post.userVO?.userAvatar ? (
                         <img
                           src={post.userVO.userAvatar}
@@ -174,14 +182,19 @@ export default function PostDetailPage() {
                       )}
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground/80">作者</p>
-                      <h3 className="text-2xl font-bold text-foreground">
+                      <p className="text-muted-foreground/80 text-sm font-medium">作者</p>
+                      <h3 className="text-foreground text-2xl font-bold">
                         {post.userVO?.userName || '匿名用户'}
                       </h3>
-                      <p className="text-sm text-muted-foreground pt-1">感谢阅读！希望这篇文章对你有所帮助。</p>
+                      <p className="text-muted-foreground pt-1 text-sm">
+                        感谢阅读！希望这篇文章对你有所帮助。
+                      </p>
                     </div>
                   </div>
-                  <Button variant="outline" className="h-10 rounded-full px-8 font-medium hover:bg-primary hover:text-primary-foreground">
+                  <Button
+                    variant="outline"
+                    className="hover:bg-primary hover:text-primary-foreground h-10 rounded-full px-8 font-medium"
+                  >
                     关注
                   </Button>
                 </div>
@@ -189,18 +202,18 @@ export default function PostDetailPage() {
                 {/* Comment Section Placeholder */}
                 <div className="space-y-6">
                   <div className="flex items-center gap-2">
-                    <MessageSquare className="h-5 w-5 text-primary" />
+                    <MessageSquare className="text-primary h-5 w-5" />
                     <h3 className="text-xl font-semibold">评论</h3>
                   </div>
 
                   {/* Comment Input Placeholder */}
-                  <div className="rounded-2xl border border-border/40 bg-background/50 p-4 backdrop-blur-sm transition-all focus-within:ring-2 focus-within:ring-primary/20 hover:border-border/80">
+                  <div className="border-border/40 bg-background/50 focus-within:ring-primary/20 hover:border-border/80 rounded-2xl border p-4 backdrop-blur-sm transition-all focus-within:ring-2">
                     <div className="flex gap-4">
-                      <div className="bg-muted h-10 w-10 flex-shrink-0 rounded-full flex items-center justify-center">
-                        <span className="text-xm font-medium text-muted-foreground">我</span>
+                      <div className="bg-muted flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
+                        <span className="text-xm text-muted-foreground font-medium">我</span>
                       </div>
                       <div className="flex-1 space-y-3">
-                        <div className="text-muted-foreground/60 text-sm h-20 p-2 cursor-text">
+                        <div className="text-muted-foreground/60 h-20 cursor-text p-2 text-sm">
                           写下你的评论...
                         </div>
                         <div className="flex justify-end">
@@ -213,7 +226,7 @@ export default function PostDetailPage() {
                   </div>
 
                   {/* Empty State */}
-                  <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground/50">
+                  <div className="text-muted-foreground/50 flex flex-col items-center justify-center py-12 text-center">
                     <div className="bg-secondary/30 mb-3 rounded-full p-4">
                       <MessageSquare className="h-6 w-6 opacity-50" />
                     </div>
