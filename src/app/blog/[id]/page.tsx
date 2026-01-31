@@ -10,7 +10,7 @@ import { doThumb } from '@/api/postThumbController'
 import { doPostFavour } from '@/api/postFavourController'
 import { useAppSelector } from '@/store/hooks'
 import type { RootState } from '@/store'
-import { ArrowLeft, Bookmark, FileWarning, Heart, Loader2, Share2 } from 'lucide-react'
+import { ArrowLeft, Bookmark, FileWarning, Heart, Loader2, Share2, MessageSquare } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
@@ -155,16 +155,70 @@ export default function PostDetailPage() {
             <MarkdownRender content={post.content || ''} />
 
             {/* Author Bio Footer */}
-            <div className="border-border mt-20 border-t pt-12">
-              <div className="flex items-center gap-4">
-                <div className="bg-secondary flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold">
-                  {post.userVO?.userName?.charAt(0) || '?'}
+            <div className="border-border/40 mt-16 border-t pt-10">
+              <div className="flex flex-col gap-8">
+                {/* User Profile Card */}
+                <div className="flex items-center justify-between gap-6 rounded-[2rem] border border-border/40 bg-card p-8 shadow-sm transition-all hover:shadow-md">
+                  <div className="flex items-center gap-6">
+                    <div className="relative h-20 w-20 overflow-hidden rounded-full border-2 border-background shadow-sm">
+                      {post.userVO?.userAvatar ? (
+                        <img
+                          src={post.userVO.userAvatar}
+                          alt={post.userVO.userName}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="bg-muted text-muted-foreground flex h-full w-full items-center justify-center text-2xl font-bold">
+                          {post.userVO?.userName?.charAt(0) || '?'}
+                        </div>
+                      )}
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-muted-foreground/80">作者</p>
+                      <h3 className="text-2xl font-bold text-foreground">
+                        {post.userVO?.userName || '匿名用户'}
+                      </h3>
+                      <p className="text-sm text-muted-foreground pt-1">感谢阅读！希望这篇文章对你有所帮助。</p>
+                    </div>
+                  </div>
+                  <Button variant="outline" className="h-10 rounded-full px-8 font-medium hover:bg-primary hover:text-primary-foreground">
+                    关注
+                  </Button>
                 </div>
-                <div>
-                  <p className="text-foreground font-semibold">
-                    {post.userVO?.userName || 'Anonymous'}
-                  </p>
-                  <p className="text-muted-foreground text-sm">Thanks for reading!</p>
+
+                {/* Comment Section Placeholder */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="h-5 w-5 text-primary" />
+                    <h3 className="text-xl font-semibold">评论</h3>
+                  </div>
+
+                  {/* Comment Input Placeholder */}
+                  <div className="rounded-2xl border border-border/40 bg-background/50 p-4 backdrop-blur-sm transition-all focus-within:ring-2 focus-within:ring-primary/20 hover:border-border/80">
+                    <div className="flex gap-4">
+                      <div className="bg-muted h-10 w-10 flex-shrink-0 rounded-full flex items-center justify-center">
+                        <span className="text-xm font-medium text-muted-foreground">我</span>
+                      </div>
+                      <div className="flex-1 space-y-3">
+                        <div className="text-muted-foreground/60 text-sm h-20 p-2 cursor-text">
+                          写下你的评论...
+                        </div>
+                        <div className="flex justify-end">
+                          <Button size="sm" disabled className="rounded-full px-6">
+                            发布
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Empty State */}
+                  <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground/50">
+                    <div className="bg-secondary/30 mb-3 rounded-full p-4">
+                      <MessageSquare className="h-6 w-6 opacity-50" />
+                    </div>
+                    <p className="text-sm">暂无评论，快来抢沙发吧</p>
+                  </div>
                 </div>
               </div>
             </div>

@@ -4,7 +4,7 @@ import * as React from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
-import { BookOpen, Home, Activity } from 'lucide-react'
+import { BookOpen, Home, Activity, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export interface MenuItem {
@@ -19,6 +19,7 @@ const menuItems: MenuItem[] = [
   { title: '首页', href: '/', icon: <Home className="h-4 w-4" /> },
   { title: '阅读博客', href: '/blog', icon: <BookOpen className="h-4 w-4" /> },
   { title: '算法可视化', href: '/algorithms', icon: <Activity className="h-4 w-4" /> },
+  { title: '我的空间', href: '/user/profile', icon: <User className="h-4 w-4" /> },
 ]
 
 export function Menus({ className, vertical = false }: { className?: string; vertical?: boolean }) {

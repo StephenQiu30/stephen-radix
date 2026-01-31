@@ -208,18 +208,18 @@ export default function SettingsPage() {
         <div className="flex items-center gap-4">
           <Link href="/user/profile">
             <Button
-              variant="ghost"
+              variant="outline"
               size="icon"
-              className="hover:bg-primary/10 hover:text-primary h-12 w-12 rounded-full transition-all"
+              className="h-10 w-10 rounded-full border-border/40 bg-background/50 backdrop-blur-sm"
             >
-              <ArrowLeft className="h-6 w-6" />
+              <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
           <div>
-            <h1 className="from-foreground to-foreground/70 bg-gradient-to-r bg-clip-text text-4xl font-extrabold tracking-tight text-transparent">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
               个人设置
             </h1>
-            <p className="text-muted-foreground mt-1 text-lg">定制您的专属档案和私密偏好</p>
+            <p className="text-muted-foreground mt-1 text-base">管理您的账号信息与偏好</p>
           </div>
         </div>
         <AnimatePresence>
@@ -229,8 +229,7 @@ export default function SettingsPage() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
             >
-              <Badge className="bg-primary text-primary-foreground px-4 py-2 text-sm font-bold shadow-lg">
-                <Sparkles className="mr-2 h-4 w-4 animate-pulse" />
+              <Badge className="bg-primary text-primary-foreground px-4 py-1.5 text-sm font-medium rounded-full shadow-sm">
                 {changes.size} 项未保存更改
               </Badge>
             </motion.div>
@@ -241,18 +240,16 @@ export default function SettingsPage() {
       <div className="grid gap-8 lg:grid-cols-12">
         {/* 左侧 - 预览与头像 (4cols) */}
         <motion.div className="lg:col-span-4" variants={itemVariants}>
-          <Card className="sticky top-24 overflow-hidden border-2 shadow-lg">
-            <div className="from-primary/40 via-primary/20 relative h-32 bg-gradient-to-br to-transparent">
-              <div className="bg-grid-white/10 absolute inset-0" />
-            </div>
+          <div className="sticky top-24 overflow-hidden rounded-[2rem] border border-border/40 bg-card/50 shadow-sm backdrop-blur-xl">
+            <div className="h-32 bg-secondary/30"></div>
 
-            <CardContent className="relative -mt-16 px-6 pb-8 text-center">
+            <div className="relative -mt-16 px-6 pb-8 text-center">
               <div className="group relative mx-auto mb-6 inline-block">
-                <motion.div whileHover={{ scale: 1.05 }} className="relative">
+                <div className="relative">
                   <UserAvatar
                     user={{ ...user, ...formData }}
                     size="xl"
-                    className="ring-background border-background h-32 w-32 border-4 shadow-2xl ring-4"
+                    className="h-32 w-32 border-[6px] border-background shadow-xl"
                   />
                   <input
                     type="file"
@@ -263,7 +260,7 @@ export default function SettingsPage() {
                   />
                   <Button
                     size="icon"
-                    className="bg-primary text-primary-foreground absolute -right-2 -bottom-2 h-10 w-10 rounded-full shadow-xl transition-transform hover:scale-110"
+                    className="absolute -right-2 -bottom-2 h-10 w-10 rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-110"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={uploading}
                   >
@@ -273,123 +270,121 @@ export default function SettingsPage() {
                       <Camera className="h-5 w-5" />
                     )}
                   </Button>
-                </motion.div>
+                </div>
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-2xl font-bold">{formData.userName || user.userName}</h3>
+                <h3 className="text-xl font-bold">{formData.userName || user.userName}</h3>
                 <p className="text-muted-foreground text-sm font-medium">
-                  {user.userRole === 'admin' ? '✨ 管理员' : '成员档案'}
+                  {user.userRole === 'admin' ? '管理员' : '普通用户'}
                 </p>
-                <div className="bg-muted/50 mt-4 rounded-xl p-4">
-                  <p className="text-muted-foreground text-xs leading-relaxed italic">
+                <div className="mt-4 rounded-2xl bg-secondary/30 p-4">
+                  <p className="text-muted-foreground text-xs leading-relaxed">
                     "{formData.userProfile || '还没写个人简介...'}"
                   </p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </motion.div>
 
         {/* 右侧 - 编辑区域 (8cols) */}
         <motion.div className="lg:col-span-8" variants={itemVariants}>
           <form onSubmit={handleSubmit}>
             <Tabs defaultValue="profile" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-2 p-1">
-                <TabsTrigger value="profile" className="gap-2 text-base font-semibold">
-                  <UserIcon className="h-4 w-4" /> 档案信息
+              <TabsList className="bg-secondary/20 p-1 rounded-full w-full justify-start h-auto">
+                <TabsTrigger value="profile" className="rounded-full px-6 py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                  档案信息
                 </TabsTrigger>
-                <TabsTrigger value="contact" className="gap-2 text-base font-semibold">
-                  <Mail className="h-4 w-4" /> 联系方式
+                <TabsTrigger value="contact" className="rounded-full px-6 py-2.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                  联系方式
                 </TabsTrigger>
               </TabsList>
 
-              <AnimatePresence mode="wait">
-                <TabsContent value="profile" className="space-y-6">
-                  <Card className="border-2">
-                    <CardHeader>
-                      <CardTitle className="text-xl">基本资料</CardTitle>
-                      <CardDescription>这些信息将公开显示在您的个人档案中</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      <FormField
-                        icon={<UserIcon className="h-5 w-5" />}
-                        label="用户昵称"
-                        value={formData.userName}
-                        onChange={handleInputChange('userName')}
-                        placeholder="想一个响亮的名字"
-                        required
-                        isActive={activeField === 'userName'}
-                        onFocus={() => setActiveField('userName')}
-                        onBlur={() => setActiveField(null)}
-                        hasChanged={changes.has('userName')}
-                      />
+              <TabsContent value="profile" className="space-y-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="rounded-[2rem] border border-border/40 bg-card/50 p-8 shadow-sm backdrop-blur-xl"
+                >
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold">基本资料</h3>
+                    <p className="text-muted-foreground text-sm">这些信息将公开显示</p>
+                  </div>
 
-                      <div className="space-y-3">
-                        <Label className="flex items-center gap-2 text-base font-bold">
-                          <FileText className="text-primary h-5 w-5" /> 个人简介
-                          {changes.has('userProfile') && <Badge className="ml-auto">已修改</Badge>}
-                        </Label>
-                        <Textarea
-                          value={formData.userProfile}
-                          onChange={handleInputChange('userProfile')}
-                          placeholder="向世界介绍你自己..."
-                          className="focus:border-primary focus:ring-primary/20 min-h-[140px] resize-none text-base transition-all focus:ring-2"
-                          onFocus={() => setActiveField('userProfile')}
-                          onBlur={() => setActiveField(null)}
-                        />
-                        <div className="flex justify-between px-1 text-xs">
-                          <span className="text-muted-foreground">支持 Markdown 语法建议</span>
-                          <span
-                            className={
-                              formData.userProfile.length > 180
-                                ? 'font-bold text-red-500'
-                                : 'text-muted-foreground'
-                            }
-                          >
-                            {formData.userProfile.length}/200
-                          </span>
-                        </div>
+                  <div className="space-y-8">
+                    <FormField
+                      label="用户昵称"
+                      value={formData.userName}
+                      onChange={handleInputChange('userName')}
+                      placeholder="请输入昵称"
+                      required
+                      isActive={activeField === 'userName'}
+                      onFocus={() => setActiveField('userName')}
+                      onBlur={() => setActiveField(null)}
+                      hasChanged={changes.has('userName')}
+                    />
+
+                    <div className="space-y-3">
+                      <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                        个人简介
+                        {changes.has('userProfile') && <span className="ml-2 text-primary text-xs">•</span>}
+                      </Label>
+                      <Textarea
+                        value={formData.userProfile}
+                        onChange={handleInputChange('userProfile')}
+                        placeholder="向世界介绍你自己..."
+                        className="min-h-[140px] resize-none rounded-2xl border-border/40 bg-background/50 p-4 text-base focus:border-primary/50 focus:ring-0"
+                        onFocus={() => setActiveField('userProfile')}
+                        onBlur={() => setActiveField(null)}
+                      />
+                      <div className="text-right text-xs text-muted-foreground">
+                        {formData.userProfile.length}/200
                       </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
+                    </div>
+                  </div>
+                </motion.div>
+              </TabsContent>
 
-                <TabsContent value="contact" className="space-y-6">
-                  <Card className="border-2">
-                    <CardHeader>
-                      <CardTitle className="text-xl">隐私与安全</CardTitle>
-                      <CardDescription>管理您的账户绑定与验证方式</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      <FormField
-                        icon={<Mail className="h-5 w-5" />}
-                        label="电子邮箱"
-                        type="email"
-                        value={formData.userEmail}
-                        onChange={handleInputChange('userEmail')}
-                        placeholder="example@mail.com"
-                        isActive={activeField === 'userEmail'}
-                        onFocus={() => setActiveField('userEmail')}
-                        onBlur={() => setActiveField(null)}
-                        hasChanged={changes.has('userEmail')}
-                      />
-                      <FormField
-                        icon={<Phone className="h-5 w-5" />}
-                        label="手机号码"
-                        type="tel"
-                        value={formData.userPhone}
-                        onChange={handleInputChange('userPhone')}
-                        placeholder="绑定手机，安全加倍"
-                        isActive={activeField === 'userPhone'}
-                        onFocus={() => setActiveField('userPhone')}
-                        onBlur={() => setActiveField(null)}
-                        hasChanged={changes.has('userPhone')}
-                      />
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              </AnimatePresence>
+              <TabsContent value="contact" className="space-y-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="rounded-[2rem] border border-border/40 bg-card/50 p-8 shadow-sm backdrop-blur-xl"
+                >
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold">隐私与安全</h3>
+                    <p className="text-muted-foreground text-sm">管理您的联系方式</p>
+                  </div>
+
+                  <div className="space-y-8">
+                    <FormField
+                      label="电子邮箱"
+                      type="email"
+                      value={formData.userEmail}
+                      onChange={handleInputChange('userEmail')}
+                      placeholder="example@mail.com"
+                      isActive={activeField === 'userEmail'}
+                      onFocus={() => setActiveField('userEmail')}
+                      onBlur={() => setActiveField(null)}
+                      hasChanged={changes.has('userEmail')}
+                    />
+                    <FormField
+                      label="手机号码"
+                      type="tel"
+                      value={formData.userPhone}
+                      onChange={handleInputChange('userPhone')}
+                      placeholder="未绑定"
+                      isActive={activeField === 'userPhone'}
+                      onFocus={() => setActiveField('userPhone')}
+                      onBlur={() => setActiveField(null)}
+                      hasChanged={changes.has('userPhone')}
+                    />
+                  </div>
+                </motion.div>
+              </TabsContent>
             </Tabs>
 
             {/* 消息回显 */}
@@ -399,27 +394,25 @@ export default function SettingsPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className={`mt-6 rounded-xl border-2 p-5 ${
-                    message.type === 'success'
-                      ? 'border-green-500/20 bg-green-500/5 text-green-600 dark:text-green-400'
-                      : 'border-red-500/20 bg-red-500/5 text-red-600 dark:text-red-400'
-                  }`}
+                  className={`mt-6 rounded-2xl border p-4 text-sm font-medium ${message.type === 'success'
+                    ? 'border-green-500/20 bg-green-500/10 text-green-600'
+                    : 'border-red-500/20 bg-red-500/10 text-red-600'
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     {message.type === 'success' ? (
-                      <CheckCircle2 className="h-6 w-6" />
+                      <CheckCircle2 className="h-5 w-5" />
                     ) : (
-                      <Shield className="h-6 w-6" />
+                      <Shield className="h-5 w-5" />
                     )}
-                    <span className="font-bold">{message.text}</span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="ml-auto h-8 w-8 rounded-full"
+                    <span>{message.text}</span>
+                    <button
+                      type="button"
+                      className="ml-auto"
                       onClick={() => setMessage(null)}
                     >
-                      <X className="h-4 w-4" />
-                    </Button>
+                      <X className="h-4 w-4 opacity-50" />
+                    </button>
                   </div>
                 </motion.div>
               )}
@@ -428,26 +421,23 @@ export default function SettingsPage() {
             {/* 操作条 */}
             <div className="mt-8 flex items-center justify-end gap-4">
               <Link href="/user/profile">
-                <Button variant="ghost" className="px-6 font-semibold" type="button">
-                  放弃修改
+                <Button variant="ghost" className="rounded-full px-6" type="button">
+                  取消
                 </Button>
               </Link>
               <Button
                 type="submit"
                 size="lg"
                 disabled={loading || !hasChanges}
-                className="min-w-[140px] gap-2 rounded-xl shadow-xl transition-all hover:scale-105 active:scale-95"
+                className="rounded-full px-8 shadow-lg"
               >
                 {loading ? (
                   <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                    保存中...
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    保存中
                   </>
                 ) : (
-                  <>
-                    <Save className="h-5 w-5" />
-                    保存更改
-                  </>
+                  '保存更改'
                 )}
               </Button>
             </div>
@@ -460,7 +450,6 @@ export default function SettingsPage() {
 
 // 提取 FormField 组件以提高复用性和整洁度
 function FormField({
-  icon,
   label,
   type = 'text',
   value,
@@ -472,7 +461,6 @@ function FormField({
   onBlur,
   hasChanged,
 }: {
-  icon: React.ReactNode
   label: string
   type?: string
   value: string
@@ -485,32 +473,21 @@ function FormField({
   hasChanged?: boolean
 }) {
   return (
-    <div className="space-y-3">
-      <Label className="flex items-center gap-2 text-base font-bold">
-        <div
-          className={`rounded-lg p-1.5 transition-colors ${isActive ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'}`}
-        >
-          {icon}
-        </div>
+    <div className="space-y-2">
+      <Label className="text-muted-foreground flex items-center gap-2 text-xs font-semibold tracking-wider uppercase">
         {label}
-        {hasChanged && (
-          <Badge variant="secondary" className="ml-auto text-xs font-medium">
-            已修改
-          </Badge>
-        )}
+        {hasChanged && <span className="bg-primary h-1.5 w-1.5 rounded-full" />}
       </Label>
-      <motion.div animate={{ scale: isActive ? 1.005 : 1 }}>
-        <Input
-          type={type}
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          required={required}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          className="focus:border-primary h-14 border-2 text-base transition-all focus:ring-0"
-        />
-      </motion.div>
+      <Input
+        type={type}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        required={required}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        className="border-border/40 bg-background/50 focus:border-primary/50 focus:bg-background h-12 rounded-xl px-4 transition-all focus:ring-0"
+      />
     </div>
   )
 }

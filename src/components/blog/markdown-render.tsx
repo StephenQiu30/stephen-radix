@@ -78,7 +78,7 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
 
           // 图片
           img: ({ src, alt }) => (
-            <figure className="my-10">
+            <span className="my-10 block w-full">
               <img
                 src={src}
                 alt={alt || ''}
@@ -86,11 +86,11 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
                 loading="lazy"
               />
               {alt && (
-                <figcaption className="text-muted-foreground/80 mt-4 text-center text-sm font-medium">
+                <span className="text-muted-foreground/80 mt-4 block text-center text-sm font-medium">
                   {alt}
-                </figcaption>
+                </span>
               )}
-            </figure>
+            </span>
           ),
 
           // 代码块

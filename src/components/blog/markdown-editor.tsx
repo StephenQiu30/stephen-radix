@@ -22,6 +22,10 @@ import { Textarea } from '@/components/ui/textarea'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { MarkdownRender } from '@/components/blog/markdown-render'
 
+import { uploadFile } from '@/api/fileController'
+import { FileUploadBizEnum } from '@/enums/FileUploadBizEnum'
+import { toast } from 'sonner'
+
 interface MarkdownEditorProps {
   value: string
   onChange: (value: string) => void
@@ -40,8 +44,9 @@ export function MarkdownEditor({
   const [view, setView] = React.useState<'edit' | 'preview' | 'split'>(viewMode)
   const [isFullscreen, setIsFullscreen] = React.useState(false)
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
+  const fileInputRef = React.useRef<HTMLInputElement>(null)
 
-  // Sync internal view state if prop changes (optional, but good for init)
+  // Sync internal view state if prop changes
   React.useEffect(() => {
     if (viewMode) setView(viewMode)
   }, [viewMode])
@@ -59,11 +64,51 @@ export function MarkdownEditor({
     const newValue = text.substring(0, start) + before + selected + after + text.substring(end)
     onChange(newValue)
 
-    // 恢复焦点并设置选择范围
     setTimeout(() => {
       textarea.focus()
       textarea.setSelectionRange(start + before.length, end + before.length)
     }, 0)
+  }
+
+  const handleImageUpload = async (file: File) => {
+    const toastId = toast.loading('正在上传图片...')
+    try {
+      const res = (await uploadFile(
+        {
+          biz: FileUploadBizEnum.POST_IMAGE_COVER,
+        },
+        file
+      )) as any
+      if (res.code === 0 && res.data) {
+        insertText(`![图片](${res.data})`)
+        toast.success('图片上传成功', { id: toastId })
+      } else {
+        toast.error('图片上传失败: ' + res.message, { id: toastId })
+      }
+    } catch (error) {
+      console.error('Upload error:', error)
+      toast.error('图片上传出错', { id: toastId })
+    }
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      handleImageUpload(file)
+    }
+    // Clean input
+    e.target.value = ''
+  }
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const files = e.clipboardData.files
+    if (files && files.length > 0) {
+      const file = files[0]
+      if (file.type.startsWith('image/')) {
+        e.preventDefault()
+        handleImageUpload(file)
+      }
+    }
   }
 
   const toolbarItems = [
@@ -74,7 +119,11 @@ export function MarkdownEditor({
     { icon: ListOrdered, label: '有序列表', action: () => insertText('1. ') },
     { icon: Code, label: '代码块', action: () => insertText('```\n', '\n```') },
     { icon: LinkIcon, label: '链接', action: () => insertText('[', '](url)') },
-    { icon: ImageIcon, label: '图片', action: () => insertText('![alt](', ')') },
+    {
+      icon: ImageIcon,
+      label: '图片',
+      action: () => fileInputRef.current?.click()
+    },
   ]
 
   return (
@@ -82,10 +131,19 @@ export function MarkdownEditor({
       className={cn(
         'border-border/40 bg-card/30 flex flex-1 flex-col overflow-hidden rounded-xl border shadow-sm transition-all duration-300',
         isFullscreen &&
-          'bg-background fixed inset-0 z-50 h-screen w-screen rounded-none border-none',
+        'bg-background fixed inset-0 z-50 h-screen w-screen rounded-none border-none',
         className
       )}
     >
+      {/* Hidden File Input */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        accept="image/*"
+        onChange={handleFileChange}
+      />
+
       {/* 浮动/固定工具栏 */}
       <div
         className={cn(
@@ -158,6 +216,7 @@ export function MarkdownEditor({
               ref={textareaRef}
               value={value}
               onChange={e => onChange(e.target.value)}
+              onPaste={handlePaste}
               placeholder={placeholder || '开始写作...'}
               className="h-full w-full resize-none rounded-none border-none bg-transparent p-6 font-mono text-base leading-relaxed focus-visible:ring-0"
             />
@@ -203,6 +262,7 @@ export function MarkdownEditor({
               ref={textareaRef}
               value={value}
               onChange={e => onChange(e.target.value)}
+              onPaste={handlePaste}
               placeholder={placeholder || '开始写作...'} // Localized
               className="h-full w-full resize-none border-none bg-transparent p-8 font-mono text-[15px] leading-relaxed focus:outline-none"
               style={{ fontFamily: 'var(--font-mono)' }}
@@ -229,7 +289,7 @@ export function MarkdownEditor({
           <div className="flex items-center gap-4">
             <span>字数: {value.length}</span>
           </div>
-          <span>支持 Markdown</span>
+          <span>支持 Markdown · 图片拖拽/粘贴</span>
         </div>
       )}
     </div>
