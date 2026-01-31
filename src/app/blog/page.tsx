@@ -94,27 +94,27 @@ export default function BlogPage() {
   }
 
   return (
-    <div className="bg-background text-foreground min-h-screen relative overflow-hidden">
+    <div className="bg-background text-foreground relative min-h-screen overflow-hidden">
       {/* Background Gradients - Matches Homepage */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute top-[-20%] left-[20%] h-[60vw] w-[60vw] rounded-full bg-blue-400/10 opacity-50 blur-[120px]" />
-        <div className="absolute right-[20%] top-[-10%] h-[50vw] w-[50vw] rounded-full bg-indigo-400/10 opacity-50 blur-[120px]" />
+        <div className="absolute top-[-10%] right-[20%] h-[50vw] w-[50vw] rounded-full bg-indigo-400/10 opacity-50 blur-[120px]" />
       </div>
 
       {/* Subtle Grid Pattern */}
-      <div className="pointer-events-none absolute inset-0 bg-grid-black/[0.02] dark:bg-grid-white/[0.02]" />
+      <div className="bg-grid-black/[0.02] dark:bg-grid-white/[0.02] pointer-events-none absolute inset-0" />
 
       <motion.div
-        className="mx-auto w-full max-w-[1400px] px-6 pt-32 pb-20 md:pt-40 lg:px-8 relative z-10"
+        className="relative z-10 mx-auto w-full max-w-[1400px] px-6 pt-32 pb-20 md:pt-40 lg:px-8"
         initial="hidden"
         animate="visible"
         variants={containerVariants}
       >
         {/* 页面标题区 */}
-        <div className="mb-24 flex flex-col items-center text-center relative z-10">
+        <div className="relative z-10 mb-24 flex flex-col items-center text-center">
           <motion.div
             variants={itemVariants}
-            className="mb-6 inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 backdrop-blur-md"
+            className="mb-6 inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-600 backdrop-blur-md dark:text-blue-400"
           >
             BLOG & INSIGHTS
           </motion.div>
@@ -123,27 +123,24 @@ export default function BlogPage() {
             variants={itemVariants}
             className="mb-8 max-w-4xl text-5xl font-bold tracking-tight sm:text-7xl md:text-8xl"
           >
-            <span className="bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">
+            <span className="from-foreground to-foreground/70 bg-gradient-to-b bg-clip-text text-transparent">
               文章与见解
             </span>
           </motion.h1>
 
           <motion.p
             variants={itemVariants}
-            className="text-muted-foreground max-w-2xl text-lg leading-relaxed font-normal md:text-xl text-balance"
+            className="text-muted-foreground max-w-2xl text-lg leading-relaxed font-normal text-balance md:text-xl"
           >
             探索来自我们团队和社区的最新更新、深度技术文章和开发教程。
           </motion.p>
         </div>
 
         {/* 控制栏：搜索与筛选 */}
-        <motion.div
-          variants={itemVariants}
-          className="sticky top-20 z-30 mb-12 mx-auto max-w-4xl"
-        >
-          <div className="bg-background/60 border-border/40 backdrop-blur-xl shadow-lg border rounded-full p-2 flex flex-col sm:flex-row gap-2 transition-all hover:border-border/60 hover:shadow-xl">
+        <motion.div variants={itemVariants} className="sticky top-20 z-30 mx-auto mb-12 max-w-4xl">
+          <div className="bg-background/60 border-border/40 hover:border-border/60 flex flex-col gap-2 rounded-full border p-2 shadow-lg backdrop-blur-xl transition-all hover:shadow-xl sm:flex-row">
             {/* Tab Switcher */}
-            <div className="bg-muted/50 p-1 rounded-full flex shrink-0">
+            <div className="bg-muted/50 flex shrink-0 rounded-full p-1">
               <button
                 onClick={() => setActiveTab('latest')}
                 className={cn(
@@ -169,23 +166,23 @@ export default function BlogPage() {
             </div>
 
             {/* Search */}
-            <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <div className="relative flex-1">
+              <Search className="text-muted-foreground absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2" />
               <form onSubmit={handleSearch} className="h-full">
                 <Input
                   type="text"
                   placeholder="搜索文章..."
                   value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  className="w-full h-full rounded-full border-none bg-transparent hover:bg-muted/30 focus:bg-muted/50 pl-10 pr-4 transition-colors"
+                  onChange={e => setSearchText(e.target.value)}
+                  className="hover:bg-muted/30 focus:bg-muted/50 h-full w-full rounded-full border-none bg-transparent pr-4 pl-10 transition-colors"
                 />
               </form>
             </div>
 
             {/* Create Button */}
             <Link href="/blog/create" className="shrink-0">
-              <Button className="rounded-full h-full px-6 w-full sm:w-auto shadow-none bg-primary text-primary-foreground hover:opacity-90 transition-opacity">
-                <Plus className="w-4 h-4 mr-2" />
+              <Button className="bg-primary text-primary-foreground h-full w-full rounded-full px-6 shadow-none transition-opacity hover:opacity-90 sm:w-auto">
+                <Plus className="mr-2 h-4 w-4" />
                 写文章
               </Button>
             </Link>

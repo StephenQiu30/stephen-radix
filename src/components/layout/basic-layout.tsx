@@ -78,9 +78,7 @@ export function BasicLayout({ children, className }: BasicLayoutProps) {
         </div>
       </header>
 
-      <main className={cn('flex-1', className)}>
-        {children}
-      </main>
+      <main className={cn('flex-1', className)}>{children}</main>
     </div>
   )
 }

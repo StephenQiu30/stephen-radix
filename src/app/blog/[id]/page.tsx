@@ -138,11 +138,11 @@ export default function PostDetailPage() {
   }
 
   return (
-    <div className="bg-background min-h-screen pb-32 relative">
+    <div className="bg-background relative min-h-screen pb-32">
       {/* Background Gradients - Matches Homepage */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute top-[-10%] left-[10%] h-[50vw] w-[50vw] rounded-full bg-blue-400/5 opacity-40 blur-[100px]" />
-        <div className="absolute right-[10%] top-[10%] h-[40vw] w-[40vw] rounded-full bg-indigo-400/5 opacity-40 blur-[100px]" />
+        <div className="absolute top-[10%] right-[10%] h-[40vw] w-[40vw] rounded-full bg-indigo-400/5 opacity-40 blur-[100px]" />
       </div>
 
       {/* Reading Progress Bar */}
@@ -172,7 +172,7 @@ export default function PostDetailPage() {
             <div className="border-border/40 mt-16 border-t pt-10">
               <div className="flex flex-col gap-8">
                 {/* User Profile Card */}
-                <div className="border-white/10 bg-white/50 dark:bg-white/5 flex items-center justify-between gap-6 rounded-[2rem] border p-8 shadow-sm transition-all hover:shadow-2xl backdrop-blur-xl">
+                <div className="flex items-center justify-between gap-6 rounded-[2rem] border border-white/10 bg-white/50 p-8 shadow-sm backdrop-blur-xl transition-all hover:shadow-2xl dark:bg-white/5">
                   <div className="flex items-center gap-6">
                     <div className="border-background relative h-20 w-20 overflow-hidden rounded-full border-2 shadow-sm">
                       {post.userVO?.userAvatar ? (
@@ -188,7 +188,9 @@ export default function PostDetailPage() {
                       )}
                     </div>
                     <div className="space-y-1">
-                      <p className="text-muted-foreground/80 text-sm font-medium uppercase tracking-wider">作者</p>
+                      <p className="text-muted-foreground/80 text-sm font-medium tracking-wider uppercase">
+                        作者
+                      </p>
                       <h3 className="text-foreground text-2xl font-bold">
                         {post.userVO?.userName || '匿名用户'}
                       </h3>
@@ -199,7 +201,7 @@ export default function PostDetailPage() {
                   </div>
                   <Button
                     variant="outline"
-                    className="hover:bg-primary hover:text-primary-foreground h-10 rounded-full px-8 font-medium border-primary/20"
+                    className="hover:bg-primary hover:text-primary-foreground border-primary/20 h-10 rounded-full px-8 font-medium"
                   >
                     关注
                   </Button>
@@ -222,13 +224,13 @@ export default function PostDetailPage() {
 
       {/* Floating Action Bar */}
       <div className="fixed bottom-8 left-1/2 z-40 -translate-x-1/2">
-        <div className="border-white/20 dark:border-white/10 bg-white/70 dark:bg-black/70 flex items-center gap-2 rounded-full border p-2 shadow-2xl backdrop-blur-2xl ring-1 ring-black/5">
+        <div className="flex items-center gap-2 rounded-full border border-white/20 bg-white/70 p-2 shadow-2xl ring-1 ring-black/5 backdrop-blur-2xl dark:border-white/10 dark:bg-black/70">
           <Button
             variant="ghost"
             size="icon"
             className={cn(
-              'hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-all duration-300',
-              hasThumb && 'text-red-500 hover:text-red-600 bg-red-50 dark:bg-red-950/30'
+              'rounded-full transition-all duration-300 hover:bg-black/5 dark:hover:bg-white/10',
+              hasThumb && 'bg-red-50 text-red-500 hover:text-red-600 dark:bg-red-950/30'
             )}
             onClick={handleThumb}
           >
@@ -236,14 +238,15 @@ export default function PostDetailPage() {
             <span className="sr-only">Like</span>
           </Button>
 
-          <div className="bg-black/10 dark:bg-white/10 h-6 w-px mx-1" />
+          <div className="mx-1 h-6 w-px bg-black/10 dark:bg-white/10" />
 
           <Button
             variant="ghost"
             size="icon"
             className={cn(
-              'hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-all duration-300',
-              hasFavour && 'text-yellow-500 hover:text-yellow-600 bg-yellow-50 dark:bg-yellow-950/30'
+              'rounded-full transition-all duration-300 hover:bg-black/5 dark:hover:bg-white/10',
+              hasFavour &&
+                'bg-yellow-50 text-yellow-500 hover:text-yellow-600 dark:bg-yellow-950/30'
             )}
             onClick={handleFavour}
           >
@@ -251,12 +254,12 @@ export default function PostDetailPage() {
             <span className="sr-only">Bookmark</span>
           </Button>
 
-          <div className="bg-black/10 dark:bg-white/10 h-6 w-px mx-1" />
+          <div className="mx-1 h-6 w-px bg-black/10 dark:bg-white/10" />
 
           <Button
             variant="ghost"
             size="icon"
-            className="hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-all duration-300"
+            className="rounded-full transition-all duration-300 hover:bg-black/5 dark:hover:bg-white/10"
             onClick={handleShare}
           >
             <Share2 className="h-5 w-5" />

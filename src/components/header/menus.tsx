@@ -18,9 +18,19 @@ export interface MenuItem {
 
 const menuItems: MenuItem[] = [
   { title: '首页', href: '/', icon: <Home className="h-4 w-4" /> },
-  { title: '阅读博客', href: '/blog', activePrefix: '/blog', icon: <BookOpen className="h-4 w-4" /> },
+  {
+    title: '阅读博客',
+    href: '/blog',
+    activePrefix: '/blog',
+    icon: <BookOpen className="h-4 w-4" />,
+  },
   { title: '算法可视化', href: '/algorithms', icon: <Activity className="h-4 w-4" /> },
-  { title: '我的空间', href: '/user/profile', activePrefix: '/user', icon: <User className="h-4 w-4" /> },
+  {
+    title: '我的空间',
+    href: '/user/profile',
+    activePrefix: '/user',
+    icon: <User className="h-4 w-4" />,
+  },
 ]
 
 export function Menus({ className, vertical = false }: { className?: string; vertical?: boolean }) {

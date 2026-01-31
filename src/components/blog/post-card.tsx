@@ -24,16 +24,16 @@ export function PostCard({ post, className }: PostCardProps) {
   // 格式化日期
   const formattedDate = createTime
     ? new Date(createTime).toLocaleDateString('zh-CN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    })
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      })
     : ''
 
   return (
     <motion.div initial="initial" whileHover="hover" className={cn('group h-full', className)}>
       <Link href={`/blog/${id}`} className="block h-full">
-        <div className="relative h-full overflow-hidden rounded-[2rem] border border-black/5 dark:border-white/5 bg-white/50 dark:bg-black/20 hover:bg-white/60 dark:hover:bg-black/30 shadow-sm transition-all duration-500 hover:shadow-2xl backdrop-blur-2xl">
+        <div className="relative h-full overflow-hidden rounded-[2rem] border border-black/5 bg-white/50 shadow-sm backdrop-blur-2xl transition-all duration-500 hover:bg-white/60 hover:shadow-2xl dark:border-white/5 dark:bg-black/20 dark:hover:bg-black/30">
           {/* 封面图 */}
           <div className="relative aspect-[16/10] w-full overflow-hidden">
             {cover ? (
@@ -43,38 +43,42 @@ export function PostCard({ post, className }: PostCardProps) {
                 className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               />
             ) : (
-              <div className={cn(
-                "absolute inset-0 flex flex-col items-center justify-center p-8 text-center transition-colors duration-500",
-                // Minimalist backgrounds: softly tinted grays/whites or extremely subtle gradients
-                [
-                  'bg-slate-50 dark:bg-slate-900/50',
-                  'bg-gray-50 dark:bg-gray-900/50',
-                  'bg-zinc-50 dark:bg-zinc-900/50',
-                  'bg-neutral-50 dark:bg-neutral-900/50',
-                  'bg-stone-50 dark:bg-stone-900/50',
-                ][(typeof id === 'number' ? id : (title?.length || 0)) % 5]
-              )}>
-                {/* Very Subtle Gradient Overlay for depth */}
-                <div className={cn(
-                  "absolute inset-0 opacity-30 bg-gradient-to-br",
+              <div
+                className={cn(
+                  'absolute inset-0 flex flex-col items-center justify-center p-8 text-center transition-colors duration-500',
+                  // Minimalist backgrounds: softly tinted grays/whites or extremely subtle gradients
                   [
-                    'from-blue-100/50 to-transparent dark:from-blue-900/20',
-                    'from-emerald-100/50 to-transparent dark:from-emerald-900/20',
-                    'from-orange-100/50 to-transparent dark:from-orange-900/20',
-                    'from-rose-100/50 to-transparent dark:from-rose-900/20',
-                    'from-violet-100/50 to-transparent dark:from-violet-900/20',
-                  ][(typeof id === 'number' ? id : (title?.length || 0)) % 5]
-                )} />
+                    'bg-slate-50 dark:bg-slate-900/50',
+                    'bg-gray-50 dark:bg-gray-900/50',
+                    'bg-zinc-50 dark:bg-zinc-900/50',
+                    'bg-neutral-50 dark:bg-neutral-900/50',
+                    'bg-stone-50 dark:bg-stone-900/50',
+                  ][(typeof id === 'number' ? id : title?.length || 0) % 5]
+                )}
+              >
+                {/* Very Subtle Gradient Overlay for depth */}
+                <div
+                  className={cn(
+                    'absolute inset-0 bg-gradient-to-br opacity-30',
+                    [
+                      'from-blue-100/50 to-transparent dark:from-blue-900/20',
+                      'from-emerald-100/50 to-transparent dark:from-emerald-900/20',
+                      'from-orange-100/50 to-transparent dark:from-orange-900/20',
+                      'from-rose-100/50 to-transparent dark:from-rose-900/20',
+                      'from-violet-100/50 to-transparent dark:from-violet-900/20',
+                    ][(typeof id === 'number' ? id : title?.length || 0) % 5]
+                  )}
+                />
 
                 {/* Subtle Grid Pattern */}
-                <div className="absolute inset-0 bg-grid-black/[0.015] dark:bg-grid-white/[0.015]" />
+                <div className="bg-grid-black/[0.015] dark:bg-grid-white/[0.015] absolute inset-0" />
 
                 {/* Title Display */}
-                <div className="relative z-10 w-full group-hover:scale-105 transition-transform duration-500">
-                  <h3 className="text-xl md:text-2xl font-bold tracking-tight text-foreground/80 leading-snug line-clamp-3">
+                <div className="relative z-10 w-full transition-transform duration-500 group-hover:scale-105">
+                  <h3 className="text-foreground/80 line-clamp-3 text-xl leading-snug font-bold tracking-tight md:text-2xl">
                     {title || '无标题'}
                   </h3>
-                  <div className="mt-4 mx-auto w-12 h-1 rounded-full bg-foreground/10 group-hover:bg-primary/20 transition-colors" />
+                  <div className="bg-foreground/10 group-hover:bg-primary/20 mx-auto mt-4 h-1 w-12 rounded-full transition-colors" />
                 </div>
               </div>
             )}
@@ -89,7 +93,7 @@ export function PostCard({ post, className }: PostCardProps) {
                   <Badge
                     key={index}
                     variant="secondary"
-                    className="bg-background/80 text-foreground/90 shadow-sm backdrop-blur-md border border-white/20"
+                    className="bg-background/80 text-foreground/90 border border-white/20 shadow-sm backdrop-blur-md"
                   >
                     {tag}
                   </Badge>
@@ -101,7 +105,7 @@ export function PostCard({ post, className }: PostCardProps) {
           {/* 内容区 */}
           <div className="flex flex-1 flex-col p-6">
             {/* 作者和日期 */}
-            <div className="text-muted-foreground/60 mb-3 flex items-center justify-between text-xs font-medium uppercase tracking-wider">
+            <div className="text-muted-foreground/60 mb-3 flex items-center justify-between text-xs font-medium tracking-wider uppercase">
               <div className="flex items-center gap-2">
                 <UserAvatar user={userVO} size="sm" className="h-5 w-5" />
                 <span>{userVO?.userName || '匿名'}</span>
@@ -132,7 +136,7 @@ export function PostCard({ post, className }: PostCardProps) {
                 </span>
               </div>
 
-              <div className="text-primary flex items-center gap-1 text-xs font-medium opacity-0 transition-all duration-300 transform translate-x-2 group-hover:opacity-100 group-hover:translate-x-0">
+              <div className="text-primary flex translate-x-2 transform items-center gap-1 text-xs font-medium opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
                 阅读全文
                 <ArrowUpRight className="h-3.5 w-3.5" />
               </div>

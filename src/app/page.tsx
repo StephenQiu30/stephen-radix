@@ -63,13 +63,13 @@ export default function AlgorithmLandingPage() {
   ]
 
   return (
-    <div className="bg-background selection:bg-primary/20 min-h-screen font-sans overflow-x-hidden">
+    <div className="bg-background selection:bg-primary/20 min-h-screen overflow-x-hidden font-sans">
       {/* Hero Section */}
       <section className="relative flex min-h-screen flex-col items-center justify-start overflow-hidden px-6 pt-32 pb-20 md:pt-48">
         {/* Background Gradients - Subtle Apple Style */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute top-[-20%] left-[20%] h-[60vw] w-[60vw] rounded-full bg-blue-400/10 opacity-50 blur-[120px]" />
-          <div className="absolute right-[20%] top-[-10%] h-[50vw] w-[50vw] rounded-full bg-indigo-400/10 opacity-50 blur-[120px]" />
+          <div className="absolute top-[-10%] right-[20%] h-[50vw] w-[50vw] rounded-full bg-indigo-400/10 opacity-50 blur-[120px]" />
         </div>
 
         <motion.div
@@ -80,7 +80,7 @@ export default function AlgorithmLandingPage() {
           className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center text-center"
         >
           <motion.div variants={fadeInUp}>
-            <span className="bg-background/80 text-foreground/80 inline-flex items-center gap-2 rounded-full border border-black/5 dark:border-white/10 px-4 py-1.5 text-sm font-medium shadow-sm backdrop-blur-md">
+            <span className="bg-background/80 text-foreground/80 inline-flex items-center gap-2 rounded-full border border-black/5 px-4 py-1.5 text-sm font-medium shadow-sm backdrop-blur-md dark:border-white/10">
               <Sparkles className="h-3.5 w-3.5 text-blue-500" />
               <span>算法可视化大师</span>
             </span>
@@ -88,11 +88,11 @@ export default function AlgorithmLandingPage() {
 
           <motion.h1
             variants={fadeInUp}
-            className="mt-8 text-6xl leading-[1.05] font-semibold tracking-tighter text-black dark:text-white md:text-8xl lg:text-9xl"
+            className="mt-8 text-6xl leading-[1.05] font-semibold tracking-tighter text-black md:text-8xl lg:text-9xl dark:text-white"
           >
             排序算法。
             <br />
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent pb-2">
+            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text pb-2 text-transparent">
               直观呈现。
             </span>
           </motion.h1>
@@ -109,7 +109,7 @@ export default function AlgorithmLandingPage() {
           <motion.div variants={fadeInUp} className="mt-10 flex flex-col gap-4 sm:flex-row">
             <Button
               size="lg"
-              className="bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90 h-12 rounded-full px-8 text-base font-semibold shadow-lg transition-all hover:scale-105"
+              className="h-12 rounded-full bg-black px-8 text-base font-semibold text-white shadow-lg transition-all hover:scale-105 hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
               asChild
             >
               <Link href="#visualizer">开始体验</Link>
@@ -117,7 +117,7 @@ export default function AlgorithmLandingPage() {
             <Button
               size="lg"
               variant="outline"
-              className="h-12 rounded-full border-black/10 dark:border-white/10 bg-transparent px-8 text-base font-medium backdrop-blur-sm transition-all hover:bg-black/5 dark:hover:bg-white/5"
+              className="h-12 rounded-full border-black/10 bg-transparent px-8 text-base font-medium backdrop-blur-sm transition-all hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5"
               asChild
             >
               <Link href="https://github.com/stephenqiu/stephen-radix" target="_blank">
@@ -134,8 +134,8 @@ export default function AlgorithmLandingPage() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 1, ease: "easeOut" }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 1, ease: 'easeOut' }}
           >
             <SortingVisualizer />
           </motion.div>
@@ -155,7 +155,7 @@ export default function AlgorithmLandingPage() {
             <h2 className="text-4xl font-semibold tracking-tighter md:text-6xl">
               为何使用可视化？
             </h2>
-            <p className="mt-4 text-xl text-muted-foreground md:text-2xl">
+            <p className="text-muted-foreground mt-4 text-xl md:text-2xl">
               让枯燥的代码变得鲜活生动。
             </p>
           </motion.div>
@@ -170,7 +170,7 @@ export default function AlgorithmLandingPage() {
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 whileHover={{ scale: 1.02 }}
                 className={cn(
-                  'group relative overflow-hidden rounded-[2rem] border border-black/5 dark:border-white/5 bg-white/50 dark:bg-black/20 p-8 backdrop-blur-2xl transition-all duration-300 hover:shadow-2xl',
+                  'group relative overflow-hidden rounded-[2rem] border border-black/5 bg-white/50 p-8 backdrop-blur-2xl transition-all duration-300 hover:shadow-2xl dark:border-white/5 dark:bg-black/20',
                   feature.className
                 )}
               >
@@ -183,7 +183,7 @@ export default function AlgorithmLandingPage() {
 
                 <div className="relative z-10 flex h-full flex-col justify-between">
                   <div>
-                    <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-white dark:bg-white/10 shadow-sm transition-transform duration-300 group-hover:scale-110">
+                    <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-sm transition-transform duration-300 group-hover:scale-110 dark:bg-white/10">
                       {feature.icon}
                     </div>
                     <h3 className="mb-3 text-2xl font-semibold tracking-tight">{feature.title}</h3>
@@ -209,7 +209,7 @@ export default function AlgorithmLandingPage() {
               transition={{ duration: 1 }}
             >
               <div className="space-y-8">
-                <div className="inline-flex items-center gap-2 rounded-full bg-blue-100/50 dark:bg-blue-500/10 px-3 py-1 text-sm font-semibold text-blue-600 dark:text-blue-400">
+                <div className="inline-flex items-center gap-2 rounded-full bg-blue-100/50 px-3 py-1 text-sm font-semibold text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
                   <Code2 className="h-4 w-4" />
                   <span>开发者优先</span>
                 </div>
@@ -235,7 +235,7 @@ export default function AlgorithmLandingPage() {
                       transition={{ delay: 0.2 + i * 0.1 }}
                       className="flex items-center gap-3 text-lg font-medium"
                     >
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-primary">
+                      <div className="bg-secondary text-primary flex h-10 w-10 items-center justify-center rounded-full">
                         <Item.icon className="h-5 w-5" />
                       </div>
                       {Item.text}
@@ -252,10 +252,10 @@ export default function AlgorithmLandingPage() {
               transition={{ duration: 1, ease: 'easeOut' }}
               className="relative"
             >
-              <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-[2.5rem] border border-black/5 dark:border-white/10 bg-gradient-to-tr from-gray-50 to-white dark:from-gray-900 dark:to-black p-8 shadow-2xl">
-                <div className="absolute inset-0 bg-grid-black/[0.02] dark:bg-grid-white/[0.02]" />
+              <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-[2.5rem] border border-black/5 bg-gradient-to-tr from-gray-50 to-white p-8 shadow-2xl dark:border-white/10 dark:from-gray-900 dark:to-black">
+                <div className="bg-grid-black/[0.02] dark:bg-grid-white/[0.02] absolute inset-0" />
                 <div className="relative z-10 w-full max-w-sm rounded-xl bg-gray-900 p-6 shadow-2xl">
-                  <div className="flex gap-1.5 mb-4">
+                  <div className="mb-4 flex gap-1.5">
                     <div className="h-3 w-3 rounded-full bg-red-500" />
                     <div className="h-3 w-3 rounded-full bg-yellow-500" />
                     <div className="h-3 w-3 rounded-full bg-green-500" />
@@ -300,8 +300,10 @@ export default function AlgorithmLandingPage() {
             transition={{ duration: 0.8 }}
             className="space-y-8"
           >
-            <h2 className="text-5xl font-semibold tracking-tighter md:text-7xl">准备好学习了吗？</h2>
-            <p className="text-muted-foreground mx-auto max-w-2xl text-xl md:text-2xl font-medium">
+            <h2 className="text-5xl font-semibold tracking-tighter md:text-7xl">
+              准备好学习了吗？
+            </h2>
+            <p className="text-muted-foreground mx-auto max-w-2xl text-xl font-medium md:text-2xl">
               立即使用我们的交互式工具，开始可视化排序算法。
             </p>
             <div className="flex items-center justify-center gap-4 pt-8">

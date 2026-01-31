@@ -18,10 +18,10 @@ export function PostHeader({ post }: PostHeaderProps) {
   // 格式化日期
   const formattedDate = createTime
     ? new Date(createTime).toLocaleDateString('zh-CN', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
     : ''
 
   return (
@@ -42,21 +42,19 @@ export function PostHeader({ post }: PostHeaderProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-muted-foreground font-medium text-sm sm:text-base"
+          className="text-muted-foreground flex flex-wrap items-center justify-center gap-4 text-sm font-medium sm:gap-6 sm:text-base"
         >
           {/* Author */}
           <div className="flex items-center gap-3">
             <UserAvatar
               user={userVO}
               size="sm"
-              className="h-8 w-8 ring-2 ring-background shadow-sm"
+              className="ring-background h-8 w-8 shadow-sm ring-2"
             />
-            <span className="text-foreground font-semibold">
-              {userVO?.userName || '匿名用户'}
-            </span>
+            <span className="text-foreground font-semibold">{userVO?.userName || '匿名用户'}</span>
           </div>
 
-          <span className="hidden sm:inline-block opacity-30">•</span>
+          <span className="hidden opacity-30 sm:inline-block">•</span>
 
           {/* Date */}
           <div className="flex items-center gap-2">
@@ -64,7 +62,7 @@ export function PostHeader({ post }: PostHeaderProps) {
             <time dateTime={createTime}>{formattedDate}</time>
           </div>
 
-          <span className="hidden sm:inline-block opacity-30">•</span>
+          <span className="hidden opacity-30 sm:inline-block">•</span>
 
           {/* Read Time */}
           <div className="flex items-center gap-2">
@@ -85,7 +83,7 @@ export function PostHeader({ post }: PostHeaderProps) {
               <Badge
                 key={index}
                 variant="secondary"
-                className="bg-secondary/30 text-secondary-foreground border-transparent px-4 py-1.5 text-xs font-medium uppercase tracking-wider backdrop-blur-sm"
+                className="bg-secondary/30 text-secondary-foreground border-transparent px-4 py-1.5 text-xs font-medium tracking-wider uppercase backdrop-blur-sm"
               >
                 #{tag}
               </Badge>
