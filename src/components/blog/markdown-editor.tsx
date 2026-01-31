@@ -67,23 +67,22 @@ export function MarkdownEditor({
   }
 
   const toolbarItems = [
-    { icon: Bold, label: 'Bold', action: () => insertText('**', '**') },
-    { icon: Italic, label: 'Italic', action: () => insertText('*', '*') },
-    { icon: Type, label: 'Heading', action: () => insertText('### ') },
-    { icon: ListIcon, label: 'List', action: () => insertText('- ') },
-    { icon: ListOrdered, label: 'Ordered List', action: () => insertText('1. ') },
-    { icon: Code, label: 'Code', action: () => insertText('```\n', '\n```') },
-    { icon: LinkIcon, label: 'Link', action: () => insertText('[', '](url)') },
-    { icon: ImageIcon, label: 'Image', action: () => insertText('![alt](', ')') },
+    { icon: Bold, label: '粗体', action: () => insertText('**', '**') },
+    { icon: Italic, label: '斜体', action: () => insertText('*', '*') },
+    { icon: Type, label: '标题', action: () => insertText('### ') },
+    { icon: ListIcon, label: '无序列表', action: () => insertText('- ') },
+    { icon: ListOrdered, label: '有序列表', action: () => insertText('1. ') },
+    { icon: Code, label: '代码块', action: () => insertText('```\n', '\n```') },
+    { icon: LinkIcon, label: '链接', action: () => insertText('[', '](url)') },
+    { icon: ImageIcon, label: '图片', action: () => insertText('![alt](', ')') },
   ]
 
   return (
     <div
       className={cn(
-        'bg-card/50 flex flex-col rounded-xl border transition-all duration-300',
+        'flex flex-1 flex-col overflow-hidden rounded-xl border border-border/40 bg-card/30 shadow-sm transition-all duration-300',
         isFullscreen &&
-        'bg-background fixed inset-0 z-50 h-screen w-screen rounded-none border-none',
-        !isFullscreen && 'min-h-[500px]',
+        'fixed inset-0 z-50 h-screen w-screen rounded-none border-none bg-background',
         className
       )}
     >
@@ -100,7 +99,7 @@ export function MarkdownEditor({
               key={idx}
               variant="ghost"
               size="icon"
-              className="text-muted-foreground hover:bg-muted hover:text-foreground h-8 w-8"
+              className="text-muted-foreground hover:bg-muted hover:text-foreground h-8 w-8 rounded-lg"
               onClick={item.action}
               title={item.label}
             >
@@ -118,7 +117,7 @@ export function MarkdownEditor({
               className="h-7 gap-1.5 px-3 text-xs"
               onClick={() => setView('edit')}
             >
-              Edit
+              编辑
             </Button>
             <Button
               variant={view === 'split' ? 'secondary' : 'ghost'}
@@ -126,7 +125,7 @@ export function MarkdownEditor({
               className="h-7 gap-1.5 px-3 text-xs"
               onClick={() => setView('split')}
             >
-              Split
+              分栏
             </Button>
             <Button
               variant={view === 'preview' ? 'secondary' : 'ghost'}
@@ -134,14 +133,14 @@ export function MarkdownEditor({
               className="h-7 gap-1.5 px-3 text-xs"
               onClick={() => setView('preview')}
             >
-              Preview
+              预览
             </Button>
           </div>
 
           <Button
             variant="ghost"
             size="icon"
-            className="text-muted-foreground h-8 w-8"
+            className="text-muted-foreground h-8 w-8 rounded-lg"
             onClick={() => setIsFullscreen(!isFullscreen)}
           >
             {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
@@ -159,7 +158,7 @@ export function MarkdownEditor({
               ref={textareaRef}
               value={value}
               onChange={e => onChange(e.target.value)}
-              placeholder={placeholder || 'Start writing...'}
+              placeholder={placeholder || '开始写作...'}
               className="h-full w-full resize-none rounded-none border-none bg-transparent p-6 font-mono text-base leading-relaxed focus-visible:ring-0"
             />
           ) : (
@@ -171,21 +170,21 @@ export function MarkdownEditor({
           <div className="border-border/40 flex border-t">
             <button
               className={cn(
-                'flex-1 py-3 text-sm font-medium',
+                'flex-1 py-3 text-sm font-medium transition-colors',
                 view === 'edit' ? 'text-primary bg-muted/20' : 'text-muted-foreground'
               )}
               onClick={() => setView('edit')}
             >
-              Edit
+              编辑
             </button>
             <button
               className={cn(
-                'flex-1 py-3 text-sm font-medium',
+                'flex-1 py-3 text-sm font-medium transition-colors',
                 view === 'preview' ? 'text-primary bg-muted/20' : 'text-muted-foreground'
               )}
               onClick={() => setView('preview')}
             >
-              Preview
+              预览
             </button>
           </div>
         </div>
@@ -204,7 +203,7 @@ export function MarkdownEditor({
               ref={textareaRef}
               value={value}
               onChange={e => onChange(e.target.value)}
-              placeholder={placeholder || 'Start writing...'}
+              placeholder={placeholder || '开始写作...'} // Localized
               className="h-full w-full resize-none border-none bg-transparent p-8 font-mono text-[15px] leading-relaxed focus:outline-none"
               style={{ fontFamily: 'var(--font-mono)' }}
             />
@@ -218,7 +217,7 @@ export function MarkdownEditor({
             )}
           >
             <div className="mx-auto max-w-4xl p-8">
-              <MarkdownRender content={value || '*No content to preview*'} />
+              <MarkdownRender content={value || '*暂无内容预览*'} /> {/* Localized */}
             </div>
           </div>
         </div>
@@ -228,9 +227,9 @@ export function MarkdownEditor({
       {!isFullscreen && (
         <div className="border-border/40 bg-muted/10 text-muted-foreground flex items-center justify-between border-t px-4 py-1.5 text-[10px] font-bold tracking-widest uppercase">
           <div className="flex items-center gap-4">
-            <span>Words: {value.length}</span>
+            <span>字数: {value.length}</span>
           </div>
-          <span>Markdown Supported</span>
+          <span>支持 Markdown</span>
         </div>
       )}
     </div>

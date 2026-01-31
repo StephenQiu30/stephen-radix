@@ -43,7 +43,7 @@ export function AlgorithmVisualizerDialog({
     const [completedIndices, setCompletedIndices] = useState<number[]>([])
     const [stepDescription, setStepDescription] = useState<string>('')
     const [isSorting, setIsSorting] = useState(false)
-    const [speed, setSpeed] = useState(50)
+    const [speed, setSpeed] = useState(1)
     const [size, setSize] = useState(10)
     const [customDataInput, setCustomDataInput] = useState('')
     const [isPaused, setIsPaused] = useState(false)
@@ -198,51 +198,52 @@ export function AlgorithmVisualizerDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-5xl h-[90vh] flex flex-col p-0 gap-0 overflow-hidden bg-background/95 backdrop-blur-3xl border-white/20 sm:rounded-3xl">
-                {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-white/10 z-10 bg-background/50 backdrop-blur-md">
-                    <div className="space-y-1">
-                        <DialogTitle className="text-2xl font-bold flex items-center gap-3">
+            <DialogContent className="max-w-6xl w-[95vw] h-[90vh] flex flex-col p-0 gap-0 overflow-hidden bg-background/80 backdrop-blur-2xl border-white/10 sm:rounded-[32px] shadow-2xl">
+                {/* MacOS Style Header */}
+                <div className="flex items-start justify-between px-8 py-6 border-b border-black/5 dark:border-white/5 bg-white/50 dark:bg-black/20 backdrop-blur-xl">
+                    <div className="space-y-1.5">
+                        <DialogTitle className="text-3xl font-semibold tracking-tight text-foreground flex items-center gap-3">
                             {algorithm.name}
-                            <Badge variant="outline" className="text-xs font-normal border-white/20">
+                            <span className="text-lg font-normal text-muted-foreground/60 tracking-normal px-2">
                                 {algorithm.bestCase}
-                            </Badge>
+                            </span>
                         </DialogTitle>
-                        <DialogDescription className="text-muted-foreground max-w-2xl">
+                        <DialogDescription className="text-base text-muted-foreground/80 font-normal leading-relaxed max-w-2xl selection:bg-primary/10">
                             {algorithm.description}
                         </DialogDescription>
                     </div>
-                    {/* Default Close button is sufficient usually, but we can add custom controls if needed */}
+                    {/* Traffic lights inspired visual or just clean space */}
                 </div>
 
                 {/* Main Content Area */}
                 <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
 
                     {/* Canvas Area */}
-                    <div className="flex-1 relative bg-secondary/5 p-4 sm:p-8 flex flex-col items-center justify-end">
-                        {/* Step Description */}
-                        <div className="absolute top-6 left-0 right-0 text-center px-4 pointer-events-none z-50">
-                            <span className="inline-block px-4 py-2 rounded-full bg-background/80 backdrop-blur-md border border-white/10 shadow-lg text-sm font-medium text-foreground transition-all duration-200">
+                    <div className="flex-1 relative bg-secondary/5 p-4 sm:p-10 flex flex-col items-center justify-center">
+                        {/* Step Description - Moved to prevent overlap */}
+                        <div className="w-full text-center px-4 z-50 mb-6">
+                            <span className="inline-block px-6 py-2.5 rounded-full bg-background/60 backdrop-blur-xl border border-black/5 dark:border-white/10 shadow-lg text-sm font-medium text-foreground/90 transition-all duration-300">
                                 {stepDescription || '准备就绪'}
                             </span>
                         </div>
 
-                        <div className="w-full h-full max-h-[60vh] md:max-h-full aspect-video md:aspect-auto rounded-xl border border-white/5 bg-black/20 backdrop-blur-sm p-4 shadow-inner">
+                        <div className="w-full h-full max-h-[60vh] md:max-h-full aspect-video md:aspect-auto rounded-3xl border border-black/5 dark:border-white/5 bg-gradient-to-br from-black/5 to-transparent dark:from-white/5 dark:to-white/0 backdrop-blur-sm p-6 sm:p-8 shadow-inner ring-1 ring-black/5 dark:ring-white/5">
                             <SortingCanvas
                                 data={data}
                                 highlightIndices={highlightIndices}
                                 swapIndices={swapIndices}
                                 completedIndices={completedIndices}
+                                variant={algorithm.visualizerType}
                             />
                         </div>
                     </div>
 
                     {/* Sidebar Controls */}
-                    <div className="w-full md:w-80 border-l border-white/10 bg-background/50 backdrop-blur-md p-6 flex flex-col gap-8 z-10 overflow-y-auto">
+                    <div className="w-full md:w-80 border-l border-white/5 bg-background/40 backdrop-blur-xl p-8 flex flex-col gap-10 z-10 overflow-y-auto">
 
-                        <div className="space-y-4">
-                            <h3 className="text-sm font-medium uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                                <Settings2 className="w-4 h-4" /> 控制台
+                        <div className="space-y-6">
+                            <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/80 flex items-center gap-2">
+                                <Settings2 className="w-3.5 h-3.5" /> 控制台
                             </h3>
 
                             <div className="grid grid-cols-2 gap-3">
@@ -251,7 +252,10 @@ export function AlgorithmVisualizerDialog({
                                         <Button
                                             size="lg"
                                             onClick={handlePauseToggle}
-                                            className={isPaused ? "bg-green-500 hover:bg-green-600" : "bg-yellow-500 hover:bg-yellow-600"}
+                                            className={isPaused ?
+                                                "bg-green-500 hover:bg-green-600 rounded-2xl shadow-lg shadow-green-500/20" :
+                                                "bg-amber-500 hover:bg-amber-600 rounded-2xl shadow-lg shadow-amber-500/20"
+                                            }
                                         >
                                             {isPaused ? (
                                                 <><Play className="mr-2 h-4 w-4" /> 继续</>
@@ -261,40 +265,38 @@ export function AlgorithmVisualizerDialog({
                                         </Button>
 
                                         {isPaused ? (
-                                            <Button size="lg" onClick={handleStepForward} variant="outline">
+                                            <Button size="lg" onClick={handleStepForward} variant="outline" className="rounded-2xl border-white/10">
                                                 <StepForward className="mr-2 h-4 w-4" /> 单步
                                             </Button>
                                         ) : (
-                                            <Button size="lg" variant="destructive" onClick={handleStop}>
+                                            <Button size="lg" variant="destructive" onClick={handleStop} className="rounded-2xl shadow-lg shadow-red-500/20">
                                                 <X className="mr-2 h-4 w-4" /> 停止
                                             </Button>
                                         )}
                                     </>
                                 ) : (
-                                    <>
-                                        <Button
-                                            size="lg"
-                                            onClick={handleSort}
-                                            className="bg-primary hover:bg-primary/90 col-span-2"
-                                        >
-                                            <Play className="mr-2 h-4 w-4" /> 开始演示
-                                        </Button>
-                                    </>
+                                    <Button
+                                        size="lg"
+                                        onClick={handleSort}
+                                        className="bg-primary hover:bg-primary/90 col-span-2 rounded-2xl shadow-lg shadow-primary/25 h-12 text-base"
+                                    >
+                                        <Play className="mr-2 h-5 w-5" /> 开始演示
+                                    </Button>
                                 )}
 
                                 {!isSorting && (
-                                    <Button size="lg" variant="outline" onClick={handleReset} className="col-span-2">
+                                    <Button size="lg" variant="secondary" onClick={handleReset} className="col-span-2 rounded-2xl bg-secondary/50 hover:bg-secondary/70 h-12">
                                         <RotateCcw className="mr-2 h-4 w-4" /> 重置数据
                                     </Button>
                                 )}
                             </div>
                         </div>
 
-                        <div className="space-y-6">
-                            <div className="space-y-3">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">速度</span>
-                                    <span className="font-mono">{speed}%</span>
+                        <div className="space-y-8">
+                            <div className="space-y-4">
+                                <div className="flex justify-between text-sm items-baseline">
+                                    <span className="text-muted-foreground font-medium">速度</span>
+                                    <span className="font-mono text-xs bg-secondary/50 px-2 py-0.5 rounded-md">{speed}%</span>
                                 </div>
                                 <Slider
                                     value={[speed]}
@@ -302,13 +304,14 @@ export function AlgorithmVisualizerDialog({
                                     max={100}
                                     step={1}
                                     onValueChange={([v]) => setSpeed(v)}
+                                    className="cursor-grab active:cursor-grabbing"
                                 />
                             </div>
 
-                            <div className="space-y-3">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">数量</span>
-                                    <span className="font-mono">{size}</span>
+                            <div className="space-y-4">
+                                <div className="flex justify-between text-sm items-baseline">
+                                    <span className="text-muted-foreground font-medium">数量</span>
+                                    <span className="font-mono text-xs bg-secondary/50 px-2 py-0.5 rounded-md">{size}</span>
                                 </div>
                                 <Slider
                                     value={[size]}
@@ -317,42 +320,40 @@ export function AlgorithmVisualizerDialog({
                                     step={10}
                                     onValueChange={([v]) => setSize(v)}
                                     disabled={isSorting}
+                                    className="cursor-grab active:cursor-grabbing"
                                 />
                             </div>
 
-                            <div className="space-y-3">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">自定义数据</span>
-                                </div>
+                            <div className="space-y-4">
+                                <Label className="text-sm text-muted-foreground font-medium">自定义数据</Label>
                                 <Input
-                                    placeholder="例如: 50, 10, 20"
+                                    placeholder="例如: 50, 10, 20..."
                                     value={customDataInput}
                                     onChange={handleCustomDataChange}
                                     disabled={isSorting}
-                                    className="bg-secondary/20 border-white/10"
+                                    className="bg-secondary/30 border-white/5 rounded-xl focus:ring-1 focus:ring-primary/50"
                                 />
-                                <p className="text-xs text-muted-foreground">请输入逗号分隔的数字</p>
                             </div>
                         </div>
 
-                        <div className="space-y-4 pt-4 border-t border-white/10">
-                            <h3 className="text-sm font-medium uppercase tracking-wider text-muted-foreground">算法复杂度</h3>
-                            <div className="space-y-2 text-sm">
-                                <div className="flex justify-between py-1 border-b border-white/5">
+                        <div className="space-y-5 pt-6 border-t border-white/5 mt-auto">
+                            <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/80">复杂度分析</h3>
+                            <div className="space-y-3 text-sm font-light">
+                                <div className="flex justify-between py-1">
                                     <span className="text-muted-foreground">最优时间</span>
-                                    <span className="font-mono">{algorithm.bestCase}</span>
+                                    <span className="font-mono bg-green-500/10 text-green-500 px-2 py-0.5 rounded text-xs">{algorithm.bestCase}</span>
                                 </div>
-                                <div className="flex justify-between py-1 border-b border-white/5">
+                                <div className="flex justify-between py-1">
                                     <span className="text-muted-foreground">平均时间</span>
-                                    <span className="font-mono">{algorithm.averageCase}</span>
+                                    <span className="font-mono bg-blue-500/10 text-blue-500 px-2 py-0.5 rounded text-xs">{algorithm.averageCase}</span>
                                 </div>
-                                <div className="flex justify-between py-1 border-b border-white/5">
+                                <div className="flex justify-between py-1">
                                     <span className="text-muted-foreground">最坏时间</span>
-                                    <span className="font-mono">{algorithm.worstCase}</span>
+                                    <span className="font-mono bg-red-500/10 text-red-500 px-2 py-0.5 rounded text-xs">{algorithm.worstCase}</span>
                                 </div>
-                                <div className="flex justify-between py-1 pt-2">
+                                <div className="flex justify-between py-1 pt-2 border-t border-dashed border-white/5">
                                     <span className="text-muted-foreground">空间复杂度</span>
-                                    <span className="font-mono">{algorithm.spaceComplexity}</span>
+                                    <span className="font-mono text-xs">{algorithm.spaceComplexity}</span>
                                 </div>
                             </div>
                         </div>

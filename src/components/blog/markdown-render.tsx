@@ -70,7 +70,7 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary decoration-primary/30 hover:decoration-primary hover:text-primary/80 font-medium underline underline-offset-4 transition-all"
+              className="text-primary decoration-primary/30 hover:decoration-primary hover:text-primary/80 font-medium underline underline-offset-4 transition-all break-all"
             >
               {children}
             </a>

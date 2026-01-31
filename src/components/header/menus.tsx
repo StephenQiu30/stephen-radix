@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import { BookOpen, Home, Activity } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -22,37 +23,47 @@ const menuItems: MenuItem[] = [
 
 export function Menus({ className, vertical = false }: { className?: string; vertical?: boolean }) {
   const pathname = usePathname()
-
   const isActive = (href: string) => pathname === href
 
   return (
     <nav
       className={cn(
-        'flex items-center gap-1',
-        vertical && 'w-full flex-col items-stretch gap-1',
+        'relative flex items-center p-1 bg-black/5 dark:bg-white/10 backdrop-blur-md rounded-full border border-black/5 dark:border-white/5',
+        vertical ? 'flex-col w-full rounded-xl' : 'flex-row',
         className
       )}
     >
-      {menuItems.map(item => (
-        <Link
-          key={item.href}
-          href={item.href || '#'}
-          className={cn(
-            'group text-muted-foreground relative inline-flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-all duration-200',
-            'hover:text-foreground hover:bg-accent/50',
-            'before:bg-primary before:absolute before:bottom-0 before:left-0 before:h-0.5 before:w-0 before:transition-all before:duration-300',
-            'hover:before:w-full',
-            isActive(item.href || '') && 'text-foreground bg-accent/50 before:w-full',
-            vertical &&
-            'w-full px-4 py-3 before:top-0 before:bottom-auto before:left-0 before:h-full before:w-0.5 hover:before:h-full'
-          )}
-        >
-          <span className={cn('transition-transform duration-200', 'group-hover:scale-110')}>
-            {item.icon}
-          </span>
-          <span>{item.title}</span>
-        </Link>
-      ))}
+      {menuItems.map((item) => {
+        const active = isActive(item.href || '')
+        return (
+          <Link
+            key={item.href}
+            href={item.href || '#'}
+            className={cn(
+              'relative z-10 flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium transition-colors duration-200 outline-none rounded-full',
+              vertical ? 'w-full justify-start rounded-lg' : '',
+              active
+                ? 'text-foreground'
+                : 'text-muted-foreground hover:text-foreground/80'
+            )}
+          >
+            {active && (
+              <motion.div
+                layoutId="active-menu-pill"
+                className={cn(
+                  "absolute inset-0 z-[-1] bg-background shadow-sm border border-black/5 dark:border-white/5",
+                  vertical ? "rounded-lg" : "rounded-full"
+                )}
+                transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+              />
+            )}
+            <span className={cn("relative z-10", active && "scale-105 transition-transform duration-200")}>
+              {item.icon}
+            </span>
+            <span className="relative z-10">{item.title}</span>
+          </Link>
+        )
+      })}
     </nav>
   )
 }

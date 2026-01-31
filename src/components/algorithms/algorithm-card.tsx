@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import { ArrowRight, Activity, Zap, HardDrive, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -18,58 +19,74 @@ interface AlgorithmCardProps {
 export function AlgorithmCard({ algorithm, onVisualize, index = 0 }: AlgorithmCardProps) {
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1, duration: 0.5 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.2 }}
+            className="h-full"
         >
-            <Card className="group h-full overflow-hidden border-white/10 bg-white/5 backdrop-blur-xl transition-all hover:bg-white/10 hover:shadow-2xl hover:scale-[1.02]">
-                <CardHeader>
-                    <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                            <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                                <Activity className="h-5 w-5" />
+            <div className="group relative h-full overflow-hidden rounded-[32px] border-none bg-secondary/30 p-6 shadow-none backdrop-blur-sm transition-all duration-300 hover:bg-secondary/50">
+                <div className="flex h-full flex-col justify-between space-y-6">
+                    <div>
+                        <div className="mb-4 flex items-center justify-between">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                                <Activity className="h-6 w-6" />
                             </div>
-                            <CardTitle className="text-xl font-bold tracking-tight">{algorithm.name}</CardTitle>
+                            <Badge
+                                variant="outline"
+                                className={cn(
+                                    "px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-md border shadow-sm",
+                                    algorithm.stable
+                                        ? "bg-green-100 text-green-700 border-green-200 dark:bg-green-500/10 dark:text-green-400 dark:border-green-500/20"
+                                        : "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20"
+                                )}
+                            >
+                                {algorithm.stable ? '稳定' : '不稳定'}
+                            </Badge>
                         </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground line-clamp-2 min-h-[40px]">
-                        {algorithm.description}
-                    </p>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-3 text-sm">
-                        <div className="flex flex-col gap-1 p-2 rounded-lg bg-secondary/50">
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                <Clock className="w-3 h-3" /> 平均时间
-                            </span>
-                            <span className="font-mono font-medium text-foreground">{algorithm.averageCase}</span>
-                        </div>
-                        <div className="flex flex-col gap-1 p-2 rounded-lg bg-secondary/50">
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                <HardDrive className="w-3 h-3" /> 空间复杂度
-                            </span>
-                            <span className="font-mono font-medium text-foreground">{algorithm.spaceComplexity}</span>
-                        </div>
+                        <h3 className="mb-2 text-2xl font-bold tracking-tight text-foreground">{algorithm.name}</h3>
+                        <p className="text-sm leading-relaxed text-muted-foreground dark:text-zinc-400 line-clamp-2">
+                            {algorithm.description}
+                        </p>
                     </div>
 
-                    <div className="flex flex-wrap gap-2 text-xs">
-                        <Badge variant={algorithm.stable ? "default" : "secondary"} className="bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 border-blue-500/20">
-                            {algorithm.stable ? '稳定' : '不稳定'}
-                        </Badge>
-                        <Badge variant="outline" className="border-white/10">
-                            最优: {algorithm.bestCase}
-                        </Badge>
+                    <div className="space-y-4">
+                        <div className="flex gap-4 border-t border-border/10 pt-4">
+                            <div className="space-y-1">
+                                <div className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                                    <Clock className="h-3 w-3" /> 时间复杂度
+                                </div>
+                                <div className="font-mono text-sm font-semibold">{algorithm.averageCase}</div>
+                            </div>
+                            <div className="space-y-1 border-l border-border/10 pl-4">
+                                <div className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                                    <HardDrive className="h-3 w-3" /> 空间复杂度
+                                </div>
+                                <div className="font-mono text-sm font-semibold">{algorithm.spaceComplexity}</div>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-2 pt-2">
+                            <Button
+                                className="w-full rounded-2xl bg-background/50 hover:bg-background/80 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                                variant="secondary"
+                                asChild
+                            >
+                                <Link href={`/algorithms/${algorithm.id}`}>
+                                    详细介绍
+                                </Link>
+                            </Button>
+                            <Button
+                                className="w-full rounded-2xl shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                                onClick={() => onVisualize(algorithm)}
+                            >
+                                演示
+                                <ArrowRight className="ml-2 h-4 w-4" />
+                            </Button>
+                        </div>
                     </div>
-                </CardContent>
-                <CardFooter>
-                    <Button
-                        className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-all"
-                        onClick={() => onVisualize(algorithm)}
-                    >
-                        开始演示 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                </CardFooter>
-            </Card>
+                </div>
+            </div>
         </motion.div>
     )
 }

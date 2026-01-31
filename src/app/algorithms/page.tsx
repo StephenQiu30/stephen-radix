@@ -20,42 +20,38 @@ export default function AlgorithmsPage() {
 
     return (
         <div className="min-h-screen bg-background font-sans selection:bg-primary/20 pb-20">
-            {/* Header */}
-            <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-xl">
-                <div className="container flex h-16 items-center px-6 mx-auto max-w-7xl">
-                    <Button variant="ghost" size="sm" asChild className="mr-8 rounded-full">
-                        <Link href="/">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Back
-                        </Link>
-                    </Button>
-                    <div className="flex items-center gap-2 font-semibold">
-                        <Sparkles className="h-5 w-5 text-primary" />
-                        <span>Algorithm Visualizer</span>
-                    </div>
-                </div>
-            </header>
+
 
             <main className="container px-6 py-12 mx-auto max-w-7xl">
                 {/* Hero */}
-                <div className="mb-16 text-center max-w-3xl mx-auto space-y-4">
+                <div className="mb-24 text-center max-w-4xl mx-auto space-y-6">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className="inline-flex items-center justify-center rounded-full border border-black/5 dark:border-white/10 bg-black/5 dark:bg-white/5 px-4 py-1.5 text-sm font-medium backdrop-blur-xl"
+                    >
+                        <Sparkles className="mr-2 h-4 w-4 text-yellow-500" />
+                        交互式学习
+                    </motion.div>
                     <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-4xl md:text-5xl font-bold tracking-tight lg:text-6xl"
+                        transition={{ delay: 0.2 }}
+                        className="text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter text-foreground"
                     >
-                        Sort Algorithms <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">
-                            Visualized
+                        排序算法 <br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-b from-primary to-primary/60">
+                            可视化演示
                         </span>
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                        className="text-xl text-muted-foreground"
+                        transition={{ delay: 0.3 }}
+                        className="text-xl md:text-2xl text-muted-foreground font-light leading-relaxed max-w-2xl mx-auto"
                     >
-                        Explore the mechanics of 8 classic sorting algorithms through interactive visualizations.
+                        通过精美的交互式动画，深入探索8种经典排序算法的运行机制。
                     </motion.p>
                 </div>
 

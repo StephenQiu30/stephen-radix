@@ -16,6 +16,7 @@ import {
   Search,
 } from 'lucide-react'
 import Link from 'next/link'
+import { cn } from '@/lib/utils'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -101,75 +102,80 @@ export default function BlogPage() {
         variants={containerVariants}
       >
         {/* 页面标题区 */}
-        <div className="mb-20 flex flex-col items-center text-center">
-          <motion.span
+        <div className="mb-12 flex flex-col items-center text-center">
+          <motion.div
             variants={itemVariants}
-            className="bg-secondary text-secondary-foreground mb-4 inline-block rounded-full px-3 py-1 text-xs font-semibold tracking-wider uppercase"
+            className="bg-primary/10 text-primary mb-6 flex h-16 w-16 items-center justify-center rounded-2xl"
           >
-            Blog
-          </motion.span>
+            <BookOpen className="h-8 w-8" />
+          </motion.div>
           <motion.h1
             variants={itemVariants}
-            className="mb-6 max-w-4xl text-5xl font-semibold tracking-tight sm:text-7xl"
+            className="mb-4 max-w-4xl text-4xl font-bold tracking-tight sm:text-6xl"
           >
-            Stories & Insights.
+            文章与见解
           </motion.h1>
           <motion.p
             variants={itemVariants}
-            className="text-muted-foreground max-w-2xl text-xl leading-relaxed"
+            className="text-muted-foreground max-w-2xl text-lg leading-relaxed"
           >
-            Discover the latest updates, deep dives, and tutorials from our team and community.
+            探索来自我们团队和社区的最新更新、深度文章和教程。
           </motion.p>
         </div>
 
         {/* 控制栏：搜索与筛选 */}
         <motion.div
           variants={itemVariants}
-          className="bg-background/80 border-border/40 sticky top-20 z-10 -mx-6 mb-12 border-b px-6 py-4 backdrop-blur-xl sm:static sm:mx-0 sm:border-none sm:bg-transparent sm:p-0 sm:backdrop-blur-none"
+          className="bg-background/80 border-border/40 sticky top-16 z-30 mb-8 rounded-2xl border px-4 py-3 backdrop-blur-xl"
         >
-          <div className="mx-auto flex max-w-5xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             {/* Tab Switcher */}
-            <div className="bg-secondary/50 flex rounded-full p-1 backdrop-blur-md">
+            <div className="bg-muted/50 flex p-1 rounded-xl">
               <button
                 onClick={() => setActiveTab('latest')}
-                className={`rounded-full px-6 py-2 text-sm font-medium transition-all duration-300 ${
+                className={cn(
+                  "rounded-lg px-4 py-1.5 text-sm font-medium transition-all duration-300",
                   activeTab === 'latest'
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
               >
-                Latest
+                最新发布
               </button>
               <button
                 onClick={() => setActiveTab('popular')}
-                className={`rounded-full px-6 py-2 text-sm font-medium transition-all duration-300 ${
+                className={cn(
+                  "rounded-lg px-4 py-1.5 text-sm font-medium transition-all duration-300",
                   activeTab === 'popular'
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
               >
-                Popular
+                热门精选
               </button>
             </div>
 
             {/* Search & Create */}
-            <div className="flex w-full items-center gap-4 sm:w-auto">
-              <form onSubmit={handleSearch} className="relative flex-1 sm:w-64">
+            <div className="flex items-center gap-3">
+              <div className="relative flex-1 sm:w-64">
                 <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-                <Input
-                  type="text"
-                  placeholder="Search stories..."
-                  value={searchText}
-                  onChange={e => setSearchText(e.target.value)}
-                  className="border-border/50 bg-secondary/50 focus:bg-background focus:ring-primary/20 h-10 rounded-full pl-10 transition-all focus:ring-2"
-                />
-              </form>
+                <form onSubmit={handleSearch}>
+                  <Input
+                    type="text"
+                    placeholder="搜索文章..."
+                    value={searchText}
+                    onChange={e => setSearchText(e.target.value)}
+                    className="border-border/50 bg-secondary/30 focus:bg-background h-9 rounded-xl pl-9 transition-all"
+                  />
+                </form>
+              </div>
+              <div className="h-4 w-[1px] bg-border/50 mx-1 hidden sm:block" />
               <Link href="/blog/create">
                 <Button
-                  size="icon"
-                  className="h-10 w-10 rounded-full shadow-lg transition-transform hover:scale-105 active:scale-95"
+                  className="h-9 rounded-xl px-4 shadow-sm"
                 >
-                  <Plus className="h-5 w-5" />
+                  <Plus className="mr-2 h-4 w-4" />
+                  写文章
                 </Button>
               </Link>
             </div>
@@ -197,7 +203,7 @@ export default function BlogPage() {
               <FileWarning className="text-destructive/50 mb-4 h-12 w-12" />
               <h3 className="text-destructive mb-2 text-lg font-semibold">{error}</h3>
               <Button variant="outline" onClick={fetchPosts} className="mt-4 rounded-full">
-                Try Again
+                重试
               </Button>
             </motion.div>
           ) : posts.length === 0 ? (
@@ -207,9 +213,9 @@ export default function BlogPage() {
               className="flex min-h-[400px] flex-col items-center justify-center text-center"
             >
               <BookOpen className="text-muted-foreground/30 mb-4 h-12 w-12" />
-              <h3 className="mb-2 text-xl font-medium">No stories found</h3>
+              <h3 className="mb-2 text-xl font-medium">暂无文章</h3>
               <p className="text-muted-foreground">
-                {searchText ? 'Try adjusting your search terms.' : 'Be the first to write a story.'}
+                {searchText ? '请尝试调整搜索关键词。' : '成为第一个写文章的人。'}
               </p>
             </motion.div>
           ) : (

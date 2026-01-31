@@ -20,7 +20,7 @@ export function ImageUploader({
   onChange,
   biz = 'post_cover',
   className,
-  placeholder = 'Click or drag to upload cover',
+  placeholder = '点击或拖拽上传封面',
 }: ImageUploaderProps) {
   const [loading, setLoading] = React.useState(false)
   const [dragActive, setDragActive] = React.useState(false)
@@ -31,13 +31,13 @@ export function ImageUploader({
 
     // Validate type
     if (!file.type.startsWith('image/')) {
-      toast.error('Please upload an image file')
+      toast.error('请上传图片文件')
       return
     }
 
     // Validate size (e.g., 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('Image size should be less than 5MB')
+      toast.error('图片大小不能超过 5MB')
       return
     }
 
@@ -46,13 +46,13 @@ export function ImageUploader({
       const res = (await uploadFile({ biz }, file)) as any
       if (res.code === 0 && res.data) {
         onChange?.(res.data)
-        toast.success('Image uploaded successfully')
+        toast.success('图片上传成功')
       } else {
-        toast.error(res.message || 'Upload failed')
+        toast.error(res.message || '上传失败')
       }
     } catch (error) {
       console.error('Upload error:', error)
-      toast.error('Upload failed, please try again')
+      toast.error('上传失败，请重试')
     } finally {
       setLoading(false)
     }
@@ -114,7 +114,7 @@ export function ImageUploader({
         {loading ? (
           <div className="text-muted-foreground flex flex-col items-center gap-2">
             <Loader2 className="h-8 w-8 animate-spin" />
-            <span className="text-xs font-medium">Uploading...</span>
+            <span className="text-xs font-medium">上传中...</span>
           </div>
         ) : value ? (
           <div className="group relative h-full w-full">
@@ -133,10 +133,10 @@ export function ImageUploader({
                     inputRef.current?.click()
                   }}
                 >
-                  Replace
+                  更换
                 </Button>
                 <Button size="sm" variant="destructive" onClick={handleRemove}>
-                  Remove
+                  移除
                 </Button>
               </div>
             </div>
@@ -147,7 +147,7 @@ export function ImageUploader({
               <ImagePlus className="h-6 w-6" />
             </div>
             <p className="text-sm font-medium">{placeholder}</p>
-            <p className="text-muted-foreground/60 text-xs">Supports JPG, PNG, WebP (Max 5MB)</p>
+            <p className="text-muted-foreground/60 text-xs">支持 JPG, PNG, WebP (最大 5MB)</p>
           </div>
         )}
       </div>
