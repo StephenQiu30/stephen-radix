@@ -3,7 +3,7 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { BookOpen, Home } from 'lucide-react'
+import { BookOpen, Home, Activity } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export interface MenuItem {
@@ -17,6 +17,7 @@ export interface MenuItem {
 const menuItems: MenuItem[] = [
   { title: '首页', href: '/', icon: <Home className="h-4 w-4" /> },
   { title: '阅读博客', href: '/blog', icon: <BookOpen className="h-4 w-4" /> },
+  { title: '算法可视化', href: '/algorithms', icon: <Activity className="h-4 w-4" /> },
 ]
 
 export function Menus({ className, vertical = false }: { className?: string; vertical?: boolean }) {
@@ -43,7 +44,7 @@ export function Menus({ className, vertical = false }: { className?: string; ver
             'hover:before:w-full',
             isActive(item.href || '') && 'text-foreground bg-accent/50 before:w-full',
             vertical &&
-              'w-full px-4 py-3 before:top-0 before:bottom-auto before:left-0 before:h-full before:w-0.5 hover:before:h-full'
+            'w-full px-4 py-3 before:top-0 before:bottom-auto before:left-0 before:h-full before:w-0.5 hover:before:h-full'
           )}
         >
           <span className={cn('transition-transform duration-200', 'group-hover:scale-110')}>
