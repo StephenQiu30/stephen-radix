@@ -80,9 +80,9 @@ export function MarkdownEditor({
   return (
     <div
       className={cn(
-        'flex flex-1 flex-col overflow-hidden rounded-xl border border-border/40 bg-card/30 shadow-sm transition-all duration-300',
+        'border-border/40 bg-card/30 flex flex-1 flex-col overflow-hidden rounded-xl border shadow-sm transition-all duration-300',
         isFullscreen &&
-        'fixed inset-0 z-50 h-screen w-screen rounded-none border-none bg-background',
+          'bg-background fixed inset-0 z-50 h-screen w-screen rounded-none border-none',
         className
       )}
     >

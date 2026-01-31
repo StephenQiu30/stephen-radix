@@ -130,14 +130,14 @@ export default function BlogPage() {
         >
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             {/* Tab Switcher */}
-            <div className="bg-muted/50 flex p-1 rounded-xl">
+            <div className="bg-muted/50 flex rounded-xl p-1">
               <button
                 onClick={() => setActiveTab('latest')}
                 className={cn(
-                  "rounded-lg px-4 py-1.5 text-sm font-medium transition-all duration-300",
+                  'rounded-lg px-4 py-1.5 text-sm font-medium transition-all duration-300',
                   activeTab === 'latest'
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 最新发布
@@ -145,10 +145,10 @@ export default function BlogPage() {
               <button
                 onClick={() => setActiveTab('popular')}
                 className={cn(
-                  "rounded-lg px-4 py-1.5 text-sm font-medium transition-all duration-300",
+                  'rounded-lg px-4 py-1.5 text-sm font-medium transition-all duration-300',
                   activeTab === 'popular'
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 热门精选
@@ -169,11 +169,9 @@ export default function BlogPage() {
                   />
                 </form>
               </div>
-              <div className="h-4 w-[1px] bg-border/50 mx-1 hidden sm:block" />
+              <div className="bg-border/50 mx-1 hidden h-4 w-[1px] sm:block" />
               <Link href="/blog/create">
-                <Button
-                  className="h-9 rounded-xl px-4 shadow-sm"
-                >
+                <Button className="h-9 rounded-xl px-4 shadow-sm">
                   <Plus className="mr-2 h-4 w-4" />
                   写文章
                 </Button>

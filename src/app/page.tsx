@@ -3,16 +3,7 @@
 import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
-import {
-  Sparkles,
-  ArrowRight,
-  Code2,
-  Cpu,
-  BarChart3,
-  GitBranch,
-  Layers,
-  Zap,
-} from 'lucide-react'
+import { Sparkles, ArrowRight, Code2, Cpu, BarChart3, GitBranch, Layers, Zap } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import SortingVisualizer from '@/components/algorithms/sorting-visualizer'
@@ -74,7 +65,7 @@ export default function AlgorithmLandingPage() {
   return (
     <div className="bg-background selection:bg-primary/20 min-h-screen font-sans">
       {/* Hero Section */}
-      <section className="relative flex min-h-screen flex-col items-center pt-24 pb-12 px-6 overflow-hidden">
+      <section className="relative flex min-h-screen flex-col items-center overflow-hidden px-6 pt-24 pb-12">
         {/* Background Gradients */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute top-[-20%] left-[-10%] h-[50vw] w-[50vw] rounded-full bg-blue-500/20 opacity-40 mix-blend-screen blur-[120px]" />
@@ -109,10 +100,11 @@ export default function AlgorithmLandingPage() {
             variants={fadeInUp}
             className="text-muted-foreground mx-auto max-w-2xl text-xl leading-relaxed tracking-tight md:text-2xl"
           >
-            Experience the elegance of computer science. Interactive visualizations that help you understand sorting algorithms intuitively.
+            Experience the elegance of computer science. Interactive visualizations that help you
+            understand sorting algorithms intuitively.
           </motion.p>
 
-          <motion.div variants={fadeInUp} className="w-full mt-8">
+          <motion.div variants={fadeInUp} className="mt-8 w-full">
             <SortingVisualizer />
           </motion.div>
 
@@ -130,22 +122,24 @@ export default function AlgorithmLandingPage() {
               className="h-14 rounded-full border-white/20 px-8 text-lg backdrop-blur-sm transition-all hover:bg-white/10"
               asChild
             >
-              <Link href="https://github.com/stephenqiu/stephen-radix" target="_blank">View on GitHub</Link>
+              <Link href="https://github.com/stephenqiu/stephen-radix" target="_blank">
+                View on GitHub
+              </Link>
             </Button>
           </motion.div>
         </motion.div>
       </section>
 
       {/* Bento Grid Features Section */}
-      <section id="features" className="bg-secondary/30 px-6 py-32 relative">
-        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[length:32px_32px]" />
-        <div className="container mx-auto max-w-6xl relative z-10">
+      <section id="features" className="bg-secondary/30 relative px-6 py-32">
+        <div className="bg-grid-white/[0.02] absolute inset-0 bg-[length:32px_32px]" />
+        <div className="relative z-10 container mx-auto max-w-6xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="mb-16 md:mb-24 text-center"
+            className="mb-16 text-center md:mb-24"
           >
             <h2 className="mb-6 text-4xl font-semibold tracking-tighter md:text-6xl">
               Why visualize? <br />
@@ -211,7 +205,8 @@ export default function AlgorithmLandingPage() {
                   <span className="text-muted-foreground">students and pros.</span>
                 </h2>
                 <p className="text-muted-foreground text-xl leading-relaxed">
-                  Whether you are learning computer science fundamentals or analyzing algorithm efficiency, our tool provides the clarity you need.
+                  Whether you are learning computer science fundamentals or analyzing algorithm
+                  efficiency, our tool provides the clarity you need.
                 </p>
 
                 <ul className="space-y-4 pt-4">
@@ -246,18 +241,25 @@ export default function AlgorithmLandingPage() {
               className="relative"
             >
               {/* Simplified graphic or code snippet */}
-              <div className="relative aspect-square overflow-hidden rounded-[3rem] border border-white/10 bg-gradient-to-tr from-gray-900 to-gray-800 p-8 shadow-2xl flex items-center justify-center">
+              <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-[3rem] border border-white/10 bg-gradient-to-tr from-gray-900 to-gray-800 p-8 shadow-2xl">
                 <div className="text-left font-mono text-sm leading-relaxed text-blue-300 opacity-80">
-                  <p className="text-purple-400">const<span className="text-white"> bubbleSort</span> = <span className="text-yellow-400">async</span> (arr) =&gt; {'{'}</p>
+                  <p className="text-purple-400">
+                    const<span className="text-white"> bubbleSort</span> ={' '}
+                    <span className="text-yellow-400">async</span> (arr) =&gt; {'{'}
+                  </p>
                   <p className="pl-4">let swapped;</p>
                   <p className="pl-4">do {'{'}</p>
-                  <p className="pl-8">swapped = <span className="text-red-400">false</span>;</p>
+                  <p className="pl-8">
+                    swapped = <span className="text-red-400">false</span>;
+                  </p>
                   <p className="pl-8">for (let i = 0; i &lt; arr.length - 1; i++) {'{'}</p>
                   <p className="pl-12">if (arr[i] &gt; arr[i + 1]) {'{'}</p>
                   <p className="pl-16">let temp = arr[i];</p>
                   <p className="pl-16">arr[i] = arr[i + 1];</p>
                   <p className="pl-16">arr[i + 1] = temp;</p>
-                  <p className="pl-16">swapped = <span className="text-green-400">true</span>;</p>
+                  <p className="pl-16">
+                    swapped = <span className="text-green-400">true</span>;
+                  </p>
                   <p className="pl-12">{'}'}</p>
                   <p className="pl-8">{'}'}</p>
                   <p className="pl-4">{'}'} while (swapped);</p>
@@ -280,9 +282,7 @@ export default function AlgorithmLandingPage() {
             transition={{ duration: 0.8 }}
             className="space-y-8"
           >
-            <h2 className="text-5xl font-semibold tracking-tighter md:text-7xl">
-              Ready to learn?
-            </h2>
+            <h2 className="text-5xl font-semibold tracking-tighter md:text-7xl">Ready to learn?</h2>
             <p className="text-muted-foreground mx-auto max-w-2xl text-xl md:text-2xl">
               Start visualizing sorting algorithms today with our interactive tool.
             </p>

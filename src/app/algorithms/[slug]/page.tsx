@@ -87,22 +87,33 @@ export default function AlgorithmDetailPage({ params }: { params: { slug: string
                 {/* Simplified Characteristics */}
                 <div className="grid grid-cols-2 gap-4 pt-4 sm:flex sm:gap-8">
                   <div className="space-y-1">
-                    <div className="text-muted-foreground flex items-center justify-center gap-2 text-sm uppercase tracking-wider sm:justify-start">
+                    <div className="text-muted-foreground flex items-center justify-center gap-2 text-sm tracking-wider uppercase sm:justify-start">
                       <Clock className="h-4 w-4" /> Avg Time
                     </div>
-                    <div className="text-2xl font-medium tracking-tight text-foreground">{algorithm.averageCase}</div>
+                    <div className="text-foreground text-2xl font-medium tracking-tight">
+                      {algorithm.averageCase}
+                    </div>
                   </div>
                   <div className="space-y-1">
-                    <div className="text-muted-foreground flex items-center justify-center gap-2 text-sm uppercase tracking-wider sm:justify-start">
+                    <div className="text-muted-foreground flex items-center justify-center gap-2 text-sm tracking-wider uppercase sm:justify-start">
                       <HardDrive className="h-4 w-4" /> Space
                     </div>
-                    <div className="text-2xl font-medium tracking-tight text-foreground">{algorithm.spaceComplexity}</div>
+                    <div className="text-foreground text-2xl font-medium tracking-tight">
+                      {algorithm.spaceComplexity}
+                    </div>
                   </div>
                   <div className="space-y-1">
-                    <div className="text-muted-foreground flex items-center justify-center gap-2 text-sm uppercase tracking-wider sm:justify-start">
-                      {algorithm.stable ? <CheckCircle className="h-4 w-4" /> : <XCircle className="h-4 w-4" />} Stability
+                    <div className="text-muted-foreground flex items-center justify-center gap-2 text-sm tracking-wider uppercase sm:justify-start">
+                      {algorithm.stable ? (
+                        <CheckCircle className="h-4 w-4" />
+                      ) : (
+                        <XCircle className="h-4 w-4" />
+                      )}{' '}
+                      Stability
                     </div>
-                    <div className="text-2xl font-medium tracking-tight text-foreground">{algorithm.stable ? 'Stable' : 'Unstable'}</div>
+                    <div className="text-foreground text-2xl font-medium tracking-tight">
+                      {algorithm.stable ? 'Stable' : 'Unstable'}
+                    </div>
                   </div>
                 </div>
 
@@ -118,18 +129,14 @@ export default function AlgorithmDetailPage({ params }: { params: { slug: string
               </motion.div>
             </div>
           </div>
-
         </div>
-
-
-
-      </main >
+      </main>
 
       <AlgorithmVisualizerDialog
         algorithm={algorithm}
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
       />
-    </div >
+    </div>
   )
 }

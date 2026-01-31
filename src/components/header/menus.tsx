@@ -28,36 +28,39 @@ export function Menus({ className, vertical = false }: { className?: string; ver
   return (
     <nav
       className={cn(
-        'relative flex items-center p-1 bg-black/5 dark:bg-white/10 backdrop-blur-md rounded-full border border-black/5 dark:border-white/5',
-        vertical ? 'flex-col w-full rounded-xl' : 'flex-row',
+        'relative flex items-center rounded-full border border-black/5 bg-black/5 p-1 backdrop-blur-md dark:border-white/5 dark:bg-white/10',
+        vertical ? 'w-full flex-col rounded-xl' : 'flex-row',
         className
       )}
     >
-      {menuItems.map((item) => {
+      {menuItems.map(item => {
         const active = isActive(item.href || '')
         return (
           <Link
             key={item.href}
             href={item.href || '#'}
             className={cn(
-              'relative z-10 flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium transition-colors duration-200 outline-none rounded-full',
+              'relative z-10 flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 outline-none',
               vertical ? 'w-full justify-start rounded-lg' : '',
-              active
-                ? 'text-foreground'
-                : 'text-muted-foreground hover:text-foreground/80'
+              active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground/80'
             )}
           >
             {active && (
               <motion.div
                 layoutId="active-menu-pill"
                 className={cn(
-                  "absolute inset-0 z-[-1] bg-background shadow-sm border border-black/5 dark:border-white/5",
-                  vertical ? "rounded-lg" : "rounded-full"
+                  'bg-background absolute inset-0 z-[-1] border border-black/5 shadow-sm dark:border-white/5',
+                  vertical ? 'rounded-lg' : 'rounded-full'
                 )}
                 transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
               />
             )}
-            <span className={cn("relative z-10", active && "scale-105 transition-transform duration-200")}>
+            <span
+              className={cn(
+                'relative z-10',
+                active && 'scale-105 transition-transform duration-200'
+              )}
+            >
               {item.icon}
             </span>
             <span className="relative z-10">{item.title}</span>

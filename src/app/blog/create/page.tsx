@@ -132,16 +132,11 @@ export default function CreatePostPage() {
 
       <div className="flex flex-1 overflow-auto">
         <div className="mx-auto flex w-full max-w-4xl flex-col px-8 py-10">
-
           {/* Cover Image Area */}
           <div className="group relative mb-8">
             {cover ? (
               <div className="relative aspect-[21/9] w-full overflow-hidden rounded-2xl shadow-sm">
-                <img
-                  src={cover}
-                  alt="Cover"
-                  className="h-full w-full object-cover"
-                />
+                <img src={cover} alt="Cover" className="h-full w-full object-cover" />
                 <div className="absolute top-4 right-4 opacity-0 transition-opacity group-hover:opacity-100">
                   <div className="bg-background/80 flex gap-2 rounded-lg p-1 backdrop-blur-md">
                     <label className="hover:bg-muted inline-flex cursor-pointer items-center justify-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors">
@@ -150,7 +145,7 @@ export default function CreatePostPage() {
                         type="file"
                         className="hidden"
                         accept="image/*"
-                        onChange={(e) => {
+                        onChange={e => {
                           const file = e.target.files?.[0]
                           if (file) handleUploadCover(file)
                         }}
@@ -166,7 +161,7 @@ export default function CreatePostPage() {
                 </div>
               </div>
             ) : (
-              <div className="flex gap-2 mb-4">
+              <div className="mb-4 flex gap-2">
                 <label className="text-muted-foreground hover:bg-secondary/50 inline-flex cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors">
                   <ImageIcon className="h-4 w-4" />
                   添加封面
@@ -174,7 +169,7 @@ export default function CreatePostPage() {
                     type="file"
                     className="hidden"
                     accept="image/*"
-                    onChange={(e) => {
+                    onChange={e => {
                       const file = e.target.files?.[0]
                       if (file) handleUploadCover(file)
                     }}
@@ -195,7 +190,7 @@ export default function CreatePostPage() {
                 e.target.style.height = e.target.scrollHeight + 'px'
               }}
               rows={1}
-              className="placeholder:text-muted-foreground/40 w-full resize-none overflow-hidden bg-transparent text-5xl font-bold leading-tight tracking-tight focus:outline-none md:text-6xl"
+              className="placeholder:text-muted-foreground/40 w-full resize-none overflow-hidden bg-transparent text-5xl leading-tight font-bold tracking-tight focus:outline-none md:text-6xl"
             />
           </div>
 
@@ -204,9 +199,9 @@ export default function CreatePostPage() {
             <div className="text-muted-foreground/50 text-lg">#</div>
             <input
               value={tags}
-              onChange={(e) => setTags(e.target.value)}
+              onChange={e => setTags(e.target.value)}
               placeholder="添加标签 (用逗号分隔)..."
-              className="placeholder:text-muted-foreground/40 w-full bg-transparent text-lg text-muted-foreground focus:text-foreground font-medium focus:outline-none"
+              className="placeholder:text-muted-foreground/40 text-muted-foreground focus:text-foreground w-full bg-transparent text-lg font-medium focus:outline-none"
             />
           </div>
 
@@ -216,7 +211,7 @@ export default function CreatePostPage() {
               value={content}
               onChange={setContent}
               placeholder="开始讲述你的故事..."
-              className="min-h-[500px] border-none bg-transparent shadow-none px-0"
+              className="min-h-[500px] border-none bg-transparent px-0 shadow-none"
               viewMode="edit"
             />
           </div>
