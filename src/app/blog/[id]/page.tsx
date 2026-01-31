@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion, useScroll, useSpring } from 'framer-motion'
-import { MarkdownRender, MarkdownToc, PostHeader } from '@/components/blog'
+import { MarkdownRender, MarkdownToc, PostHeader, CommentSection } from '@/components/blog'
 import { Button } from '@/components/ui/button'
 import { getPostVoById } from '@/api/postController'
 import { doThumb } from '@/api/postThumbController'
@@ -199,40 +199,8 @@ export default function PostDetailPage() {
                   </Button>
                 </div>
 
-                {/* Comment Section Placeholder */}
-                <div className="space-y-6">
-                  <div className="flex items-center gap-2">
-                    <MessageSquare className="text-primary h-5 w-5" />
-                    <h3 className="text-xl font-semibold">评论</h3>
-                  </div>
-
-                  {/* Comment Input Placeholder */}
-                  <div className="border-border/40 bg-background/50 focus-within:ring-primary/20 hover:border-border/80 rounded-2xl border p-4 backdrop-blur-sm transition-all focus-within:ring-2">
-                    <div className="flex gap-4">
-                      <div className="bg-muted flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
-                        <span className="text-xm text-muted-foreground font-medium">我</span>
-                      </div>
-                      <div className="flex-1 space-y-3">
-                        <div className="text-muted-foreground/60 h-20 cursor-text p-2 text-sm">
-                          写下你的评论...
-                        </div>
-                        <div className="flex justify-end">
-                          <Button size="sm" disabled className="rounded-full px-6">
-                            发布
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Empty State */}
-                  <div className="text-muted-foreground/50 flex flex-col items-center justify-center py-12 text-center">
-                    <div className="bg-secondary/30 mb-3 rounded-full p-4">
-                      <MessageSquare className="h-6 w-6 opacity-50" />
-                    </div>
-                    <p className="text-sm">暂无评论，快来抢沙发吧</p>
-                  </div>
-                </div>
+                {/* Comment Section */}
+                <CommentSection postId={postId} />
               </div>
             </div>
           </article>
