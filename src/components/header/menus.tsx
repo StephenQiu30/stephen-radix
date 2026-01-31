@@ -13,18 +13,28 @@ export interface MenuItem {
   icon?: React.ReactNode
   children?: MenuItem[]
   badge?: string
+  activePrefix?: string
 }
 
 const menuItems: MenuItem[] = [
   { title: '首页', href: '/', icon: <Home className="h-4 w-4" /> },
-  { title: '阅读博客', href: '/blog', icon: <BookOpen className="h-4 w-4" /> },
+  { title: '阅读博客', href: '/blog', activePrefix: '/blog', icon: <BookOpen className="h-4 w-4" /> },
   { title: '算法可视化', href: '/algorithms', icon: <Activity className="h-4 w-4" /> },
-  { title: '我的空间', href: '/user/profile', icon: <User className="h-4 w-4" /> },
+  { title: '我的空间', href: '/user/profile', activePrefix: '/user', icon: <User className="h-4 w-4" /> },
 ]
 
 export function Menus({ className, vertical = false }: { className?: string; vertical?: boolean }) {
   const pathname = usePathname()
-  const isActive = (href: string) => pathname === href
+
+  const isActive = (item: MenuItem) => {
+    if (item.href === '/') {
+      return pathname === '/'
+    }
+    if (item.activePrefix) {
+      return pathname.startsWith(item.activePrefix)
+    }
+    return item.href ? pathname.startsWith(item.href) : false
+  }
 
   return (
     <nav
@@ -35,7 +45,7 @@ export function Menus({ className, vertical = false }: { className?: string; ver
       )}
     >
       {menuItems.map(item => {
-        const active = isActive(item.href || '')
+        const active = isActive(item)
         return (
           <Link
             key={item.href}

@@ -94,47 +94,60 @@ export default function BlogPage() {
   }
 
   return (
-    <div className="bg-background text-foreground min-h-screen">
+    <div className="bg-background text-foreground min-h-screen relative overflow-hidden">
+      {/* Background Gradients - Matches Homepage */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute top-[-20%] left-[20%] h-[60vw] w-[60vw] rounded-full bg-blue-400/10 opacity-50 blur-[120px]" />
+        <div className="absolute right-[20%] top-[-10%] h-[50vw] w-[50vw] rounded-full bg-indigo-400/10 opacity-50 blur-[120px]" />
+      </div>
+
+      {/* Subtle Grid Pattern */}
+      <div className="pointer-events-none absolute inset-0 bg-grid-black/[0.02] dark:bg-grid-white/[0.02]" />
+
       <motion.div
-        className="mx-auto w-full max-w-[1400px] px-6 pt-16 pb-20 md:pt-24 lg:px-8"
+        className="mx-auto w-full max-w-[1400px] px-6 pt-32 pb-20 md:pt-40 lg:px-8 relative z-10"
         initial="hidden"
         animate="visible"
         variants={containerVariants}
       >
         {/* 页面标题区 */}
-        <div className="mb-12 flex flex-col items-center text-center">
+        <div className="mb-24 flex flex-col items-center text-center relative z-10">
           <motion.div
             variants={itemVariants}
-            className="bg-primary/10 text-primary mb-6 flex h-16 w-16 items-center justify-center rounded-2xl"
+            className="mb-6 inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 backdrop-blur-md"
           >
-            <BookOpen className="h-8 w-8" />
+            BLOG & INSIGHTS
           </motion.div>
+
           <motion.h1
             variants={itemVariants}
-            className="mb-4 max-w-4xl text-4xl font-bold tracking-tight sm:text-6xl"
+            className="mb-8 max-w-4xl text-5xl font-bold tracking-tight sm:text-7xl md:text-8xl"
           >
-            文章与见解
+            <span className="bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">
+              文章与见解
+            </span>
           </motion.h1>
+
           <motion.p
             variants={itemVariants}
-            className="text-muted-foreground max-w-2xl text-lg leading-relaxed"
+            className="text-muted-foreground max-w-2xl text-lg leading-relaxed font-normal md:text-xl text-balance"
           >
-            探索来自我们团队和社区的最新更新、深度文章和教程。
+            探索来自我们团队和社区的最新更新、深度技术文章和开发教程。
           </motion.p>
         </div>
 
         {/* 控制栏：搜索与筛选 */}
         <motion.div
           variants={itemVariants}
-          className="bg-background/80 border-border/40 sticky top-16 z-30 mb-8 rounded-2xl border px-4 py-3 backdrop-blur-xl"
+          className="sticky top-20 z-30 mb-12 mx-auto max-w-4xl"
         >
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="bg-background/60 border-border/40 backdrop-blur-xl shadow-lg border rounded-full p-2 flex flex-col sm:flex-row gap-2 transition-all hover:border-border/60 hover:shadow-xl">
             {/* Tab Switcher */}
-            <div className="bg-muted/50 flex rounded-xl p-1">
+            <div className="bg-muted/50 p-1 rounded-full flex shrink-0">
               <button
                 onClick={() => setActiveTab('latest')}
                 className={cn(
-                  'rounded-lg px-4 py-1.5 text-sm font-medium transition-all duration-300',
+                  'rounded-full px-6 py-2 text-sm font-medium transition-all duration-300',
                   activeTab === 'latest'
                     ? 'bg-background text-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-foreground'
@@ -145,7 +158,7 @@ export default function BlogPage() {
               <button
                 onClick={() => setActiveTab('popular')}
                 className={cn(
-                  'rounded-lg px-4 py-1.5 text-sm font-medium transition-all duration-300',
+                  'rounded-full px-6 py-2 text-sm font-medium transition-all duration-300',
                   activeTab === 'popular'
                     ? 'bg-background text-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-foreground'
@@ -155,28 +168,27 @@ export default function BlogPage() {
               </button>
             </div>
 
-            {/* Search & Create */}
-            <div className="flex items-center gap-3">
-              <div className="relative flex-1 sm:w-64">
-                <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-                <form onSubmit={handleSearch}>
-                  <Input
-                    type="text"
-                    placeholder="搜索文章..."
-                    value={searchText}
-                    onChange={e => setSearchText(e.target.value)}
-                    className="border-border/50 bg-secondary/30 focus:bg-background h-9 rounded-xl pl-9 transition-all"
-                  />
-                </form>
-              </div>
-              <div className="bg-border/50 mx-1 hidden h-4 w-[1px] sm:block" />
-              <Link href="/blog/create">
-                <Button className="h-9 rounded-xl px-4 shadow-sm">
-                  <Plus className="mr-2 h-4 w-4" />
-                  写文章
-                </Button>
-              </Link>
+            {/* Search */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <form onSubmit={handleSearch} className="h-full">
+                <Input
+                  type="text"
+                  placeholder="搜索文章..."
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  className="w-full h-full rounded-full border-none bg-transparent hover:bg-muted/30 focus:bg-muted/50 pl-10 pr-4 transition-colors"
+                />
+              </form>
             </div>
+
+            {/* Create Button */}
+            <Link href="/blog/create" className="shrink-0">
+              <Button className="rounded-full h-full px-6 w-full sm:w-auto shadow-none bg-primary text-primary-foreground hover:opacity-90 transition-opacity">
+                <Plus className="w-4 h-4 mr-2" />
+                写文章
+              </Button>
+            </Link>
           </div>
         </motion.div>
 

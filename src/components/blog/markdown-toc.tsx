@@ -25,15 +25,25 @@ export function MarkdownToc({ content }: TOCProps) {
   React.useEffect(() => {
     const headingRegex = /^(#{1,4})\s+(.+)$/gm
     const extractedHeadings: Heading[] = []
+    const slugCounts: Record<string, number> = {}
     let match
 
     while ((match = headingRegex.exec(content)) !== null) {
       const level = match[1].length
       const text = match[2]
-      const id = text
+
+      let id = text
         .toLowerCase()
+        .trim()
         .replace(/\s+/g, '-')
         .replace(/[^\w\u4e00-\u9fa5-]+/g, '')
+
+      if (slugCounts[id]) {
+        slugCounts[id]++
+        id = `${id}-${slugCounts[id] - 1}`
+      } else {
+        slugCounts[id] = 1
+      }
 
       extractedHeadings.push({ id, text, level })
     }

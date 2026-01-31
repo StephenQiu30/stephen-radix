@@ -16,6 +16,37 @@ export function CommentSection({ postId }: CommentSectionProps) {
     const [total, setTotal] = React.useState(0)
     const [page, setPage] = React.useState(1)
 
+    // Helper to build comment tree
+    const buildCommentTree = (comments: API.PostCommentVO[]) => {
+        const commentMap = new Map<any, API.PostCommentVO>()
+        const roots: API.PostCommentVO[] = []
+
+        // First pass: create a map of all comments
+        comments.forEach(comment => {
+            // Ensure children array exists
+            const commentWithChildren = { ...comment, children: [] }
+            commentMap.set(comment.id, commentWithChildren)
+        })
+
+        // Second pass: link children to parents
+        commentMap.forEach(comment => {
+            if (comment.parentId && Number(comment.parentId) !== 0 && commentMap.has(comment.parentId)) {
+                const parent = commentMap.get(comment.parentId)
+                if (parent) {
+                    if (!parent.children) parent.children = []
+                    parent.children.push(comment)
+                }
+            } else {
+                roots.push(comment)
+            }
+        })
+
+        // Sort roots by createTime (newest first)
+        return roots.sort((a, b) => {
+            return new Date(b.createTime || '').getTime() - new Date(a.createTime || '').getTime()
+        })
+    }
+
     const fetchComments = React.useCallback(async () => {
         try {
             // Sort by createTime descending to show newest first
@@ -25,7 +56,9 @@ export function CommentSection({ postId }: CommentSectionProps) {
                 pageSize: 20,
             })) as any
             if (res.code === 0 && res.data) {
-                setComments(res.data.records || [])
+                const flatComments = res.data.records || []
+                const treeComments = buildCommentTree(flatComments)
+                setComments(treeComments)
                 setTotal(res.data.total || 0)
             }
         } catch (error) {

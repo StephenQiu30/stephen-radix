@@ -78,8 +78,8 @@ export function BasicLayout({ children, className }: BasicLayoutProps) {
         </div>
       </header>
 
-      <main className={cn('flex-1 p-4 md:p-6 lg:p-8', className)}>
-        <div className="container mx-auto max-w-7xl">{children}</div>
+      <main className={cn('flex-1', className)}>
+        {children}
       </main>
     </div>
   )

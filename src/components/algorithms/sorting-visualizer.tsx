@@ -51,7 +51,7 @@ const quickSort = async (
       while (tempArr[j] > pivot) j--
       if (i <= j) {
         if (signal.aborted) return -1
-        ;[tempArr[i], tempArr[j]] = [tempArr[j], tempArr[i]]
+          ;[tempArr[i], tempArr[j]] = [tempArr[j], tempArr[i]]
         setArr([...tempArr])
         await new Promise(resolve => setTimeout(resolve, speed))
         i++
@@ -147,9 +147,9 @@ const mergeSort = async (
 }
 
 const ALGORITHMS = [
-  { name: 'Bubble Sort', func: bubbleSort },
-  { name: 'Quick Sort', func: quickSort },
-  { name: 'Merge Sort', func: mergeSort },
+  { name: '冒泡排序', func: bubbleSort },
+  { name: '快速排序', func: quickSort },
+  { name: '归并排序', func: mergeSort },
 ]
 
 export default function SortingVisualizer() {
@@ -255,7 +255,7 @@ export default function SortingVisualizer() {
             <button
               onClick={handleReset}
               className="rounded-full border border-white/10 bg-white/10 p-3 text-white backdrop-blur-md transition-all hover:scale-105 hover:bg-white/20 active:scale-95"
-              title="Reset Data"
+              title="重置数据"
             >
               <RotateCcw size={20} />
             </button>
@@ -265,7 +265,7 @@ export default function SortingVisualizer() {
                 'rounded-full border border-white/10 p-3 text-white shadow-lg backdrop-blur-md transition-all hover:scale-105 active:scale-95',
                 sorting ? 'bg-red-500/80 hover:bg-red-500' : 'bg-primary hover:bg-primary/90'
               )}
-              title={sorting ? 'Stop' : 'Start Sorting'}
+              title={sorting ? '停止' : '开始排序'}
             >
               {sorting ? (
                 <Pause size={20} fill="currentColor" />
@@ -282,25 +282,25 @@ export default function SortingVisualizer() {
         <div className="space-y-2">
           <h3 className="flex items-center justify-center gap-2 text-lg font-semibold sm:justify-start">
             <BarChart3 className="text-primary h-5 w-5" />
-            Real-time Analysis
+            实时分析
           </h3>
           <p className="text-muted-foreground text-sm">
-            Visualize algorithms in action. Watch how data is processed step-by-step.
+            可视化算法运行。逐步观察数据处理过程。
           </p>
         </div>
         <div className="space-y-2">
           <h3 className="flex items-center justify-center gap-2 text-lg font-semibold sm:justify-start">
             <Settings2 className="text-primary h-5 w-5" />
-            Customizable
+            完全可定制
           </h3>
           <p className="text-muted-foreground text-sm">
-            Adjust speed and data size to understand complexity at your own pace.
+            调整速度和数据量，按需理解算法复杂度。
           </p>
         </div>
         <div className="flex items-center justify-center gap-4 sm:justify-end">
           <div className="flex flex-col items-center gap-1 sm:items-end">
             <span className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
-              Speed
+              速度
             </span>
             <input
               type="range"
@@ -314,7 +314,7 @@ export default function SortingVisualizer() {
           </div>
           <div className="flex flex-col items-center gap-1 sm:items-end">
             <span className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
-              Items
+              数据量
             </span>
             <input
               type="range"
