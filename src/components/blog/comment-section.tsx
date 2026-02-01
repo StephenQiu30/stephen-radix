@@ -8,9 +8,10 @@ import { listPostCommentVoByPage } from '@/api/postCommentController'
 
 interface CommentSectionProps {
   postId: string
+  onTotalChange?: (total: number) => void
 }
 
-export function CommentSection({ postId }: CommentSectionProps) {
+export function CommentSection({ postId, onTotalChange }: CommentSectionProps) {
   const [comments, setComments] = React.useState<API.PostCommentVO[]>([])
   const [loading, setLoading] = React.useState(true)
   const [total, setTotal] = React.useState(0)
@@ -60,6 +61,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
         const treeComments = buildCommentTree(flatComments)
         setComments(treeComments)
         setTotal(res.data.total || 0)
+        onTotalChange?.(res.data.total || 0)
       }
     } catch (error) {
       console.error('Failed to fetch comments:', error)

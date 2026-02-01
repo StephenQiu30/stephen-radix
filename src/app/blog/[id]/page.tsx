@@ -32,6 +32,7 @@ export default function PostDetailPage() {
   const [hasFavour, setHasFavour] = React.useState(false)
   const [thumbNum, setThumbNum] = React.useState(0)
   const [favourNum, setFavourNum] = React.useState(0)
+  const [commentNum, setCommentNum] = React.useState(0)
 
   // Scroll Progress
   const { scrollYProgress } = useScroll()
@@ -209,7 +210,7 @@ export default function PostDetailPage() {
 
                 {/* Comment Section */}
                 <div id="comments" className="scroll-mt-24">
-                  <CommentSection postId={postId} />
+                  <CommentSection postId={postId} onTotalChange={setCommentNum} />
                 </div>
               </div>
             </div>
@@ -234,6 +235,9 @@ export default function PostDetailPage() {
         onComment={() => {
           document.getElementById('comments')?.scrollIntoView({ behavior: 'smooth' })
         }}
+        commentNum={commentNum}
+        thumbNum={thumbNum}
+        favourNum={favourNum}
       />
     </div>
   )
