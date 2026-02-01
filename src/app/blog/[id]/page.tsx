@@ -169,7 +169,7 @@ export default function PostDetailPage() {
             <div className="border-border/40 mt-16 border-t pt-10">
               <div className="flex flex-col gap-8">
                 {/* User Profile Card */}
-                <div className="flex items-center justify-between gap-6 rounded-[2rem] border border-white/10 bg-white/50 p-6 shadow-sm backdrop-blur-xl transition-all hover:shadow-2xl dark:bg-white/5 sm:p-8">
+                <div className="bg-secondary/30 flex items-center justify-between gap-6 rounded-[2rem] border border-white/10 p-6 shadow-sm backdrop-blur-xl transition-all hover:shadow-2xl sm:p-8">
                   <Link href={`/user/${post.userVO?.id}`} className="block flex-1">
                     <div className="flex items-center gap-6">
                       <div className="border-background relative h-20 w-20 overflow-hidden rounded-full border-2 shadow-sm">

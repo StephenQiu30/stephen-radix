@@ -48,7 +48,7 @@ export function PostActionBar({
 
     return (
         <div className={cn("fixed bottom-8 left-1/2 z-40 -translate-x-1/2", className)}>
-            <div className="flex items-center gap-2 rounded-full border border-white/20 bg-white/70 p-2 shadow-2xl ring-1 ring-black/5 backdrop-blur-2xl dark:border-white/10 dark:bg-black/70">
+            <div className="bg-secondary/30 flex items-center gap-2 rounded-full border border-white/20 p-2 shadow-2xl ring-1 ring-black/5 backdrop-blur-2xl dark:border-white/10 dark:ring-white/10">
                 <Button
                     variant="ghost"
                     size="icon"

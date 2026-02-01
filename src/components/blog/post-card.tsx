@@ -36,7 +36,7 @@ export function PostCard({ post, className }: PostCardProps) {
 
   return (
     <motion.div initial="initial" whileHover="hover" className={cn('group h-full', className)}>
-      <div className="relative flex h-full flex-col overflow-hidden rounded-[2rem] border border-black/5 bg-white/50 shadow-sm backdrop-blur-2xl transition-all duration-500 hover:bg-white/60 hover:shadow-2xl dark:border-white/5 dark:bg-black/20 dark:hover:bg-black/30">
+      <div className="bg-secondary/30 hover:bg-secondary/50 relative flex h-full flex-col overflow-hidden rounded-[32px] border-none shadow-none backdrop-blur-sm transition-all duration-300">
         {/* Main Card Link (Overlay) */}
         <Link href={`/blog/${id}`} className="absolute inset-0 z-0">
           <span className="sr-only">View Post</span>
@@ -54,26 +54,14 @@ export function PostCard({ post, className }: PostCardProps) {
               className={cn(
                 'absolute inset-0 flex flex-col items-center justify-center p-8 text-center transition-colors duration-500',
                 // Minimalist backgrounds: softly tinted grays/whites or extremely subtle gradients
-                [
-                  'bg-slate-50 dark:bg-slate-900/50',
-                  'bg-gray-50 dark:bg-gray-900/50',
-                  'bg-zinc-50 dark:bg-zinc-900/50',
-                  'bg-neutral-50 dark:bg-neutral-900/50',
-                  'bg-stone-50 dark:bg-stone-900/50',
-                ][(typeof id === 'number' ? id : title?.length || 0) % 5]
+                'bg-secondary/20'
               )}
             >
               {/* Very Subtle Gradient Overlay for depth */}
               <div
                 className={cn(
                   'absolute inset-0 bg-gradient-to-br opacity-30',
-                  [
-                    'from-blue-100/50 to-transparent dark:from-blue-900/20',
-                    'from-emerald-100/50 to-transparent dark:from-emerald-900/20',
-                    'from-orange-100/50 to-transparent dark:from-orange-900/20',
-                    'from-rose-100/50 to-transparent dark:from-rose-900/20',
-                    'from-violet-100/50 to-transparent dark:from-violet-900/20',
-                  ][(typeof id === 'number' ? id : title?.length || 0) % 5]
+                  'from-primary/10 to-transparent dark:from-primary/20'
                 )}
               />
 
@@ -159,6 +147,6 @@ export function PostCard({ post, className }: PostCardProps) {
           </div>
         </div>
       </div>
-    </motion.div>
+    </motion.div >
   )
 }
