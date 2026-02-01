@@ -56,7 +56,7 @@ export function BasicLayout({ children, className }: BasicLayoutProps) {
           <div className="flex items-center gap-4">
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
+                <Button variant="ghost" size="icon" className="lg:hidden">
                   <Menu className="h-5 w-5" />
                   <span className="sr-only">Toggle menu</span>
                 </Button>
@@ -70,7 +70,7 @@ export function BasicLayout({ children, className }: BasicLayoutProps) {
             <SiteLogo showText={false} className="sm:hidden" />
           </div>
 
-          <div className="hidden flex-1 justify-center md:flex">
+          <div className="hidden flex-1 justify-center lg:flex">
             <Menus />
           </div>
 

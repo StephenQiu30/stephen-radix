@@ -172,7 +172,7 @@ export default function PostDetailPage() {
             <div className="border-border/40 mt-16 border-t pt-10">
               <div className="flex flex-col gap-8">
                 {/* User Profile Card */}
-                <div className="flex items-center justify-between gap-6 rounded-[2rem] border border-white/10 bg-white/50 p-8 shadow-sm backdrop-blur-xl transition-all hover:shadow-2xl dark:bg-white/5">
+                <div className="flex items-center justify-between gap-6 rounded-[2rem] border border-white/10 bg-white/50 p-6 shadow-sm backdrop-blur-xl transition-all hover:shadow-2xl dark:bg-white/5 sm:p-8">
                   <div className="flex items-center gap-6">
                     <div className="border-background relative h-20 w-20 overflow-hidden rounded-full border-2 shadow-sm">
                       {post.userVO?.userAvatar ? (
@@ -246,7 +246,7 @@ export default function PostDetailPage() {
             className={cn(
               'rounded-full transition-all duration-300 hover:bg-black/5 dark:hover:bg-white/10',
               hasFavour &&
-                'bg-yellow-50 text-yellow-500 hover:text-yellow-600 dark:bg-yellow-950/30'
+              'bg-yellow-50 text-yellow-500 hover:text-yellow-600 dark:bg-yellow-950/30'
             )}
             onClick={handleFavour}
           >

@@ -16,18 +16,22 @@ interface PostCardProps {
 export function PostCard({ post, className }: PostCardProps) {
   const { id, title, content, cover, tags, thumbNum = 0, favourNum = 0, createTime, userVO } = post
 
-  // 生成摘要 (取前 100 个字符)
+  // 生成摘要 (取前 100 个字符，移除 Markdown 符号)
   const excerpt =
-    (content?.replace(/[#*`>\[\]]/g, '') || '').slice(0, 100) +
-    ((content?.length ?? 0) > 100 ? '...' : '')
+    (content
+      ?.replace(/!\[.*?\]\(.*?\)/g, '') // Remove images
+      .replace(/\[([^\]]+)\]\(.*?\)/g, '$1') // Remove links but keep text
+      .replace(/[#*`>~_]/g, '') // Remove other markdown symbols
+      .trim() || ''
+    ).slice(0, 100) + ((content?.length ?? 0) > 100 ? '...' : '')
 
   // 格式化日期
   const formattedDate = createTime
     ? new Date(createTime).toLocaleDateString('zh-CN', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      })
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
     : ''
 
   return (
@@ -103,7 +107,7 @@ export function PostCard({ post, className }: PostCardProps) {
           </div>
 
           {/* 内容区 */}
-          <div className="flex flex-1 flex-col p-6">
+          <div className="flex flex-1 flex-col p-4 sm:p-6">
             {/* 作者和日期 */}
             <div className="text-muted-foreground/60 mb-3 flex items-center justify-between text-xs font-medium tracking-wider uppercase">
               <div className="flex items-center gap-2">
@@ -114,12 +118,12 @@ export function PostCard({ post, className }: PostCardProps) {
             </div>
 
             {/* 标题 */}
-            <h3 className="text-foreground group-hover:text-primary mb-3 line-clamp-2 text-xl font-bold tracking-tight transition-colors duration-300">
+            <h3 className="text-foreground group-hover:text-primary mb-2 line-clamp-2 text-lg font-bold tracking-tight transition-colors duration-300 sm:mb-3 sm:text-xl">
               {title || '无标题'}
             </h3>
 
             {/* 摘要 */}
-            <p className="text-muted-foreground mb-6 line-clamp-3 text-sm leading-relaxed">
+            <p className="text-muted-foreground mb-4 line-clamp-3 text-xs leading-relaxed sm:mb-6 sm:text-sm">
               {excerpt}
             </p>
 

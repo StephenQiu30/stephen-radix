@@ -49,8 +49,10 @@ export function Menus({ className, vertical = false }: { className?: string; ver
   return (
     <nav
       className={cn(
-        'relative flex items-center rounded-full border border-black/5 bg-black/5 p-1 backdrop-blur-md dark:border-white/5 dark:bg-white/10',
-        vertical ? 'w-full flex-col rounded-xl' : 'flex-row',
+        'relative flex items-center p-1',
+        vertical
+          ? 'w-full flex-col gap-1 bg-transparent p-0'
+          : 'rounded-full border border-black/5 bg-black/5 backdrop-blur-md dark:border-white/5 dark:bg-white/10',
         className
       )}
     >
@@ -61,25 +63,27 @@ export function Menus({ className, vertical = false }: { className?: string; ver
             key={item.href}
             href={item.href || '#'}
             className={cn(
-              'relative z-10 flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 outline-none',
-              vertical ? 'w-full justify-start rounded-lg' : '',
-              active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground/80'
+              'relative z-10 flex items-center gap-3 px-4 py-2 text-sm font-medium transition-colors duration-200 outline-none',
+              vertical
+                ? 'w-full justify-start rounded-xl py-3.5 text-base'
+                : 'justify-center rounded-full',
+              active
+                ? 'text-foreground font-semibold'
+                : 'text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5',
+              vertical && active && 'bg-black/5 dark:bg-white/10' // Mobile active background
             )}
           >
-            {active && (
+            {!vertical && active && (
               <motion.div
                 layoutId="active-menu-pill"
-                className={cn(
-                  'bg-background absolute inset-0 z-[-1] border border-black/5 shadow-sm dark:border-white/5',
-                  vertical ? 'rounded-lg' : 'rounded-full'
-                )}
+                className="bg-background absolute inset-0 z-[-1] rounded-full border border-black/5 shadow-sm dark:border-white/5"
                 transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
               />
             )}
             <span
               className={cn(
                 'relative z-10',
-                active && 'scale-105 transition-transform duration-200'
+                active && !vertical && 'scale-105 transition-transform duration-200'
               )}
             >
               {item.icon}

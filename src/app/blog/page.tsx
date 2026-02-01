@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { PostCard } from '@/components/blog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { listPostVoByPage } from '@/api/postController'
+import { searchPostVoByPage } from '@/api/searchController'
 import {
   BookOpen,
   ChevronLeft,
@@ -53,7 +53,7 @@ export default function BlogPage() {
     setLoading(true)
     setError(null)
     try {
-      const res = (await listPostVoByPage({
+      const res = (await searchPostVoByPage({
         current: currentPage,
         pageSize,
         searchText: searchText || undefined,
@@ -138,7 +138,7 @@ export default function BlogPage() {
 
         {/* 控制栏：搜索与筛选 */}
         <motion.div variants={itemVariants} className="sticky top-20 z-30 mx-auto mb-12 max-w-4xl">
-          <div className="bg-background/60 border-border/40 hover:border-border/60 flex flex-col gap-2 rounded-full border p-2 shadow-lg backdrop-blur-xl transition-all hover:shadow-xl sm:flex-row">
+          <div className="bg-background/60 border-border/40 hover:border-border/60 flex flex-col gap-3 rounded-3xl border p-2 shadow-lg backdrop-blur-xl transition-all hover:shadow-xl sm:flex-row sm:gap-2 sm:rounded-full">
             {/* Tab Switcher */}
             <div className="bg-muted/50 flex shrink-0 rounded-full p-1">
               <button
@@ -165,7 +165,6 @@ export default function BlogPage() {
               </button>
             </div>
 
-            {/* Search */}
             <div className="relative flex-1">
               <Search className="text-muted-foreground absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2" />
               <form onSubmit={handleSearch} className="h-full">
@@ -174,14 +173,14 @@ export default function BlogPage() {
                   placeholder="搜索文章..."
                   value={searchText}
                   onChange={e => setSearchText(e.target.value)}
-                  className="hover:bg-muted/30 focus:bg-muted/50 h-full w-full rounded-full border-none bg-transparent pr-4 pl-10 transition-colors"
+                  className="hover:bg-muted/30 focus:bg-muted/50 h-10 w-full rounded-2xl border-none bg-transparent pr-4 pl-10 transition-colors sm:h-full sm:rounded-full"
                 />
               </form>
             </div>
 
             {/* Create Button */}
             <Link href="/blog/create" className="shrink-0">
-              <Button className="bg-primary text-primary-foreground h-full w-full rounded-full px-6 shadow-none transition-opacity hover:opacity-90 sm:w-auto">
+              <Button className="bg-primary text-primary-foreground h-10 w-full rounded-2xl px-6 shadow-none transition-opacity hover:opacity-90 sm:h-full sm:w-auto sm:rounded-full">
                 <Plus className="mr-2 h-4 w-4" />
                 写文章
               </Button>
