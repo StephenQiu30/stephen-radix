@@ -1,13 +1,14 @@
-'use client'
-
 import './globals.css'
-import { ThemeProvider } from '@/components/theme/theme-provider'
-import { BasicLayout } from '@/components/layout/basic-layout'
 import { Footer } from '@/components/footer/footer'
 import React from 'react'
-import { Provider } from 'react-redux'
-import store from '@/store'
-import { Toaster } from 'sonner'
+import { RootProviders } from '@/components/providers/root-providers'
+import { SiteHeader } from '@/components/header/site-header'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Stephen Radix - NextJS Starter',
+  description: 'A modern Next.js starter template',
+}
 
 export default function RootLayout({
   children,
@@ -17,15 +18,13 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <body>
-        <Provider store={store}>
-          <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
-            <BasicLayout>
-              {children}
-              <Footer />
-            </BasicLayout>
-            <Toaster position="top-center" richColors />
-          </ThemeProvider>
-        </Provider>
+        <RootProviders>
+          <div className="flex min-h-screen flex-col">
+            <SiteHeader />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+        </RootProviders>
       </body>
     </html>
   )

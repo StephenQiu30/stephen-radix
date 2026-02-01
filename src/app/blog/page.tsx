@@ -8,8 +8,6 @@ import { Input } from '@/components/ui/input'
 import { searchPostVoByPage } from '@/api/searchController'
 import {
   BookOpen,
-  ChevronLeft,
-  ChevronRight,
   FileWarning,
   Loader2,
   Plus,
@@ -38,9 +36,12 @@ const itemVariants = {
   },
 }
 
+
+
 export default function BlogPage() {
   const [posts, setPosts] = React.useState<API.PostVO[]>([])
   const [loading, setLoading] = React.useState(true)
+  const [loadingMore, setLoadingMore] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
   const [searchText, setSearchText] = React.useState('')
   const [activeTab, setActiveTab] = React.useState<'latest' | 'popular'>('latest')
@@ -50,7 +51,12 @@ export default function BlogPage() {
 
   // 获取文章列表
   const fetchPosts = React.useCallback(async () => {
-    setLoading(true)
+    // Only show global loading on initial load or search/tab change
+    if (currentPage === 1) {
+      setLoading(true)
+    } else {
+      setLoadingMore(true)
+    }
     setError(null)
     try {
       const res = (await searchPostVoByPage({
@@ -62,15 +68,36 @@ export default function BlogPage() {
       })) as any
 
       if (res && res.code === 0) {
+
         const data = res.data || {}
-        const records = Array.isArray(data) ? data : data.records || data.list || []
+        // Handle potential different response structures and map user to userVO if needed
+        let records = (Array.isArray(data) ? data : data.records || data.list || []) as API.PostVO[]
+
+        // Map 'user' to 'userVO' if userVO is missing but user exists (common backend mismatch)
+        records = records.map(record => ({
+          ...record,
+          userVO: record.userVO || (record as any).user
+        }))
+
         const totalCount = data.total ?? data.totalCount ?? records.length
 
-        setPosts(records)
+        console.log('Fetched posts:', records.length, 'Total:', totalCount)
+
+        if (currentPage === 1) {
+          setPosts(records)
+        } else {
+          setPosts(prev => {
+            // Filter out duplicates based on ID
+            const newRecords = records.filter((record: API.PostVO) => !prev.some(p => p.id === record.id))
+            return [...prev, ...newRecords]
+          })
+        }
         setTotal(totalCount)
       } else {
         setError(res?.message || '加载文章列表失败')
-        setPosts([])
+        if (currentPage === 1) {
+          setPosts([])
+        }
         setTotal(0)
       }
     } catch (err: any) {
@@ -78,6 +105,7 @@ export default function BlogPage() {
       setError('网络请求失败，请尝试刷新页面')
     } finally {
       setLoading(false)
+      setLoadingMore(false)
     }
   }, [currentPage, searchText])
 
@@ -85,13 +113,24 @@ export default function BlogPage() {
     fetchPosts()
   }, [fetchPosts])
 
-  const totalPages = Math.ceil(total / pageSize)
+  // Reset page to 1 when search text changes (debouncing could be added here, but manual search for now)
+  // Actually, we are using a form submit for search, so that's handled in handleSearch.
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
+    // If we are already on page 1, fetchPosts won't trigger by useEffect dep change if we just setPage(1)
+    // But searchText change will trigger it.
     setCurrentPage(1)
+    // We don't need to call fetchPosts() manually if useEffect watches searchText/currentPage
+    // But searchText state might not have changed if user just hits enter? 
+    // Ideally we should use a separate "query" state for the actual API call vs "searchText" input.
+    // For now, let's just make sure we trigger it.
+    // If currentPage is 1 and searchText is same, useEffect won't fire.
+    // So let's force a call if needed, or rely on the fact that usually user changes text.
     fetchPosts()
   }
+
+  const hasMore = posts.length < total
 
   return (
     <div className="bg-background text-foreground relative min-h-screen overflow-hidden">
@@ -188,91 +227,73 @@ export default function BlogPage() {
           </div>
         </motion.div>
 
-        {/* 文章列表 */}
-        <AnimatePresence mode="wait">
+        {/* 文章列表 - Simplified Animation */}
+        <div className="min-h-[200px]">
           {loading ? (
-            <motion.div
-              key="loader"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="flex min-h-[400px] items-center justify-center"
-            >
+            <div className="flex min-h-[400px] items-center justify-center">
               <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
-            </motion.div>
+            </div>
           ) : error ? (
-            <motion.div
-              key="error"
-              variants={itemVariants}
-              className="flex min-h-[400px] flex-col items-center justify-center text-center"
-            >
+            <div className="flex min-h-[400px] flex-col items-center justify-center text-center">
               <FileWarning className="text-destructive/50 mb-4 h-12 w-12" />
               <h3 className="text-destructive mb-2 text-lg font-semibold">{error}</h3>
               <Button variant="outline" onClick={fetchPosts} className="mt-4 rounded-full">
                 重试
               </Button>
-            </motion.div>
+            </div>
           ) : posts.length === 0 ? (
-            <motion.div
-              key="empty"
-              variants={itemVariants}
-              className="flex min-h-[400px] flex-col items-center justify-center text-center"
-            >
+            <div className="flex min-h-[400px] flex-col items-center justify-center text-center">
               <BookOpen className="text-muted-foreground/30 mb-4 h-12 w-12" />
               <h3 className="mb-2 text-xl font-medium">暂无文章</h3>
               <p className="text-muted-foreground">
                 {searchText ? '请尝试调整搜索关键词。' : '成为第一个写文章的人。'}
               </p>
-            </motion.div>
+            </div>
           ) : (
             <motion.div
-              key="content"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
               className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
             >
               {posts.map((post, i) => (
-                <motion.div key={post.id} variants={itemVariants} custom={i} layout>
+                <motion.div
+                  key={post.id || i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: i * 0.05 }}
+                  layout
+                >
                   <PostCard post={post} />
                 </motion.div>
               ))}
             </motion.div>
           )}
-        </AnimatePresence>
+        </div>
 
-        {/* 分页 */}
-        {!loading && totalPages > 1 && (
-          <motion.div variants={itemVariants} className="mt-20 flex justify-center">
-            <div className="border-border/50 bg-secondary/30 flex items-center gap-2 rounded-full border p-2 backdrop-blur-sm">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 rounded-full"
-                disabled={currentPage <= 1}
-                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-
-              <div className="flex items-center gap-1 px-2">
-                <span className="text-sm font-medium">{currentPage}</span>
-                <span className="text-muted-foreground">/</span>
-                <span className="text-muted-foreground text-sm">{totalPages}</span>
-              </div>
-
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 rounded-full"
-                disabled={currentPage >= totalPages}
-                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </motion.div>
-        )}
+        {/* 加载更多 */}
+        <div className="mt-20 flex justify-center">
+          {hasMore ? (
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => setCurrentPage(p => p + 1)}
+              disabled={loadingMore}
+              className="h-12 min-w-[160px] rounded-full px-8 font-medium shadow-sm transition-all hover:scale-105 hover:shadow-md"
+            >
+              {loadingMore ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  加载中...
+                </>
+              ) : (
+                '加载更多文章'
+              )}
+            </Button>
+          ) : posts.length > 0 ? (
+            <p className="text-muted-foreground text-sm">没有更多文章了</p>
+          ) : null}
+        </div>
       </motion.div>
     </div>
   )
