@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion, useScroll, useSpring } from 'framer-motion'
-import { MarkdownRender, MarkdownToc, PostHeader, CommentSection } from '@/components/blog'
+import { MarkdownRender, MarkdownToc, PostHeader, CommentSection, PostActionBar } from '@/components/blog'
 import { Button } from '@/components/ui/button'
 import { getPostVoById } from '@/api/postController'
 import { doThumb } from '@/api/postThumbController'
@@ -12,12 +12,8 @@ import { useAppSelector } from '@/store/hooks'
 import type { RootState } from '@/store'
 import {
   ArrowLeft,
-  Bookmark,
   FileWarning,
-  Heart,
   Loader2,
-  MessageSquare,
-  Share2,
 } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
@@ -163,7 +159,7 @@ export default function PostDetailPage() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_250px] xl:gap-24">
-          <article className="prose prose-neutral dark:prose-invert mx-auto w-full max-w-3xl">
+          <article className="mx-auto w-full max-w-3xl">
             <PostHeader post={post} />
 
             <MarkdownRender content={post.content || ''} />
@@ -173,42 +169,48 @@ export default function PostDetailPage() {
               <div className="flex flex-col gap-8">
                 {/* User Profile Card */}
                 <div className="flex items-center justify-between gap-6 rounded-[2rem] border border-white/10 bg-white/50 p-6 shadow-sm backdrop-blur-xl transition-all hover:shadow-2xl dark:bg-white/5 sm:p-8">
-                  <div className="flex items-center gap-6">
-                    <div className="border-background relative h-20 w-20 overflow-hidden rounded-full border-2 shadow-sm">
-                      {post.userVO?.userAvatar ? (
-                        <img
-                          src={post.userVO.userAvatar}
-                          alt={post.userVO.userName}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <div className="bg-muted text-muted-foreground flex h-full w-full items-center justify-center text-2xl font-bold">
-                          {post.userVO?.userName?.charAt(0) || '?'}
-                        </div>
-                      )}
+                  <Link href={`/user/${post.userVO?.id}`} className="block flex-1">
+                    <div className="flex items-center gap-6">
+                      <div className="border-background relative h-20 w-20 overflow-hidden rounded-full border-2 shadow-sm">
+                        {post.userVO?.userAvatar ? (
+                          <img
+                            src={post.userVO.userAvatar}
+                            alt={post.userVO.userName}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="bg-muted text-muted-foreground flex h-full w-full items-center justify-center text-2xl font-bold">
+                            {post.userVO?.userName?.charAt(0) || '?'}
+                          </div>
+                        )}
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-muted-foreground/80 text-sm font-medium tracking-wider uppercase">
+                          作者
+                        </p>
+                        <h3 className="text-foreground group-hover:text-primary text-2xl font-bold transition-colors">
+                          {post.userVO?.userName || '匿名用户'}
+                        </h3>
+                        <p className="text-muted-foreground pt-1 text-sm">
+                          感谢阅读！希望这篇文章对你有所帮助。
+                        </p>
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      <p className="text-muted-foreground/80 text-sm font-medium tracking-wider uppercase">
-                        作者
-                      </p>
-                      <h3 className="text-foreground text-2xl font-bold">
-                        {post.userVO?.userName || '匿名用户'}
-                      </h3>
-                      <p className="text-muted-foreground pt-1 text-sm">
-                        感谢阅读！希望这篇文章对你有所帮助。
-                      </p>
-                    </div>
-                  </div>
-                  <Button
-                    variant="outline"
-                    className="hover:bg-primary hover:text-primary-foreground border-primary/20 h-10 rounded-full px-8 font-medium"
-                  >
-                    关注
-                  </Button>
+                  </Link>
+                  <Link href={`/user/${post.userVO?.id}`}>
+                    <Button
+                      variant="outline"
+                      className="hover:bg-primary hover:text-primary-foreground border-primary/20 h-10 rounded-full px-8 font-medium"
+                    >
+                      主页
+                    </Button>
+                  </Link>
                 </div>
 
                 {/* Comment Section */}
-                <CommentSection postId={postId} />
+                <div id="comments" className="scroll-mt-24">
+                  <CommentSection postId={postId} />
+                </div>
               </div>
             </div>
           </article>
@@ -223,50 +225,16 @@ export default function PostDetailPage() {
       </div>
 
       {/* Floating Action Bar */}
-      <div className="fixed bottom-8 left-1/2 z-40 -translate-x-1/2">
-        <div className="flex items-center gap-2 rounded-full border border-white/20 bg-white/70 p-2 shadow-2xl ring-1 ring-black/5 backdrop-blur-2xl dark:border-white/10 dark:bg-black/70">
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn(
-              'rounded-full transition-all duration-300 hover:bg-black/5 dark:hover:bg-white/10',
-              hasThumb && 'bg-red-50 text-red-500 hover:text-red-600 dark:bg-red-950/30'
-            )}
-            onClick={handleThumb}
-          >
-            <Heart className={cn('h-5 w-5', hasThumb && 'fill-current')} />
-            <span className="sr-only">Like</span>
-          </Button>
-
-          <div className="mx-1 h-6 w-px bg-black/10 dark:bg-white/10" />
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn(
-              'rounded-full transition-all duration-300 hover:bg-black/5 dark:hover:bg-white/10',
-              hasFavour &&
-              'bg-yellow-50 text-yellow-500 hover:text-yellow-600 dark:bg-yellow-950/30'
-            )}
-            onClick={handleFavour}
-          >
-            <Bookmark className={cn('h-5 w-5', hasFavour && 'fill-current')} />
-            <span className="sr-only">Bookmark</span>
-          </Button>
-
-          <div className="mx-1 h-6 w-px bg-black/10 dark:bg-white/10" />
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full transition-all duration-300 hover:bg-black/5 dark:hover:bg-white/10"
-            onClick={handleShare}
-          >
-            <Share2 className="h-5 w-5" />
-            <span className="sr-only">Share</span>
-          </Button>
-        </div>
-      </div>
+      <PostActionBar
+        hasThumb={hasThumb}
+        hasFavour={hasFavour}
+        onThumb={handleThumb}
+        onFavour={handleFavour}
+        onShare={handleShare}
+        onComment={() => {
+          document.getElementById('comments')?.scrollIntoView({ behavior: 'smooth' })
+        }}
+      />
     </div>
   )
 }

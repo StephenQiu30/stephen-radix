@@ -36,118 +36,129 @@ export function PostCard({ post, className }: PostCardProps) {
 
   return (
     <motion.div initial="initial" whileHover="hover" className={cn('group h-full', className)}>
-      <Link href={`/blog/${id}`} className="block h-full">
-        <div className="relative h-full overflow-hidden rounded-[2rem] border border-black/5 bg-white/50 shadow-sm backdrop-blur-2xl transition-all duration-500 hover:bg-white/60 hover:shadow-2xl dark:border-white/5 dark:bg-black/20 dark:hover:bg-black/30">
-          {/* 封面图 */}
-          <div className="relative aspect-[16/10] w-full overflow-hidden">
-            {cover ? (
-              <img
-                src={cover}
-                alt={title || ''}
-                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-              />
-            ) : (
+      <div className="relative flex h-full flex-col overflow-hidden rounded-[2rem] border border-black/5 bg-white/50 shadow-sm backdrop-blur-2xl transition-all duration-500 hover:bg-white/60 hover:shadow-2xl dark:border-white/5 dark:bg-black/20 dark:hover:bg-black/30">
+        {/* Main Card Link (Overlay) */}
+        <Link href={`/blog/${id}`} className="absolute inset-0 z-0">
+          <span className="sr-only">View Post</span>
+        </Link>
+        {/* 封面图 */}
+        <div className="relative aspect-[16/10] w-full overflow-hidden">
+          {cover ? (
+            <img
+              src={cover}
+              alt={title || ''}
+              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            />
+          ) : (
+            <div
+              className={cn(
+                'absolute inset-0 flex flex-col items-center justify-center p-8 text-center transition-colors duration-500',
+                // Minimalist backgrounds: softly tinted grays/whites or extremely subtle gradients
+                [
+                  'bg-slate-50 dark:bg-slate-900/50',
+                  'bg-gray-50 dark:bg-gray-900/50',
+                  'bg-zinc-50 dark:bg-zinc-900/50',
+                  'bg-neutral-50 dark:bg-neutral-900/50',
+                  'bg-stone-50 dark:bg-stone-900/50',
+                ][(typeof id === 'number' ? id : title?.length || 0) % 5]
+              )}
+            >
+              {/* Very Subtle Gradient Overlay for depth */}
               <div
                 className={cn(
-                  'absolute inset-0 flex flex-col items-center justify-center p-8 text-center transition-colors duration-500',
-                  // Minimalist backgrounds: softly tinted grays/whites or extremely subtle gradients
+                  'absolute inset-0 bg-gradient-to-br opacity-30',
                   [
-                    'bg-slate-50 dark:bg-slate-900/50',
-                    'bg-gray-50 dark:bg-gray-900/50',
-                    'bg-zinc-50 dark:bg-zinc-900/50',
-                    'bg-neutral-50 dark:bg-neutral-900/50',
-                    'bg-stone-50 dark:bg-stone-900/50',
+                    'from-blue-100/50 to-transparent dark:from-blue-900/20',
+                    'from-emerald-100/50 to-transparent dark:from-emerald-900/20',
+                    'from-orange-100/50 to-transparent dark:from-orange-900/20',
+                    'from-rose-100/50 to-transparent dark:from-rose-900/20',
+                    'from-violet-100/50 to-transparent dark:from-violet-900/20',
                   ][(typeof id === 'number' ? id : title?.length || 0) % 5]
                 )}
+              />
+
+              {/* Subtle Grid Pattern */}
+              <div className="bg-grid-black/[0.015] dark:bg-grid-white/[0.015] absolute inset-0" />
+
+              {/* Title Display */}
+              <div className="relative z-10 w-full transition-transform duration-500 group-hover:scale-105">
+                <h3 className="text-foreground/80 line-clamp-3 text-xl leading-snug font-bold tracking-tight md:text-2xl">
+                  {title || '无标题'}
+                </h3>
+                <div className="bg-foreground/10 group-hover:bg-primary/20 mx-auto mt-4 h-1 w-12 rounded-full transition-colors" />
+              </div>
+            </div>
+          )}
+
+          {/* Overlay Gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none" />
+
+          {/* Tags overlay */}
+          {tags && tags.length > 0 && (
+            <div className="absolute top-4 left-4 flex flex-wrap gap-2 pointer-events-none">
+              {tags.slice(0, 2).map((tag, index) => (
+                <Badge
+                  key={index}
+                  variant="secondary"
+                  className="bg-background/80 text-foreground/90 border border-white/20 shadow-sm backdrop-blur-md"
+                >
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* 内容区 */}
+        <div className="flex flex-1 flex-col p-4 sm:p-6">
+          {/* 作者和日期 */}
+          <div className="text-muted-foreground/60 mb-3 flex items-center justify-between text-xs font-medium tracking-wider uppercase">
+            {/* Author Link (Z-Index > 0 to sit above overlay) */}
+            <div className="relative z-10 flex items-center gap-2">
+              <Link
+                href={`/user/${userVO?.id}`}
+                className="group/author flex items-center gap-2"
+                onClick={e => e.stopPropagation()}
               >
-                {/* Very Subtle Gradient Overlay for depth */}
-                <div
-                  className={cn(
-                    'absolute inset-0 bg-gradient-to-br opacity-30',
-                    [
-                      'from-blue-100/50 to-transparent dark:from-blue-900/20',
-                      'from-emerald-100/50 to-transparent dark:from-emerald-900/20',
-                      'from-orange-100/50 to-transparent dark:from-orange-900/20',
-                      'from-rose-100/50 to-transparent dark:from-rose-900/20',
-                      'from-violet-100/50 to-transparent dark:from-violet-900/20',
-                    ][(typeof id === 'number' ? id : title?.length || 0) % 5]
-                  )}
-                />
-
-                {/* Subtle Grid Pattern */}
-                <div className="bg-grid-black/[0.015] dark:bg-grid-white/[0.015] absolute inset-0" />
-
-                {/* Title Display */}
-                <div className="relative z-10 w-full transition-transform duration-500 group-hover:scale-105">
-                  <h3 className="text-foreground/80 line-clamp-3 text-xl leading-snug font-bold tracking-tight md:text-2xl">
-                    {title || '无标题'}
-                  </h3>
-                  <div className="bg-foreground/10 group-hover:bg-primary/20 mx-auto mt-4 h-1 w-12 rounded-full transition-colors" />
-                </div>
-              </div>
-            )}
-
-            {/* Overlay Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
-            {/* Tags overlay */}
-            {tags && tags.length > 0 && (
-              <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-                {tags.slice(0, 2).map((tag, index) => (
-                  <Badge
-                    key={index}
-                    variant="secondary"
-                    className="bg-background/80 text-foreground/90 border border-white/20 shadow-sm backdrop-blur-md"
-                  >
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            )}
+                <UserAvatar user={userVO} size="sm" className="h-5 w-5" />
+                <span className="group-hover/author:text-primary transition-colors">
+                  {userVO?.userName || '匿名'}
+                </span>
+              </Link>
+            </div>
+            <span>{formattedDate}</span>
           </div>
 
-          {/* 内容区 */}
-          <div className="flex flex-1 flex-col p-4 sm:p-6">
-            {/* 作者和日期 */}
-            <div className="text-muted-foreground/60 mb-3 flex items-center justify-between text-xs font-medium tracking-wider uppercase">
-              <div className="flex items-center gap-2">
-                <UserAvatar user={userVO} size="sm" className="h-5 w-5" />
-                <span>{userVO?.userName || '匿名'}</span>
-              </div>
-              <span>{formattedDate}</span>
+          {/* 标题 */}
+          <h3 className="text-foreground group-hover:text-primary mb-2 line-clamp-2 text-lg font-bold tracking-tight transition-colors duration-300 sm:mb-3 sm:text-xl">
+            {title || '无标题'}
+          </h3>
+
+          {/* 摘要 */}
+          <p className="text-muted-foreground mb-4 line-clamp-3 text-xs leading-relaxed sm:mb-6 sm:text-sm">
+            {excerpt}
+          </p>
+
+          {/* 底部互动 */}
+          <div className="border-border/40 mt-auto flex items-center justify-between border-t pt-4">
+            <div className="text-muted-foreground/70 flex items-center gap-4">
+              <span className="hover:text-foreground flex items-center gap-1.5 text-xs transition-colors">
+                <Heart className="h-3.5 w-3.5" />
+                {thumbNum}
+              </span>
+              <span className="hover:text-foreground flex items-center gap-1.5 text-xs transition-colors">
+                <Bookmark className="h-3.5 w-3.5" />
+                {favourNum}
+              </span>
             </div>
 
-            {/* 标题 */}
-            <h3 className="text-foreground group-hover:text-primary mb-2 line-clamp-2 text-lg font-bold tracking-tight transition-colors duration-300 sm:mb-3 sm:text-xl">
-              {title || '无标题'}
-            </h3>
-
-            {/* 摘要 */}
-            <p className="text-muted-foreground mb-4 line-clamp-3 text-xs leading-relaxed sm:mb-6 sm:text-sm">
-              {excerpt}
-            </p>
-
-            {/* 底部互动 */}
-            <div className="border-border/40 mt-auto flex items-center justify-between border-t pt-4">
-              <div className="text-muted-foreground/70 flex items-center gap-4">
-                <span className="hover:text-foreground flex items-center gap-1.5 text-xs transition-colors">
-                  <Heart className="h-3.5 w-3.5" />
-                  {thumbNum}
-                </span>
-                <span className="hover:text-foreground flex items-center gap-1.5 text-xs transition-colors">
-                  <Bookmark className="h-3.5 w-3.5" />
-                  {favourNum}
-                </span>
-              </div>
-
-              <div className="text-primary flex translate-x-2 transform items-center gap-1 text-xs font-medium opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
-                阅读全文
-                <ArrowUpRight className="h-3.5 w-3.5" />
-              </div>
+            <div className="text-primary flex translate-x-2 transform items-center gap-1 text-xs font-medium opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+              阅读全文
+              <ArrowUpRight className="h-3.5 w-3.5" />
             </div>
           </div>
         </div>
-      </Link>
+      </div>
     </motion.div>
   )
 }

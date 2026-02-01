@@ -4,7 +4,7 @@ import * as React from 'react'
 import { Loader2, MessageSquare } from 'lucide-react'
 import { CommentInput } from './comment-input'
 import { CommentItem } from './comment-item'
-import { searchPostCommentVoByPage } from '@/api/searchController'
+import { listPostCommentVoByPage } from '@/api/postCommentController'
 
 interface CommentSectionProps {
   postId: string
@@ -50,7 +50,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
   const fetchComments = React.useCallback(async () => {
     try {
       // Sort by createTime descending to show newest first
-      const res = (await searchPostCommentVoByPage({
+      const res = (await listPostCommentVoByPage({
         postId: postId as any,
         current: 1,
         pageSize: 20,
