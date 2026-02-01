@@ -1,5 +1,4 @@
-'use client'
-
+import * as React from 'react'
 import Link from 'next/link'
 import { Github, Search, UserCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -8,6 +7,7 @@ import { AuthModal } from '@/components/auth/auth-modal'
 import { UserDropdown } from '@/components/auth/user-dropdown'
 import { useAppSelector } from '@/store/hooks'
 import type { RootState } from '@/store'
+import { CommandMenu } from '@/components/search/command-menu'
 
 interface HeaderActionsProps {
   onAuthModalOpenChange: (open: boolean) => void
@@ -16,11 +16,21 @@ interface HeaderActionsProps {
 
 export function HeaderActions({ onAuthModalOpenChange, authModalOpen }: HeaderActionsProps) {
   const { user } = useAppSelector((state: RootState) => state.user)
+  const [open, setOpen] = React.useState(false)
+
+  // Explicit keyboard shortcut listener (optional if CommandMenu handles it, 
+  // but good for ensuring it works even if CommandMenu isn't fully mounted/focused purely by its own effect)
+  // Actually CommandMenu handles the effect, so we just need to pass the state setter.
 
   return (
     <>
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" className="hover:text-primary">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="hover:text-primary"
+          onClick={() => setOpen(true)}
+        >
           <Search className="h-5 w-5" />
           <span className="sr-only">搜索</span>
         </Button>
@@ -46,6 +56,7 @@ export function HeaderActions({ onAuthModalOpenChange, authModalOpen }: HeaderAc
         )}
       </div>
       <AuthModal open={authModalOpen} onOpenChange={onAuthModalOpenChange} />
+      <CommandMenu open={open} onOpenChange={setOpen} />
     </>
   )
 }
