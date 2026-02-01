@@ -185,9 +185,9 @@ export function AlgorithmVisualizerDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-background/80 flex h-[90vh] w-[95vw] max-w-6xl flex-col gap-0 overflow-hidden border-white/10 p-0 shadow-2xl backdrop-blur-2xl sm:rounded-[32px]">
+      <DialogContent className="hover:shadow-primary/10 bg-secondary/80 flex h-[90vh] w-[95vw] max-w-6xl flex-col gap-0 overflow-hidden border-white/10 p-0 shadow-2xl backdrop-blur-3xl transition-all duration-500 hover:border-white/30 sm:rounded-[32px]">
         {/* MacOS Style Header */}
-        <div className="flex items-start justify-between border-b border-black/5 bg-white/50 px-8 py-6 backdrop-blur-xl dark:border-white/5 dark:bg-black/20">
+        <div className="flex items-start justify-between border-b border-white/10 bg-white/5 px-8 py-6 backdrop-blur-xl">
           <div className="space-y-1.5">
             <DialogTitle className="text-foreground flex items-center gap-3 text-3xl font-semibold tracking-tight">
               {algorithm.name}
@@ -225,7 +225,7 @@ export function AlgorithmVisualizerDialog({
           </div>
 
           {/* Sidebar Controls */}
-          <div className="bg-background/40 z-10 flex w-full flex-col gap-10 overflow-y-auto border-l border-white/5 p-8 backdrop-blur-xl md:w-80">
+          <div className="z-10 flex w-full flex-col gap-10 overflow-y-auto border-l border-white/10 bg-white/5 p-8 backdrop-blur-xl md:w-80">
             <div className="space-y-6">
               <h3 className="text-muted-foreground/80 flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
                 <Settings2 className="h-3.5 w-3.5" /> 控制台

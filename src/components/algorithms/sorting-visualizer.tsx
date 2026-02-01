@@ -51,7 +51,7 @@ const quickSort = async (
       while (tempArr[j] > pivot) j--
       if (i <= j) {
         if (signal.aborted) return -1
-        ;[tempArr[i], tempArr[j]] = [tempArr[j], tempArr[i]]
+          ;[tempArr[i], tempArr[j]] = [tempArr[j], tempArr[i]]
         setArr([...tempArr])
         await new Promise(resolve => setTimeout(resolve, speed))
         i++
@@ -205,7 +205,7 @@ export default function SortingVisualizer() {
   return (
     <div className="mx-auto w-full max-w-4xl">
       {/* Visualizer Container */}
-      <div className="hover:shadow-primary/10 group relative flex aspect-video w-full flex-col items-center justify-end overflow-hidden rounded-3xl border border-white/20 bg-white/5 p-8 shadow-2xl backdrop-blur-3xl transition-all duration-500 hover:border-white/30 sm:p-12">
+      <div className="hover:shadow-primary/10 bg-secondary/30 group relative flex aspect-video w-full flex-col items-center justify-end overflow-hidden rounded-[32px] border border-white/20 p-8 shadow-2xl backdrop-blur-3xl transition-all duration-500 hover:border-white/30 dark:border-white/10 sm:p-12">
         {/* Bars */}
         <div className="flex h-full w-full items-end justify-center gap-1 sm:gap-2">
           <AnimatePresence>
@@ -233,7 +233,7 @@ export default function SortingVisualizer() {
 
         {/* Overlay Controls (Glassmorphism) */}
         <div className="absolute top-6 right-6 left-6 z-10 flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-black/20 p-2 shadow-lg backdrop-blur-md">
+          <div className="bg-secondary/30 flex items-center gap-2 rounded-2xl border border-white/10 p-2 shadow-lg backdrop-blur-md">
             {ALGORITHMS.map((algo, idx) => (
               <button
                 key={algo.name}
