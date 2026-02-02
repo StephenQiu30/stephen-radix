@@ -11,40 +11,40 @@ import { clearLoginUser, setLoginUser } from '@/store/modules/user/userSlice'
 import { getLoginUser } from '@/api/userController'
 
 function InitUser() {
-    const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch()
 
-    useEffect(() => {
-        const fetchCurrentUser = async () => {
-            const token = localStorage.getItem('token')
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      const token = localStorage.getItem('token')
 
-            if (token) {
-                try {
-                    const res = (await getLoginUser()) as unknown as API.BaseResponseLoginUserVO
-                    if (res.code === 0 && res.data) {
-                        dispatch(setLoginUser(res.data))
-                    } else {
-                        dispatch(clearLoginUser())
-                    }
-                } catch (error) {
-                    console.error('获取用户信息失败:', error)
-                    dispatch(clearLoginUser())
-                }
-            }
+      if (token) {
+        try {
+          const res = (await getLoginUser()) as unknown as API.BaseResponseLoginUserVO
+          if (res.code === 0 && res.data) {
+            dispatch(setLoginUser(res.data))
+          } else {
+            dispatch(clearLoginUser())
+          }
+        } catch (error) {
+          console.error('获取用户信息失败:', error)
+          dispatch(clearLoginUser())
         }
-        fetchCurrentUser()
-    }, [dispatch])
+      }
+    }
+    fetchCurrentUser()
+  }, [dispatch])
 
-    return null
+  return null
 }
 
 export function RootProviders({ children }: { children: React.ReactNode }) {
-    return (
-        <Provider store={store}>
-            <InitUser />
-            <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
-                {children}
-                <Toaster position="top-center" richColors />
-            </ThemeProvider>
-        </Provider>
-    )
+  return (
+    <Provider store={store}>
+      <InitUser />
+      <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
+        {children}
+        <Toaster position="top-center" richColors />
+      </ThemeProvider>
+    </Provider>
+  )
 }

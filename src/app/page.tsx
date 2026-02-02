@@ -233,7 +233,7 @@ export default function AlgorithmLandingPage() {
                       transition={{ delay: 0.2 + i * 0.1 }}
                       className="flex items-center gap-4 text-lg font-medium"
                     >
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-primary">
+                      <div className="bg-secondary text-primary flex h-12 w-12 items-center justify-center rounded-full">
                         <Item.icon className="h-6 w-6" />
                       </div>
                       {Item.text}
@@ -269,8 +269,8 @@ export default function AlgorithmLandingPage() {
                       swapped = <span className="text-[#d19a66]">false</span>;
                     </p>
                     <p className="pl-8 text-[#abb2bf]">
-                      for (let i = <span className="text-[#d19a66]">0</span>; i &lt; arr.length -
-                      1; i++) {'{'}
+                      for (let i = <span className="text-[#d19a66]">0</span>; i &lt; arr.length - 1;
+                      i++) {'{'}
                     </p>
                     <p className="pl-12 text-[#abb2bf]">if (arr[i] &gt; arr[i + 1]) {'{'}</p>
                     <p className="pl-16 text-[#abb2bf]">let temp = arr[i];</p>

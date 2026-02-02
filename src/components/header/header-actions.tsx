@@ -18,7 +18,7 @@ export function HeaderActions({ onAuthModalOpenChange, authModalOpen }: HeaderAc
   const { user } = useAppSelector((state: RootState) => state.user)
   const [open, setOpen] = React.useState(false)
 
-  // Explicit keyboard shortcut listener (optional if CommandMenu handles it, 
+  // Explicit keyboard shortcut listener (optional if CommandMenu handles it,
   // but good for ensuring it works even if CommandMenu isn't fully mounted/focused purely by its own effect)
   // Actually CommandMenu handles the effect, so we just need to pass the state setter.
 

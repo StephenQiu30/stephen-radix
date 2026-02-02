@@ -3,18 +3,20 @@
 import * as React from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion, useScroll, useSpring } from 'framer-motion'
-import { MarkdownRender, MarkdownToc, PostHeader, CommentSection, PostActionBar } from '@/components/blog'
+import {
+  MarkdownRender,
+  MarkdownToc,
+  PostHeader,
+  CommentSection,
+  PostActionBar,
+} from '@/components/blog'
 import { Button } from '@/components/ui/button'
 import { getPostVoById } from '@/api/postController'
 import { doThumb } from '@/api/postThumbController'
 import { doPostFavour } from '@/api/postFavourController'
 import { useAppSelector } from '@/store/hooks'
 import type { RootState } from '@/store'
-import {
-  ArrowLeft,
-  FileWarning,
-  Loader2,
-} from 'lucide-react'
+import { ArrowLeft, FileWarning, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 

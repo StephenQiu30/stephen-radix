@@ -18,20 +18,21 @@ export function PostCard({ post, className }: PostCardProps) {
 
   // 生成摘要 (取前 100 个字符，移除 Markdown 符号)
   const excerpt =
-    (content
-      ?.replace(/!\[.*?\]\(.*?\)/g, '') // Remove images
-      .replace(/\[([^\]]+)\]\(.*?\)/g, '$1') // Remove links but keep text
-      .replace(/[#*`>~_]/g, '') // Remove other markdown symbols
-      .trim() || ''
+    (
+      content
+        ?.replace(/!\[.*?\]\(.*?\)/g, '') // Remove images
+        .replace(/\[([^\]]+)\]\(.*?\)/g, '$1') // Remove links but keep text
+        .replace(/[#*`>~_]/g, '') // Remove other markdown symbols
+        .trim() || ''
     ).slice(0, 100) + ((content?.length ?? 0) > 100 ? '...' : '')
 
   // 格式化日期
   const formattedDate = createTime
     ? new Date(createTime).toLocaleDateString('zh-CN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    })
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      })
     : ''
 
   return (
@@ -61,7 +62,7 @@ export function PostCard({ post, className }: PostCardProps) {
               <div
                 className={cn(
                   'absolute inset-0 bg-gradient-to-br opacity-30',
-                  'from-primary/10 to-transparent dark:from-primary/20'
+                  'from-primary/10 dark:from-primary/20 to-transparent'
                 )}
               />
 
@@ -79,11 +80,11 @@ export function PostCard({ post, className }: PostCardProps) {
           )}
 
           {/* Overlay Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
           {/* Tags overlay */}
           {tags && tags.length > 0 && (
-            <div className="absolute top-4 left-4 flex flex-wrap gap-2 pointer-events-none">
+            <div className="pointer-events-none absolute top-4 left-4 flex flex-wrap gap-2">
               {tags.slice(0, 2).map((tag, index) => (
                 <Badge
                   key={index}
@@ -147,6 +148,6 @@ export function PostCard({ post, className }: PostCardProps) {
           </div>
         </div>
       </div>
-    </motion.div >
+    </motion.div>
   )
 }

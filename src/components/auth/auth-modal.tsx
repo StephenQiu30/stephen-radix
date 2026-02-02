@@ -26,7 +26,7 @@ interface AuthModalProps {
 
 export function AuthModal({ open, onOpenChange }: AuthModalProps) {
   const dispatch = useAppDispatch()
-  const { user } = useAppSelector((state) => state.user)
+  const { user } = useAppSelector(state => state.user)
   const [activeTab, setActiveTab] = React.useState<'login' | 'register'>('login')
   const [loading, setLoading] = React.useState(false)
   const [error, setError] = React.useState('')
@@ -131,7 +131,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[420px] overflow-hidden border-none bg-white/80 p-0 shadow-2xl backdrop-blur-xl dark:bg-[#1c1c1e]/90">
+      <DialogContent className="overflow-hidden border-none bg-white/80 p-0 shadow-2xl backdrop-blur-xl sm:max-w-[420px] dark:bg-[#1c1c1e]/90">
         <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-[#0071e3] to-[#0077ed]" />
 
         <DialogHeader className="space-y-4 px-8 pt-8">
@@ -161,7 +161,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
         <div className="px-8 pb-8">
           <Tabs
             value={activeTab}
-            onValueChange={(v) => setActiveTab(v as 'login' | 'register')}
+            onValueChange={v => setActiveTab(v as 'login' | 'register')}
             className="mt-6"
           >
             <TabsList className="grid w-full grid-cols-2 rounded-xl bg-gray-100/80 p-1 dark:bg-gray-800/80">
@@ -182,14 +182,17 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
             <TabsContent value="login" className="mt-6 space-y-4 focus-visible:outline-none">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="login-account" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <Label
+                    htmlFor="login-account"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
                     账号
                   </Label>
                   <Input
                     id="login-account"
                     placeholder="请输入您的账号"
                     value={loginForm.userAccount}
-                    onChange={(e) => setLoginForm({ ...loginForm, userAccount: e.target.value })}
+                    onChange={e => setLoginForm({ ...loginForm, userAccount: e.target.value })}
                     className="h-11 rounded-xl border-gray-200 bg-gray-50/50 px-4 transition-all focus:border-[#0071e3] focus:ring-4 focus:ring-[#0071e3]/10 dark:border-gray-700 dark:bg-gray-800/50"
                     required
                     autoComplete="username"
@@ -197,7 +200,10 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="login-password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <Label
+                    htmlFor="login-password"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
                     密码
                   </Label>
                   <Input
@@ -205,7 +211,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                     type="password"
                     placeholder="请输入密码"
                     value={loginForm.userPassword}
-                    onChange={(e) => setLoginForm({ ...loginForm, userPassword: e.target.value })}
+                    onChange={e => setLoginForm({ ...loginForm, userPassword: e.target.value })}
                     className="h-11 rounded-xl border-gray-200 bg-gray-50/50 px-4 transition-all focus:border-[#0071e3] focus:ring-4 focus:ring-[#0071e3]/10 dark:border-gray-700 dark:bg-gray-800/50"
                     required
                     minLength={8}
@@ -240,7 +246,10 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
             <TabsContent value="register" className="mt-6 space-y-4 focus-visible:outline-none">
               <form onSubmit={handleRegister} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="register-account" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <Label
+                    htmlFor="register-account"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
                     账号
                   </Label>
                   <div className="relative">
@@ -248,17 +257,21 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                       id="register-account"
                       placeholder="设置账号（至少 4 位）"
                       value={registerForm.userAccount}
-                      onChange={(e) => setRegisterForm({ ...registerForm, userAccount: e.target.value })}
+                      onChange={e =>
+                        setRegisterForm({ ...registerForm, userAccount: e.target.value })
+                      }
                       className={cn(
-                        "h-11 rounded-xl border-gray-200 bg-gray-50/50 px-4 transition-all focus:border-[#0071e3] focus:ring-4 focus:ring-[#0071e3]/10 dark:border-gray-700 dark:bg-gray-800/50",
-                        registerForm.userAccount && registerForm.userAccount.length < 4 ? "border-red-300 focus:border-red-400 focus:ring-red-100" : ""
+                        'h-11 rounded-xl border-gray-200 bg-gray-50/50 px-4 transition-all focus:border-[#0071e3] focus:ring-4 focus:ring-[#0071e3]/10 dark:border-gray-700 dark:bg-gray-800/50',
+                        registerForm.userAccount && registerForm.userAccount.length < 4
+                          ? 'border-red-300 focus:border-red-400 focus:ring-red-100'
+                          : ''
                       )}
                       required
                       minLength={4}
                       autoComplete="username"
                     />
                     {registerForm.userAccount && (
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <div className="absolute top-1/2 right-3 -translate-y-1/2">
                         {registerForm.userAccount.length >= 4 ? (
                           <CheckCircle2 className="h-4 w-4 text-green-500" />
                         ) : (
@@ -271,7 +284,10 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="register-password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <Label
+                    htmlFor="register-password"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
                     密码
                   </Label>
                   <div className="relative">
@@ -280,17 +296,21 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                       type="password"
                       placeholder="设置密码（至少 8 位）"
                       value={registerForm.userPassword}
-                      onChange={(e) => setRegisterForm({ ...registerForm, userPassword: e.target.value })}
+                      onChange={e =>
+                        setRegisterForm({ ...registerForm, userPassword: e.target.value })
+                      }
                       className={cn(
-                        "h-11 rounded-xl border-gray-200 bg-gray-50/50 px-4 transition-all focus:border-[#0071e3] focus:ring-4 focus:ring-[#0071e3]/10 dark:border-gray-700 dark:bg-gray-800/50",
-                        registerForm.userPassword && registerForm.userPassword.length < 8 ? "border-red-300 focus:border-red-400 focus:ring-red-100" : ""
+                        'h-11 rounded-xl border-gray-200 bg-gray-50/50 px-4 transition-all focus:border-[#0071e3] focus:ring-4 focus:ring-[#0071e3]/10 dark:border-gray-700 dark:bg-gray-800/50',
+                        registerForm.userPassword && registerForm.userPassword.length < 8
+                          ? 'border-red-300 focus:border-red-400 focus:ring-red-100'
+                          : ''
                       )}
                       required
                       minLength={8}
                       autoComplete="new-password"
                     />
                     {registerForm.userPassword && (
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <div className="absolute top-1/2 right-3 -translate-y-1/2">
                         {registerForm.userPassword.length >= 8 ? (
                           <CheckCircle2 className="h-4 w-4 text-green-500" />
                         ) : (
@@ -303,7 +323,10 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="register-check-password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <Label
+                    htmlFor="register-check-password"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
                     确认密码
                   </Label>
                   <Input
@@ -311,20 +334,28 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                     type="password"
                     placeholder="请再次输入密码"
                     value={registerForm.checkPassword}
-                    onChange={(e) =>
+                    onChange={e =>
                       setRegisterForm({ ...registerForm, checkPassword: e.target.value })
                     }
                     className={cn(
-                      "h-11 rounded-xl border-gray-200 bg-gray-50/50 px-4 transition-all focus:border-[#0071e3] focus:ring-4 focus:ring-[#0071e3]/10 dark:border-gray-700 dark:bg-gray-800/50",
-                      registerForm.checkPassword && registerForm.userPassword !== registerForm.checkPassword ? "border-red-300 focus:border-red-400 focus:ring-red-100" : ""
+                      'h-11 rounded-xl border-gray-200 bg-gray-50/50 px-4 transition-all focus:border-[#0071e3] focus:ring-4 focus:ring-[#0071e3]/10 dark:border-gray-700 dark:bg-gray-800/50',
+                      registerForm.checkPassword &&
+                        registerForm.userPassword !== registerForm.checkPassword
+                        ? 'border-red-300 focus:border-red-400 focus:ring-red-100'
+                        : ''
                     )}
                     required
                     autoComplete="new-password"
                   />
                   {registerForm.checkPassword && (
-                    <p className={cn("text-[11px] font-medium flex items-center gap-1",
-                      registerForm.userPassword === registerForm.checkPassword ? "text-green-600" : "text-red-500"
-                    )}>
+                    <p
+                      className={cn(
+                        'flex items-center gap-1 text-[11px] font-medium',
+                        registerForm.userPassword === registerForm.checkPassword
+                          ? 'text-green-600'
+                          : 'text-red-500'
+                      )}
+                    >
                       {registerForm.userPassword === registerForm.checkPassword ? (
                         <>
                           <CheckCircle2 className="h-3 w-3" /> 密码一致
@@ -361,9 +392,19 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
         <div className="bg-gray-50/50 px-8 py-4 text-center dark:bg-gray-800/30">
           <p className="text-muted-foreground text-xs">
             登录即代表您同意我们的
-            <a href="#" className="hover:text-primary mx-1 font-medium underline underline-offset-2">服务条款</a>
+            <a
+              href="#"
+              className="hover:text-primary mx-1 font-medium underline underline-offset-2"
+            >
+              服务条款
+            </a>
             和
-            <a href="#" className="hover:text-primary mx-1 font-medium underline underline-offset-2">隐私政策</a>
+            <a
+              href="#"
+              className="hover:text-primary mx-1 font-medium underline underline-offset-2"
+            >
+              隐私政策
+            </a>
           </p>
         </div>
       </DialogContent>

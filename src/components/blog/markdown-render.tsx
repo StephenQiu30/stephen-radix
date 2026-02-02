@@ -18,7 +18,9 @@ interface MarkdownRendererProps {
 
 export function MarkdownRender({ content, className }: MarkdownRendererProps) {
   return (
-    <article className={cn('prose prose-neutral dark:prose-invert max-w-none break-words', className)}>
+    <article
+      className={cn('prose prose-neutral dark:prose-invert max-w-none break-words', className)}
+    >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }]]}

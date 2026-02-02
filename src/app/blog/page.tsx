@@ -6,13 +6,7 @@ import { PostCard } from '@/components/blog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { searchPostVoByPage } from '@/api/searchController'
-import {
-  BookOpen,
-  FileWarning,
-  Loader2,
-  Plus,
-  Search,
-} from 'lucide-react'
+import { BookOpen, FileWarning, Loader2, Plus, Search } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
@@ -35,8 +29,6 @@ const itemVariants = {
     transition: { duration: 0.6 },
   },
 }
-
-
 
 export default function BlogPage() {
   const [posts, setPosts] = React.useState<API.PostVO[]>([])
@@ -68,7 +60,6 @@ export default function BlogPage() {
       })) as any
 
       if (res && res.code === 0) {
-
         const data = res.data || {}
         // Handle potential different response structures and map user to userVO if needed
         let records = (Array.isArray(data) ? data : data.records || data.list || []) as API.PostVO[]
@@ -76,7 +67,7 @@ export default function BlogPage() {
         // Map 'user' to 'userVO' if userVO is missing but user exists (common backend mismatch)
         records = records.map(record => ({
           ...record,
-          userVO: record.userVO || (record as any).user
+          userVO: record.userVO || (record as any).user,
         }))
 
         const totalCount = data.total ?? data.totalCount ?? records.length
@@ -88,7 +79,9 @@ export default function BlogPage() {
         } else {
           setPosts(prev => {
             // Filter out duplicates based on ID
-            const newRecords = records.filter((record: API.PostVO) => !prev.some(p => p.id === record.id))
+            const newRecords = records.filter(
+              (record: API.PostVO) => !prev.some(p => p.id === record.id)
+            )
             return [...prev, ...newRecords]
           })
         }
@@ -118,15 +111,7 @@ export default function BlogPage() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    // If we are already on page 1, fetchPosts won't trigger by useEffect dep change if we just setPage(1)
-    // But searchText change will trigger it.
     setCurrentPage(1)
-    // We don't need to call fetchPosts() manually if useEffect watches searchText/currentPage
-    // But searchText state might not have changed if user just hits enter? 
-    // Ideally we should use a separate "query" state for the actual API call vs "searchText" input.
-    // For now, let's just make sure we trigger it.
-    // If currentPage is 1 and searchText is same, useEffect won't fire.
-    // So let's force a call if needed, or rely on the fact that usually user changes text.
     fetchPosts()
   }
 

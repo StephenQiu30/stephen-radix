@@ -51,7 +51,7 @@ const quickSort = async (
       while (tempArr[j] > pivot) j--
       if (i <= j) {
         if (signal.aborted) return -1
-          ;[tempArr[i], tempArr[j]] = [tempArr[j], tempArr[i]]
+        ;[tempArr[i], tempArr[j]] = [tempArr[j], tempArr[i]]
         setArr([...tempArr])
         await new Promise(resolve => setTimeout(resolve, speed))
         i++
@@ -205,7 +205,7 @@ export default function SortingVisualizer() {
   return (
     <div className="mx-auto w-full max-w-4xl">
       {/* Visualizer Container */}
-      <div className="hover:shadow-primary/10 bg-secondary/30 group relative flex aspect-video w-full flex-col items-center justify-end overflow-hidden rounded-[32px] border border-white/20 p-8 shadow-2xl backdrop-blur-3xl transition-all duration-500 hover:border-white/30 dark:border-white/10 sm:p-12">
+      <div className="hover:shadow-primary/10 bg-secondary/30 group relative flex aspect-video w-full flex-col items-center justify-end overflow-hidden rounded-[32px] border border-white/20 p-8 shadow-2xl backdrop-blur-3xl transition-all duration-500 hover:border-white/30 sm:p-12 dark:border-white/10">
         {/* Bars */}
         <div className="flex h-full w-full items-end justify-center gap-1 sm:gap-2">
           <AnimatePresence>
