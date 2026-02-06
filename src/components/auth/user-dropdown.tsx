@@ -13,7 +13,7 @@ import {
 import { LogOut, Settings, User, UserCircle } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { clearLoginUser } from '@/store/modules'
-import { userLogout } from '@/api/userController'
+import { userLogout } from '@/api/user/userController'
 
 export function UserDropdown() {
   const dispatch = useAppDispatch()

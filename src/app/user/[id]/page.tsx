@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { searchUserVoByPage } from '@/api/searchController'
+import { searchUserByPage } from '@/api/search/searchController'
 import { Loader2 } from 'lucide-react'
 
 const containerVariants = {
@@ -46,7 +46,7 @@ export default function UserDetailPage() {
   const router = useRouter()
   const userId = params.id as string
 
-  const [user, setUser] = React.useState<API.UserVO | null>(null)
+  const [user, setUser] = React.useState<UserAPI.UserVO | null>(null)
   const [loading, setLoading] = React.useState(true)
   const [error, setError] = React.useState<string | null>(null)
 
@@ -57,14 +57,14 @@ export default function UserDetailPage() {
       setLoading(true)
       try {
         // Use ES search to find user by ID as requested
-        const res = (await searchUserVoByPage({
+        const res = (await searchUserByPage({
           id: userId as any,
           current: 1,
           pageSize: 1,
-        })) as any
+        })) as unknown as SearchAPI.BaseResponsePage
 
-        if (res.code === 0 && res.data?.records && res.data.records.length > 0) {
-          setUser(res.data.records[0])
+        if (res.code === 0 && res.data?.records && (res.data.records as any).length > 0) {
+          setUser((res.data.records as any)[0])
         } else {
           setError('用户不存在')
         }
@@ -193,7 +193,7 @@ export default function UserDetailPage() {
 
                 <div className="bg-secondary/30 rounded-2xl p-6 text-sm">
                   <p className="text-muted-foreground leading-relaxed">
-                    "{user.userProfile || '这个人很懒，什么都没留下...'}"
+                    "{(user as any).userProfile || '这个人很懒，什么都没留下...'}"
                   </p>
                 </div>
 
@@ -247,10 +247,10 @@ export default function UserDetailPage() {
                   value={
                     user.createTime
                       ? new Date(user.createTime).toLocaleDateString('zh-CN', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })
                       : '未知'
                   }
                 />

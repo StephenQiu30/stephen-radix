@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils'
 import { UserCircle } from 'lucide-react'
 
 interface UserAvatarProps {
-  user?: API.UserVO | null
+  user?: UserAPI.UserVO | null
   size?: 'sm' | 'md' | 'lg' | 'xl'
   className?: string
   alt?: string

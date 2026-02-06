@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { addPostComment, deletePostComment } from '@/api/post/postCommentController'
 import { CommentInput } from './comment-input'
 import { useAppSelector } from '@/store/hooks'
 import { RootState } from '@/store'
@@ -19,7 +20,7 @@ dayjs.extend(relativeTime)
 dayjs.locale('zh-cn')
 
 interface CommentItemProps {
-  comment: API.PostCommentVO
+  comment: PostAPI.PostCommentVO
   postId: string
   onReplySuccess?: () => void
 }
@@ -90,7 +91,6 @@ export function CommentItem({ comment, postId, onReplySuccess }: CommentItemProp
                     onClick={async () => {
                       if (!comment.id) return
                       try {
-                        const { deletePostComment } = await import('@/api/postCommentController')
                         const res = (await deletePostComment({ id: comment.id })) as any
                         if (res.code === 0) {
                           onReplySuccess?.() // Trigger refresh

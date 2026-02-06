@@ -89,8 +89,14 @@ declare namespace UserAPI {
   }
 
   type githubLoginGetParams = {
-    arg0: string
-    arg1: string
+    arg0: GitHubLoginRequest
+  }
+
+  type GitHubLoginRequest = {
+    /** 授权码 */
+    code?: string
+    /** 防 CSRF 攻击的随机字符串 */
+    state?: string
   }
 
   type OrderItem = {

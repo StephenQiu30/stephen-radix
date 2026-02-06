@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface UserState {
-  user: API.LoginUserVO | null
+  user: UserAPI.UserVO | null
   token: string | null
 }
 
@@ -14,11 +14,12 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setLoginUser: (state, action: PayloadAction<API.LoginUserVO>) => {
+    setLoginUser: (state, action: PayloadAction<UserAPI.UserVO>) => {
       state.user = action.payload
-      state.token = action.payload.token || null
-      if (action.payload.token) {
-        localStorage.setItem('token', action.payload.token)
+      const token = (action.payload as any).token || null
+      state.token = token
+      if (token) {
+        localStorage.setItem('token', token)
       }
     },
     clearLoginUser: state => {

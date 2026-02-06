@@ -6,7 +6,7 @@ import { UserAvatar } from '@/components/header/user-avatar'
 import { Calendar, Clock } from 'lucide-react'
 
 interface PostHeaderProps {
-  post: API.PostVO
+  post: PostAPI.PostVO
 }
 
 export function PostHeader({ post }: PostHeaderProps) {
@@ -18,10 +18,10 @@ export function PostHeader({ post }: PostHeaderProps) {
   // 格式化日期
   const formattedDate = createTime
     ? new Date(createTime).toLocaleDateString('zh-CN', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
     : ''
 
   return (

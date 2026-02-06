@@ -32,7 +32,7 @@ const itemVariants = {
   },
 }
 
-interface ExtendedUser extends API.LoginUserVO {
+interface ExtendedUser extends UserAPI.UserVO {
   userProfile?: string
   userPhone?: string
 }
@@ -229,10 +229,10 @@ export default function ProfilePage() {
                   value={
                     user.createTime
                       ? new Date(user.createTime).toLocaleDateString('zh-CN', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })
                       : '未知'
                   }
                 />

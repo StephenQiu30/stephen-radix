@@ -8,7 +8,7 @@ import { Toaster } from 'sonner'
 import { useEffect } from 'react'
 import { useAppDispatch } from '@/store/hooks'
 import { clearLoginUser, setLoginUser } from '@/store/modules/user/userSlice'
-import { getLoginUser } from '@/api/userController'
+import { getLoginUser } from '@/api/user/userController'
 
 function InitUser() {
   const dispatch = useAppDispatch()
@@ -19,7 +19,7 @@ function InitUser() {
 
       if (token) {
         try {
-          const res = (await getLoginUser()) as unknown as API.BaseResponseLoginUserVO
+          const res = (await getLoginUser()) as unknown as UserAPI.BaseResponseUserVO
           if (res.code === 0 && res.data) {
             dispatch(setLoginUser(res.data))
           } else {

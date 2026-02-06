@@ -5,8 +5,8 @@ import { ArrowLeft, Image as ImageIcon, Loader2, Save, Send } from 'lucide-react
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { uploadFile } from '@/api/fileController'
-import { addPost } from '@/api/postController'
+import { uploadFile } from '@/api/file/fileController'
+import { addPost } from '@/api/post/postController'
 import { toast } from 'sonner'
 import { MarkdownEditor } from '@/components/blog/markdown-editor'
 
@@ -37,7 +37,7 @@ export default function CreatePostPage() {
 
     const toastId = toast.loading('正在上传封面...')
     try {
-      const res = (await uploadFile({ biz: 'post_cover' }, file)) as any
+      const res = (await uploadFile({ biz: 'post_cover' }, file)) as unknown as FileAPI.BaseResponseString
       if (res.code === 0 && res.data) {
         setCover(res.data)
         toast.success('封面上传成功', { id: toastId })
@@ -69,7 +69,7 @@ export default function CreatePostPage() {
         content,
         tags: tagList,
         cover,
-      })) as any
+      })) as unknown as PostAPI.BaseResponseLong
 
       if (res.code === 0) {
         toast.success('发布成功！', { id: toastId })

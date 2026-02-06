@@ -7,7 +7,7 @@ import { Loader2, Send } from 'lucide-react'
 import { useAppSelector } from '@/store/hooks'
 import { RootState } from '@/store'
 import { toast } from 'sonner'
-import { addPostComment } from '@/api/postCommentController'
+import { addPostComment } from '@/api/post/postCommentController'
 
 interface CommentInputProps {
   postId: string
@@ -43,7 +43,7 @@ export function CommentInput({
         postId: postId as any,
         content,
         parentId,
-      })) as any
+      })) as unknown as PostAPI.BaseResponseLong
       if (res.code === 0) {
         toast.success('评论发表成功')
         setContent('')

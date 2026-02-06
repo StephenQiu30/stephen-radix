@@ -6,18 +6,15 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { setLoginUser } from '@/store/modules'
-import { userLogin, userRegister } from '@/api/userController'
-import { AlertCircle, CheckCircle2, Loader2, User as UserIcon, XCircle } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { emailLogin, getGitHubAuthUrl, sendEmailCode } from '@/api/user/userController'
+import { AlertCircle, CheckCircle2, Github, Loader2, Mail, User as UserIcon } from 'lucide-react'
 
 interface AuthModalProps {
   open: boolean
@@ -27,47 +24,69 @@ interface AuthModalProps {
 export function AuthModal({ open, onOpenChange }: AuthModalProps) {
   const dispatch = useAppDispatch()
   const { user } = useAppSelector(state => state.user)
-  const [activeTab, setActiveTab] = React.useState<'login' | 'register'>('login')
   const [loading, setLoading] = React.useState(false)
   const [error, setError] = React.useState('')
   const [success, setSuccess] = React.useState('')
-
-  const [loginForm, setLoginForm] = React.useState({
-    userAccount: '',
-    userPassword: '',
+  const [emailForm, setEmailForm] = React.useState({
+    email: '',
+    code: '',
   })
+  const [countdown, setCountdown] = React.useState(0)
 
-  const [registerForm, setRegisterForm] = React.useState({
-    userAccount: '',
-    userPassword: '',
-    checkPassword: '',
-  })
-
-  // Start Clear error when switching tabs
+  // Countdown timer
   React.useEffect(() => {
-    setError('')
-    setSuccess('')
-  }, [activeTab])
+    let timer: NodeJS.Timeout
+    if (countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown(prev => prev - 1)
+      }, 1000)
+    }
+    return () => clearInterval(timer)
+  }, [countdown])
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
-
-    if (!loginForm.userAccount.trim()) {
-      setError('请输入账号')
-      setLoading(false)
+  const handleSendCode = async () => {
+    if (!emailForm.email) {
+      setError('请输入邮箱地址')
+      return
+    }
+    // Basic email validation
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailForm.email)) {
+      setError('请输入有效的邮箱地址')
       return
     }
 
-    if (loginForm.userPassword.length < 8) {
-      setError('密码长度不能少于 8 位')
+    setLoading(true)
+    setError('')
+
+    try {
+      const res = (await sendEmailCode({ email: emailForm.email })) as unknown as UserAPI.BaseResponseInteger
+      if (res.code === 0) {
+        setSuccess('验证码已发送')
+        setCountdown(60)
+      } else {
+        setError(res.message || '发送失败')
+      }
+    } catch (err: any) {
+      setError(err.message || '发送失败，请重试')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setSuccess('')
+    setLoading(true)
+
+    if (!emailForm.email || !emailForm.code) {
+      setError('请输入邮箱和验证码')
       setLoading(false)
       return
     }
 
     try {
-      const res = (await userLogin(loginForm)) as unknown as API.BaseResponseLoginUserVO
+      const res = (await emailLogin(emailForm)) as unknown as UserAPI.BaseResponseUserVO
       if (res.code === 0 && res.data) {
         dispatch(setLoginUser(res.data))
         onOpenChange(false)
@@ -82,50 +101,16 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
     }
   }
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setSuccess('')
-
-    if (!registerForm.userAccount.trim()) {
-      setError('请输入账号')
-      return
-    }
-
-    if (registerForm.userAccount.length < 4) {
-      setError('账号长度不能少于 4 位')
-      return
-    }
-
-    if (registerForm.userPassword.length < 8) {
-      setError('密码长度不能少于 8 位')
-      return
-    }
-
-    if (registerForm.userPassword !== registerForm.checkPassword) {
-      setError('两次密码输入不一致')
-      return
-    }
-
-    setLoading(true)
-
+  const handleGitHubLogin = async () => {
     try {
-      const res = (await userRegister({
-        userAccount: registerForm.userAccount,
-        userPassword: registerForm.userPassword,
-        checkPassword: registerForm.checkPassword,
-      })) as unknown as API.BaseResponseLong
-      if (res.code === 0) {
-        setActiveTab('login')
-        setSuccess('注册成功，请登录')
-        setRegisterForm({ userAccount: '', userPassword: '', checkPassword: '' })
+      const res = (await getGitHubAuthUrl()) as unknown as UserAPI.BaseResponseString
+      if (res.code === 0 && res.data) {
+        window.location.href = res.data
       } else {
-        setError(res.message || '注册失败')
+        setError(res.message || '获取 GitHub 授权链接失败')
       }
     } catch (err: any) {
-      setError(err.message || '注册失败，请重试')
-    } finally {
-      setLoading(false)
+      setError(err.message || '操作失败，请重试')
     }
   }
 
@@ -149,244 +134,105 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
             </div>
             <div className="text-center">
               <DialogTitle className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">
-                {activeTab === 'login' ? '欢迎回来' : '创建账户'}
+                登录 / 注册
               </DialogTitle>
               <DialogDescription className="text-muted-foreground mt-1.5 text-base">
-                {activeTab === 'login' ? '登录以继续访问' : '注册以开始体验'}
+                使用邮箱或 GitHub 快捷登录
               </DialogDescription>
             </div>
           </div>
         </DialogHeader>
 
-        <div className="px-8 pb-8">
-          <Tabs
-            value={activeTab}
-            onValueChange={v => setActiveTab(v as 'login' | 'register')}
-            className="mt-6"
-          >
-            <TabsList className="grid w-full grid-cols-2 rounded-xl bg-gray-100/80 p-1 dark:bg-gray-800/80">
-              <TabsTrigger
-                value="login"
-                className="rounded-lg text-sm font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-white"
-              >
-                登录
-              </TabsTrigger>
-              <TabsTrigger
-                value="register"
-                className="rounded-lg text-sm font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-white"
-              >
-                注册
-              </TabsTrigger>
-            </TabsList>
+        <div className="px-8 pb-8 pt-6">
+          <div className="space-y-4">
+            <Button
+              variant="outline"
+              onClick={handleGitHubLogin}
+              className="h-11 w-full gap-2 rounded-xl border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+            >
+              <Github className="h-5 w-5" />
+              使用 GitHub 登录
+            </Button>
 
-            <TabsContent value="login" className="mt-6 space-y-4 focus-visible:outline-none">
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="login-account"
-                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    账号
-                  </Label>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-gray-200 dark:border-gray-700" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white/50 px-2 text-gray-500 backdrop-blur-sm dark:bg-[#1c1c1e]/50">
+                  或者使用邮箱
+                </span>
+              </div>
+            </div>
+
+            <form onSubmit={handleEmailLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  邮箱地址
+                </Label>
+                <div className="relative">
                   <Input
-                    id="login-account"
-                    placeholder="请输入您的账号"
-                    value={loginForm.userAccount}
-                    onChange={e => setLoginForm({ ...loginForm, userAccount: e.target.value })}
+                    id="email"
+                    type="email"
+                    placeholder="name@example.com"
+                    value={emailForm.email}
+                    onChange={e => setEmailForm({ ...emailForm, email: e.target.value })}
+                    className="h-11 rounded-xl border-gray-200 bg-gray-50/50 px-4 pl-10 transition-all focus:border-[#0071e3] focus:ring-4 focus:ring-[#0071e3]/10 dark:border-gray-700 dark:bg-gray-800/50"
+                    required
+                  />
+                  <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="code" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  验证码
+                </Label>
+                <div className="flex gap-3">
+                  <Input
+                    id="code"
+                    placeholder="6位验证码"
+                    value={emailForm.code}
+                    onChange={e => setEmailForm({ ...emailForm, code: e.target.value })}
                     className="h-11 rounded-xl border-gray-200 bg-gray-50/50 px-4 transition-all focus:border-[#0071e3] focus:ring-4 focus:ring-[#0071e3]/10 dark:border-gray-700 dark:bg-gray-800/50"
                     required
-                    autoComplete="username"
+                    maxLength={6}
                   />
-                </div>
-
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="login-password"
-                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleSendCode}
+                    disabled={loading || countdown > 0}
+                    className="h-11 min-w-[100px] shrink-0 rounded-xl border-gray-200"
                   >
-                    密码
-                  </Label>
-                  <Input
-                    id="login-password"
-                    type="password"
-                    placeholder="请输入密码"
-                    value={loginForm.userPassword}
-                    onChange={e => setLoginForm({ ...loginForm, userPassword: e.target.value })}
-                    className="h-11 rounded-xl border-gray-200 bg-gray-50/50 px-4 transition-all focus:border-[#0071e3] focus:ring-4 focus:ring-[#0071e3]/10 dark:border-gray-700 dark:bg-gray-800/50"
-                    required
-                    minLength={8}
-                    autoComplete="current-password"
-                  />
+                    {countdown > 0 ? `${countdown}s` : '发送验证码'}
+                  </Button>
                 </div>
+              </div>
 
-                {error && (
-                  <div className="flex items-center gap-2 rounded-lg bg-red-50/50 p-3 text-sm text-red-600 dark:bg-red-900/10 dark:text-red-400">
-                    <AlertCircle className="h-4 w-4 shrink-0" />
-                    <span>{error}</span>
-                  </div>
-                )}
-                {success && (
-                  <div className="flex items-center gap-2 rounded-lg bg-green-50/50 p-3 text-sm text-green-600 dark:bg-green-900/10 dark:text-green-400">
-                    <CheckCircle2 className="h-4 w-4 shrink-0" />
-                    <span>{success}</span>
-                  </div>
-                )}
-
-                <Button
-                  type="submit"
-                  className="h-11 w-full rounded-xl bg-[#0071e3] text-base font-medium text-white shadow-lg transition-all hover:bg-[#0077ed] hover:shadow-xl active:scale-[0.98] disabled:opacity-70 dark:bg-[#0071e3] dark:hover:bg-[#0077ed]"
-                  disabled={loading}
-                >
-                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {loading ? '登录中...' : '登 录'}
-                </Button>
-              </form>
-            </TabsContent>
-
-            <TabsContent value="register" className="mt-6 space-y-4 focus-visible:outline-none">
-              <form onSubmit={handleRegister} className="space-y-4">
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="register-account"
-                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    账号
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      id="register-account"
-                      placeholder="设置账号（至少 4 位）"
-                      value={registerForm.userAccount}
-                      onChange={e =>
-                        setRegisterForm({ ...registerForm, userAccount: e.target.value })
-                      }
-                      className={cn(
-                        'h-11 rounded-xl border-gray-200 bg-gray-50/50 px-4 transition-all focus:border-[#0071e3] focus:ring-4 focus:ring-[#0071e3]/10 dark:border-gray-700 dark:bg-gray-800/50',
-                        registerForm.userAccount && registerForm.userAccount.length < 4
-                          ? 'border-red-300 focus:border-red-400 focus:ring-red-100'
-                          : ''
-                      )}
-                      required
-                      minLength={4}
-                      autoComplete="username"
-                    />
-                    {registerForm.userAccount && (
-                      <div className="absolute top-1/2 right-3 -translate-y-1/2">
-                        {registerForm.userAccount.length >= 4 ? (
-                          <CheckCircle2 className="h-4 w-4 text-green-500" />
-                        ) : (
-                          <XCircle className="h-4 w-4 text-red-500" />
-                        )}
-                      </div>
-                    )}
-                  </div>
-                  <p className="text-muted-foreground text-[11px]">至少 4 位字符</p>
+              {error && (
+                <div className="flex items-center gap-2 rounded-lg bg-red-50/50 p-3 text-sm text-red-600 dark:bg-red-900/10 dark:text-red-400">
+                  <AlertCircle className="h-4 w-4 shrink-0" />
+                  <span>{error}</span>
                 </div>
-
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="register-password"
-                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    密码
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      id="register-password"
-                      type="password"
-                      placeholder="设置密码（至少 8 位）"
-                      value={registerForm.userPassword}
-                      onChange={e =>
-                        setRegisterForm({ ...registerForm, userPassword: e.target.value })
-                      }
-                      className={cn(
-                        'h-11 rounded-xl border-gray-200 bg-gray-50/50 px-4 transition-all focus:border-[#0071e3] focus:ring-4 focus:ring-[#0071e3]/10 dark:border-gray-700 dark:bg-gray-800/50',
-                        registerForm.userPassword && registerForm.userPassword.length < 8
-                          ? 'border-red-300 focus:border-red-400 focus:ring-red-100'
-                          : ''
-                      )}
-                      required
-                      minLength={8}
-                      autoComplete="new-password"
-                    />
-                    {registerForm.userPassword && (
-                      <div className="absolute top-1/2 right-3 -translate-y-1/2">
-                        {registerForm.userPassword.length >= 8 ? (
-                          <CheckCircle2 className="h-4 w-4 text-green-500" />
-                        ) : (
-                          <XCircle className="h-4 w-4 text-red-500" />
-                        )}
-                      </div>
-                    )}
-                  </div>
-                  <p className="text-muted-foreground text-[11px]">至少 8 位字符</p>
+              )}
+              {success && (
+                <div className="flex items-center gap-2 rounded-lg bg-green-50/50 p-3 text-sm text-green-600 dark:bg-green-900/10 dark:text-green-400">
+                  <CheckCircle2 className="h-4 w-4 shrink-0" />
+                  <span>{success}</span>
                 </div>
+              )}
 
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="register-check-password"
-                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    确认密码
-                  </Label>
-                  <Input
-                    id="register-check-password"
-                    type="password"
-                    placeholder="请再次输入密码"
-                    value={registerForm.checkPassword}
-                    onChange={e =>
-                      setRegisterForm({ ...registerForm, checkPassword: e.target.value })
-                    }
-                    className={cn(
-                      'h-11 rounded-xl border-gray-200 bg-gray-50/50 px-4 transition-all focus:border-[#0071e3] focus:ring-4 focus:ring-[#0071e3]/10 dark:border-gray-700 dark:bg-gray-800/50',
-                      registerForm.checkPassword &&
-                        registerForm.userPassword !== registerForm.checkPassword
-                        ? 'border-red-300 focus:border-red-400 focus:ring-red-100'
-                        : ''
-                    )}
-                    required
-                    autoComplete="new-password"
-                  />
-                  {registerForm.checkPassword && (
-                    <p
-                      className={cn(
-                        'flex items-center gap-1 text-[11px] font-medium',
-                        registerForm.userPassword === registerForm.checkPassword
-                          ? 'text-green-600'
-                          : 'text-red-500'
-                      )}
-                    >
-                      {registerForm.userPassword === registerForm.checkPassword ? (
-                        <>
-                          <CheckCircle2 className="h-3 w-3" /> 密码一致
-                        </>
-                      ) : (
-                        <>
-                          <XCircle className="h-3 w-3" /> 密码不一致
-                        </>
-                      )}
-                    </p>
-                  )}
-                </div>
-
-                {error && (
-                  <div className="flex items-center gap-2 rounded-lg bg-red-50/50 p-3 text-sm text-red-600 dark:bg-red-900/10 dark:text-red-400">
-                    <AlertCircle className="h-4 w-4 shrink-0" />
-                    <span>{error}</span>
-                  </div>
-                )}
-
-                <Button
-                  type="submit"
-                  className="h-11 w-full rounded-xl bg-[#0071e3] text-base font-medium text-white shadow-lg transition-all hover:bg-[#0077ed] hover:shadow-xl active:scale-[0.98] disabled:opacity-70 dark:bg-[#0071e3] dark:hover:bg-[#0077ed]"
-                  disabled={loading}
-                >
-                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {loading ? '注册中...' : '注 册'}
-                </Button>
-              </form>
-            </TabsContent>
-          </Tabs>
+              <Button
+                type="submit"
+                className="h-11 w-full rounded-xl bg-[#0071e3] text-base font-medium text-white shadow-lg transition-all hover:bg-[#0077ed] hover:shadow-xl active:scale-[0.98] disabled:opacity-70 dark:bg-[#0071e3] dark:hover:bg-[#0077ed]"
+                disabled={loading}
+              >
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {loading ? '登录 / 注册' : '登录 / 注册'}
+              </Button>
+            </form>
+          </div>
         </div>
 
         <div className="bg-gray-50/50 px-8 py-4 text-center dark:bg-gray-800/30">

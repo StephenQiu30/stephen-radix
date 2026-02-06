@@ -145,6 +145,8 @@ export async function githubLoginGet(
     method: 'GET',
     params: {
       ...params,
+      arg0: undefined,
+      ...params['arg0'],
     },
     ...(options || {}),
   })
