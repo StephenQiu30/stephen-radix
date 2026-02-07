@@ -9,15 +9,15 @@ export async function uploadFile(
   body: File,
   options?: { [key: string]: any }
 ) {
+  const formData = new FormData()
+  formData.append('file', body)
+
   return request<FileAPI.BaseResponseString>('/file/upload', {
     method: 'POST',
     params: {
       ...params,
     },
-    data: body,
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
+    data: formData,
     ...(options || {}),
   })
 }
