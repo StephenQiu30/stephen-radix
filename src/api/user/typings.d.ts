@@ -26,6 +26,14 @@ declare namespace UserAPI {
     message?: string
   }
 
+  type BaseResponseLoginUserVO = {
+    /** 状态码 */
+    code?: number
+    data?: LoginUserVO
+    /** 消息 */
+    message?: string
+  }
+
   type BaseResponsePageUser = {
     /** 状态码 */
     code?: number
@@ -97,6 +105,21 @@ declare namespace UserAPI {
     code?: string
     /** 防 CSRF 攻击的随机字符串 */
     state?: string
+  }
+
+  type LoginUserVO = {
+    /** id */
+    id?: number
+    /** 用户昵称 */
+    userName?: string
+    /** 用户头像 */
+    userAvatar?: string
+    /** 用户角色：user/admin/ban */
+    userRole?: string
+    /** 创建时间 */
+    createTime?: string
+    /** 登录 token */
+    token?: string
   }
 
   type OrderItem = {

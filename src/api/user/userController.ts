@@ -46,7 +46,7 @@ export async function getUserById(
 
 /** 获取当前登录用户 获取当前登录用户信息 GET /user/get/login */
 export async function getLoginUser(options?: { [key: string]: any }) {
-  return request<UserAPI.BaseResponseUserVO>('/user/get/login', {
+  return request<UserAPI.BaseResponseLoginUserVO>('/user/get/login', {
     method: 'GET',
     ...(options || {}),
   })
@@ -117,7 +117,7 @@ export async function emailLogin(
   body: UserAPI.UserEmailLoginRequest,
   options?: { [key: string]: any }
 ) {
-  return request<UserAPI.BaseResponseUserVO>('/user/login/email', {
+  return request<UserAPI.BaseResponseLoginUserVO>('/user/login/email', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ export async function githubLoginGet(
   params: UserAPI.githubLoginGetParams,
   options?: { [key: string]: any }
 ) {
-  return request<UserAPI.BaseResponseUserVO>('/user/login/github/callback', {
+  return request<UserAPI.BaseResponseLoginUserVO>('/user/login/github/callback', {
     method: 'GET',
     params: {
       ...params,
@@ -165,7 +165,7 @@ export async function wxQrCodeLogin(
   body: UserAPI.WxQrCodeLoginRequest,
   options?: { [key: string]: any }
 ) {
-  return request<UserAPI.BaseResponseUserVO>('/user/login/wx/qrcode/callback', {
+  return request<UserAPI.BaseResponseLoginUserVO>('/user/login/wx/qrcode/callback', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
