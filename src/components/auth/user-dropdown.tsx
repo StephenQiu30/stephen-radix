@@ -13,7 +13,8 @@ import {
 import { LogOut, Settings, User, UserCircle } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { clearLoginUser } from '@/store/modules'
-import { userLogout } from '@/api/userController'
+import { userLogout } from '@/api/user/userController'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 export function UserDropdown() {
   const dispatch = useAppDispatch()
@@ -34,34 +35,28 @@ export function UserDropdown() {
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="hover:text-primary relative">
-          {user?.userAvatar ? (
-            <img
-              src={user.userAvatar}
-              alt={user.userName || '用户头像'}
-              className="h-5 w-5 rounded-full object-cover"
-            />
-          ) : (
-            <UserCircle className="h-5 w-5" />
-          )}
+        <Button variant="ghost" size="icon" className="hover:text-primary relative rounded-full">
+          <Avatar className="h-6 w-6">
+            <AvatarImage src={user?.userAvatar} alt={user?.userName || '用户头像'} />
+            <AvatarFallback>
+              <UserCircle className="h-5 w-5" />
+            </AvatarFallback>
+          </Avatar>
           <span className="sr-only">用户菜单</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <div className="flex items-center gap-3 px-2 py-3">
-          {user?.userAvatar ? (
-            <img
-              src={user.userAvatar}
-              alt={user.userName || '用户头像'}
-              className="h-10 w-10 rounded-full object-cover"
-            />
-          ) : (
-            <div className="bg-muted flex h-10 w-10 items-center justify-center rounded-full">
-              <UserCircle className="text-muted-foreground h-6 w-6" />
-            </div>
-          )}
+          <Avatar className="h-10 w-10">
+            <AvatarImage src={user?.userAvatar} alt={user?.userName || '用户头像'} />
+            <AvatarFallback>
+              <UserCircle className="h-6 w-6 text-muted-foreground" />
+            </AvatarFallback>
+          </Avatar>
           <div className="flex flex-col">
-            <span className="font-medium">{user?.userName || '未知用户'}</span>
+            <span className="font-medium truncate max-w-[140px] block">
+              {user?.userName || '未知用户'}
+            </span>
             <span className="text-muted-foreground text-xs">
               {user?.userRole === 'admin' ? '管理员' : '普通用户'}
             </span>

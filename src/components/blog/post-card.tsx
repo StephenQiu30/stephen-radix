@@ -9,7 +9,7 @@ import { ArrowUpRight, Bookmark, Heart } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface PostCardProps {
-  post: API.PostVO
+  post: PostAPI.PostVO
   className?: string
 }
 
@@ -29,10 +29,10 @@ export function PostCard({ post, className }: PostCardProps) {
   // 格式化日期
   const formattedDate = createTime
     ? new Date(createTime).toLocaleDateString('zh-CN', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      })
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
     : ''
 
   return (

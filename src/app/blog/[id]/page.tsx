@@ -11,9 +11,9 @@ import {
   PostActionBar,
 } from '@/components/blog'
 import { Button } from '@/components/ui/button'
-import { getPostVoById } from '@/api/postController'
-import { doThumb } from '@/api/postThumbController'
-import { doPostFavour } from '@/api/postFavourController'
+import { getPostVoById } from '@/api/post/postController'
+import { doThumb } from '@/api/post/postThumbController'
+import { doFavour } from '@/api/post/postFavourController'
 import { useAppSelector } from '@/store/hooks'
 import type { RootState } from '@/store'
 import { ArrowLeft, FileWarning, Loader2 } from 'lucide-react'
@@ -27,7 +27,7 @@ export default function PostDetailPage() {
 
   const { user } = useAppSelector((state: RootState) => state.user)
 
-  const [post, setPost] = React.useState<API.PostVO | null>(null)
+  const [post, setPost] = React.useState<PostAPI.PostVO | null>(null)
   const [loading, setLoading] = React.useState(true)
   const [error, setError] = React.useState<string | null>(null)
   const [hasThumb, setHasThumb] = React.useState(false)
@@ -52,7 +52,7 @@ export default function PostDetailPage() {
       setLoading(true)
       setError(null)
       try {
-        const res = (await getPostVoById({ id: postId as any })) as any
+        const res = (await getPostVoById({ arg0: postId as any })) as unknown as PostAPI.BaseResponsePostVO
         if (res && res.code === 0 && res.data) {
           setPost(res.data)
           setHasThumb(res.data.hasThumb || false)
@@ -77,7 +77,7 @@ export default function PostDetailPage() {
   const handleThumb = async () => {
     if (!user) return router.push('/')
     try {
-      const res = (await doThumb({ postId: postId as any })) as any
+      const res = (await doThumb({ postId: postId as any })) as unknown as PostAPI.BaseResponseInteger
       if (res.code === 0) {
         const delta = res.data || 0
         setHasThumb(delta > 0)
@@ -91,7 +91,7 @@ export default function PostDetailPage() {
   const handleFavour = async () => {
     if (!user) return router.push('/')
     try {
-      const res = (await doPostFavour({ postId: postId as any })) as any
+      const res = (await doFavour({ postId: postId as any })) as unknown as PostAPI.BaseResponseInteger
       if (res.code === 0) {
         const delta = res.data || 0
         setHasFavour(delta > 0)

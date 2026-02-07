@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { MarkdownRender } from '@/components/blog/markdown-render'
 
-import { uploadFile } from '@/api/fileController'
+import { uploadFile } from '@/api/file/fileController'
 import { FileUploadBizEnum } from '@/enums/FileUploadBizEnum'
 import { toast } from 'sonner'
 
@@ -74,7 +74,7 @@ export function MarkdownEditor({
           biz: FileUploadBizEnum.POST_IMAGE_COVER,
         },
         file
-      )) as any
+      )) as unknown as FileAPI.BaseResponseString
       if (res.code === 0 && res.data) {
         insertText(`![图片](${res.data})`)
         toast.success('图片上传成功', { id: toastId })
@@ -127,7 +127,7 @@ export function MarkdownEditor({
       className={cn(
         'border-border/40 bg-card/30 flex flex-1 flex-col overflow-hidden rounded-xl border shadow-sm transition-all duration-300',
         isFullscreen &&
-          'bg-background fixed inset-0 z-50 h-screen w-screen rounded-none border-none',
+        'bg-background fixed inset-0 z-50 h-screen w-screen rounded-none border-none',
         className
       )}
     >

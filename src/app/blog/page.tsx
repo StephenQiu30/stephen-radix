@@ -5,10 +5,12 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { PostCard } from '@/components/blog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { searchPostVoByPage } from '@/api/searchController'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { searchPostByPage } from '@/api/search/searchController'
 import { BookOpen, FileWarning, Loader2, Plus, Search } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -30,20 +32,23 @@ const itemVariants = {
   },
 }
 
-export default function BlogPage() {
-  const [posts, setPosts] = React.useState<API.PostVO[]>([])
+function BlogList() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const currentSearchText = searchParams.get('q') || ''
+  const [currentPage, setCurrentPage] = React.useState(1)
+  const [activeTab, setActiveTab] = React.useState<'latest' | 'popular'>('latest')
+  const pageSize = 12
+
+  const [posts, setPosts] = React.useState<PostAPI.PostVO[]>([])
+  const [total, setTotal] = React.useState(0)
   const [loading, setLoading] = React.useState(true)
   const [loadingMore, setLoadingMore] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
-  const [searchText, setSearchText] = React.useState('')
-  const [activeTab, setActiveTab] = React.useState<'latest' | 'popular'>('latest')
-  const [currentPage, setCurrentPage] = React.useState(1)
-  const [total, setTotal] = React.useState(0)
-  const pageSize = 12
+  const [searchText, setSearchText] = React.useState(currentSearchText)
 
   // 获取文章列表
   const fetchPosts = React.useCallback(async () => {
-    // Only show global loading on initial load or search/tab change
     if (currentPage === 1) {
       setLoading(true)
     } else {
@@ -51,36 +56,30 @@ export default function BlogPage() {
     }
     setError(null)
     try {
-      const res = (await searchPostVoByPage({
+      const res = (await searchPostByPage({
         current: currentPage,
         pageSize,
-        searchText: searchText || undefined,
-        sortField: 'createTime',
+        searchText: currentSearchText || undefined,
+        sortField: activeTab === 'latest' ? 'createTime' : 'thumbNum',
         sortOrder: 'descend',
-      })) as any
+      })) as unknown as SearchAPI.BaseResponsePage
 
-      if (res && res.code === 0) {
-        const data = res.data || {}
-        // Handle potential different response structures and map user to userVO if needed
-        let records = (Array.isArray(data) ? data : data.records || data.list || []) as API.PostVO[]
+      if (res && res.code === 0 && res.data) {
+        let records = (res.data.records || []) as PostAPI.PostVO[]
+        const totalCount = Number(res.data.total) || 0
 
-        // Map 'user' to 'userVO' if userVO is missing but user exists (common backend mismatch)
+        // Handle possible backend mapping issue (user -> userVO)
         records = records.map(record => ({
           ...record,
           userVO: record.userVO || (record as any).user,
         }))
 
-        const totalCount = data.total ?? data.totalCount ?? records.length
-
-        console.log('Fetched posts:', records.length, 'Total:', totalCount)
-
         if (currentPage === 1) {
           setPosts(records)
         } else {
           setPosts(prev => {
-            // Filter out duplicates based on ID
             const newRecords = records.filter(
-              (record: API.PostVO) => !prev.some(p => p.id === record.id)
+              record => !prev.some(p => p.id === record.id)
             )
             return [...prev, ...newRecords]
           })
@@ -88,10 +87,6 @@ export default function BlogPage() {
         setTotal(totalCount)
       } else {
         setError(res?.message || '加载文章列表失败')
-        if (currentPage === 1) {
-          setPosts([])
-        }
-        setTotal(0)
       }
     } catch (err: any) {
       console.error('获取文章列表失败:', err)
@@ -100,19 +95,22 @@ export default function BlogPage() {
       setLoading(false)
       setLoadingMore(false)
     }
-  }, [currentPage, searchText])
+  }, [currentPage, currentSearchText, activeTab])
 
   React.useEffect(() => {
     fetchPosts()
   }, [fetchPosts])
 
-  // Reset page to 1 when search text changes (debouncing could be added here, but manual search for now)
-  // Actually, we are using a form submit for search, so that's handled in handleSearch.
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
+    const params = new URLSearchParams(searchParams.toString())
+    if (searchText) {
+      params.set('q', searchText)
+    } else {
+      params.delete('q')
+    }
+    router.push(`/blog?${params.toString()}`)
     setCurrentPage(1)
-    fetchPosts()
   }
 
   const hasMore = posts.length < total
@@ -214,7 +212,7 @@ export default function BlogPage() {
 
         {/* 文章列表 - Simplified Animation */}
         <div className="min-h-[200px]">
-          {loading ? (
+          {loading && currentPage === 1 ? (
             <div className="flex min-h-[400px] items-center justify-center">
               <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
             </div>
@@ -246,7 +244,7 @@ export default function BlogPage() {
                   key={post.id || i}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: i * 0.05 }}
+                  transition={{ duration: 0.4, delay: (i % pageSize) * 0.05 }}
                   layout
                 >
                   <PostCard post={post} />
@@ -281,5 +279,19 @@ export default function BlogPage() {
         </div>
       </motion.div>
     </div>
+  )
+}
+
+export default function BlogPage() {
+  return (
+    <React.Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
+        </div>
+      }
+    >
+      <BlogList />
+    </React.Suspense>
   )
 }

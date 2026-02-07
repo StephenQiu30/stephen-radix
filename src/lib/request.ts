@@ -14,9 +14,15 @@ const request = axios.create({
  */
 request.interceptors.request.use(
   function (config) {
-    const token = localStorage.getItem('token')
-    if (token) {
-      config.headers.setAuthorization(`Bearer ${token}`)
+    if (typeof window !== 'undefined') {
+      try {
+        const token = localStorage.getItem('token')
+        if (token) {
+          config.headers.setAuthorization(`Bearer ${token}`)
+        }
+      } catch {
+        // Ignore storage access errors (e.g. disabled storage)
+      }
     }
     return config
   },

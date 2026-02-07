@@ -4,7 +4,7 @@ import * as React from 'react'
 import { Loader2, MessageSquare } from 'lucide-react'
 import { CommentInput } from './comment-input'
 import { CommentItem } from './comment-item'
-import { listPostCommentVoByPage } from '@/api/postCommentController'
+import { listPostCommentVoByPage } from '@/api/post/postCommentController'
 
 interface CommentSectionProps {
   postId: string
@@ -12,15 +12,15 @@ interface CommentSectionProps {
 }
 
 export function CommentSection({ postId, onTotalChange }: CommentSectionProps) {
-  const [comments, setComments] = React.useState<API.PostCommentVO[]>([])
+  const [comments, setComments] = React.useState<PostAPI.PostCommentVO[]>([])
   const [loading, setLoading] = React.useState(true)
   const [total, setTotal] = React.useState(0)
   const [page, setPage] = React.useState(1)
 
   // Helper to build comment tree
-  const buildCommentTree = (comments: API.PostCommentVO[]) => {
-    const commentMap = new Map<any, API.PostCommentVO>()
-    const roots: API.PostCommentVO[] = []
+  const buildCommentTree = (comments: PostAPI.PostCommentVO[]) => {
+    const commentMap = new Map<any, PostAPI.PostCommentVO>()
+    const roots: PostAPI.PostCommentVO[] = []
 
     // First pass: create a map of all comments
     comments.forEach(comment => {
@@ -55,7 +55,7 @@ export function CommentSection({ postId, onTotalChange }: CommentSectionProps) {
         postId: postId as any,
         current: 1,
         pageSize: 20,
-      })) as any
+      })) as unknown as PostAPI.BaseResponsePagePostCommentVO
       if (res.code === 0 && res.data) {
         const flatComments = res.data.records || []
         const treeComments = buildCommentTree(flatComments)

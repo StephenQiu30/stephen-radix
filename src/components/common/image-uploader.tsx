@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { ImagePlus, Loader2 } from 'lucide-react'
-import { uploadFile } from '@/api/fileController'
+import { uploadFile } from '@/api/file/fileController'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
@@ -43,7 +43,7 @@ export function ImageUploader({
 
     setLoading(true)
     try {
-      const res = (await uploadFile({ biz }, file)) as any
+      const res = (await uploadFile({ biz }, file)) as unknown as FileAPI.BaseResponseString
       if (res.code === 0 && res.data) {
         onChange?.(res.data)
         toast.success('图片上传成功')
