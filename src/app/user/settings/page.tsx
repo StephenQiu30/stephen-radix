@@ -14,7 +14,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowLeft, Camera, CheckCircle2, Loader2, Shield, X } from 'lucide-react'
 import Link from 'next/link'
-import { getLoginUser } from '@/api/user/userController'
+import { AuthModal } from '@/components/auth/auth-modal'
+import { LoginPromptCard } from '@/components/auth/login-prompt-card'
+import { getLoginUser, updateMyUser } from '@/api/user/userController'
 import { uploadFile } from '@/api/file/fileController'
 import { setLoginUser } from '@/store/modules/user/userSlice'
 
@@ -55,6 +57,7 @@ export default function SettingsPage() {
   )
   const [activeField, setActiveField] = React.useState<string | null>(null)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
+  const [authModalOpen, setAuthModalOpen] = React.useState(false)
 
   const [formData, setFormData] = React.useState({
     userAvatar: '',
@@ -141,13 +144,9 @@ export default function SettingsPage() {
 
     // ... in handleSubmit ...
     try {
-      // res = (await updateMyUser({
-      //   id: user.id,
-      //   ...formData,
-      // } as UserAPI.User)) as unknown as UserAPI.BaseResponseBoolean
-
-      // Temporarily mock success to allow build, or handle missing API
-      const res = { code: 0, data: true, message: 'Success' }
+      const res = (await updateMyUser({
+        ...formData,
+      } as UserAPI.UserEditRequest)) as unknown as UserAPI.BaseResponseBoolean
 
       if (res.code === 0 && res.data) {
         setMessage({ type: 'success', text: '个人资料保存成功！✨' })
@@ -170,16 +169,10 @@ export default function SettingsPage() {
 
   if (!user) {
     return (
-      <div className="flex min-h-[600px] items-center justify-center p-4">
-        <Card className="w-full max-w-md p-8 text-center shadow-xl">
-          <Shield className="text-muted-foreground mx-auto mb-4 h-16 w-16 opacity-50" />
-          <h2 className="mb-2 text-2xl font-bold">需要登录</h2>
-          <p className="text-muted-foreground mb-6">请先登录以访问个人设置</p>
-          <Link href="/">
-            <Button>返回首页</Button>
-          </Link>
-        </Card>
-      </div>
+      <>
+        <LoginPromptCard onLoginClick={() => setAuthModalOpen(true)} />
+        <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} />
+      </>
     )
   }
 

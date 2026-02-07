@@ -5,66 +5,88 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useAppDispatch } from '@/store/hooks'
 import { setLoginUser } from '@/store/modules'
 import { gitHubLoginCallback } from '@/api/user/userController'
-import { Loader2 } from 'lucide-react'
+import { GitHubAuthStatus } from '@/components/auth/github-auth-status'
 import { toast } from 'sonner'
 
 function GitHubCallbackContent() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const dispatch = useAppDispatch()
-    const [error, setError] = React.useState('')
 
+    const [status, setStatus] = React.useState<'loading' | 'success' | 'error'>('loading')
+    const [message, setMessage] = React.useState('正在连接 GitHub...')
+    const [progress, setProgress] = React.useState(0)
+
+    // 模拟进度条
     React.useEffect(() => {
+        if (status === 'loading') {
+            const timer = setInterval(() => {
+                setProgress(prev => {
+                    if (prev >= 90) return 90
+                    return prev + Math.random() * 20
+                })
+            }, 800)
+            return () => clearInterval(timer)
+        } else if (status === 'success') {
+            setProgress(100)
+        }
+    }, [status])
+
+    const handleLogin = React.useCallback(async () => {
         const code = searchParams.get('code')
         const state = searchParams.get('state')
 
         if (!code) {
-            setError('未获取到授权码')
-            router.replace('/')
+            setStatus('error')
+            setMessage('未获取到授权码，请重试')
             return
         }
 
-        const login = async () => {
-            try {
-                const res = (await gitHubLoginCallback({
-                    arg0: { code, state: state || '' },
-                })) as unknown as UserAPI.BaseResponseLoginUserVO
-                if (res.code === 0 && res.data) {
-                    // Save token if exists
-                    if (res.data.token && typeof window !== 'undefined') {
-                        localStorage.setItem('token', res.data.token)
-                    }
-                    dispatch(setLoginUser(res.data))
-                    toast.success('登录成功')
-                    router.replace('/')
-                } else {
-                    setError(res.message || 'GitHub 登录失败')
-                    toast.error(res.message || 'GitHub 登录失败')
-                    setTimeout(() => router.replace('/'), 2000)
-                }
-            } catch (err: any) {
-                setError(err.message || '登录异常')
-                toast.error(err.message || '登录异常')
-                setTimeout(() => router.replace('/'), 2000)
-            }
-        }
+        try {
+            setStatus('loading')
+            setMessage('正在验证身份...')
 
-        login()
+            const res = (await gitHubLoginCallback({
+                arg0: { code, state: state || '' },
+            })) as unknown as UserAPI.BaseResponseLoginUserVO
+
+            if (res.code === 0 && res.data) {
+                // Save token if exists
+                if (res.data.token && typeof window !== 'undefined') {
+                    localStorage.setItem('token', res.data.token)
+                }
+                dispatch(setLoginUser(res.data))
+                setStatus('success')
+                setMessage('验证成功，即将跳转')
+                toast.success('登录成功')
+
+                // 延迟跳转以展示成功动画
+                setTimeout(() => router.replace('/'), 1200)
+            } else {
+                setStatus('error')
+                setMessage(res.message || 'GitHub 登录失败')
+                toast.error(res.message || '登录失败')
+            }
+        } catch (err: any) {
+            setStatus('error')
+            setMessage(err.message || '连接超时或网络异常')
+            toast.error('登录异常')
+        }
     }, [searchParams, dispatch, router])
 
+    React.useEffect(() => {
+        // 延迟一点执行，让用户看到初始动画
+        const timer = setTimeout(handleLogin, 800)
+        return () => clearTimeout(timer)
+    }, [handleLogin])
+
     return (
-        <div className="flex h-screen w-screen flex-col items-center justify-center bg-gray-50 dark:bg-gray-900">
-            <div className="flex flex-col items-center gap-4">
-                {error ? (
-                    <div className="font-medium text-red-500">{error}</div>
-                ) : (
-                    <>
-                        <Loader2 className="text-primary h-10 w-10 animate-spin" />
-                        <p className="text-muted-foreground">正在处理 GitHub 登录...</p>
-                    </>
-                )}
-            </div>
-        </div>
+        <GitHubAuthStatus
+            status={status}
+            message={message}
+            progress={progress}
+            onRetry={() => window.location.reload()}
+        />
     )
 }
 
@@ -72,8 +94,8 @@ export default function GitHubCallbackPage() {
     return (
         <React.Suspense
             fallback={
-                <div className="flex h-screen w-screen flex-col items-center justify-center bg-gray-50 dark:bg-gray-900">
-                    <Loader2 className="text-primary h-10 w-10 animate-spin" />
+                <div className="flex h-screen w-screen items-center justify-center bg-[#F5F5F7] dark:bg-black">
+                    <div className="h-8 w-8 rounded-full border-2 border-[#0071E3] border-t-transparent animate-spin" />
                 </div>
             }
         >

@@ -10,6 +10,8 @@ import { motion } from 'framer-motion'
 import { AtSign, Award, Calendar, Edit, Shield, User as UserIcon, Zap } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { AuthModal } from '@/components/auth/auth-modal'
+import { LoginPromptCard } from '@/components/auth/login-prompt-card'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -40,20 +42,18 @@ interface ExtendedUser extends UserAPI.UserVO {
 export default function ProfilePage() {
   const { user: baseUser } = useAppSelector((state: RootState) => state.user)
   const user = baseUser as ExtendedUser
+  const [authModalOpen, setAuthModalOpen] = React.useState(false)
 
   if (!user) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center p-4">
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
-          <Card className="max-w-md p-8 text-center shadow-lg">
-            <Shield className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
-            <p className="text-muted-foreground mb-6">请先登录查看个人信息</p>
-            <Link href="/">
-              <Button>返回首页</Button>
-            </Link>
-          </Card>
-        </motion.div>
-      </div>
+      <>
+        <LoginPromptCard
+          onLoginClick={() => setAuthModalOpen(true)}
+          title="需要登录"
+          description="请先登录以查看个人资料"
+        />
+        <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} />
+      </>
     )
   }
 
