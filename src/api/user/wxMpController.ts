@@ -12,6 +12,8 @@ export async function check(
     method: 'GET',
     params: {
       ...params,
+      arg0: undefined,
+      ...params['arg0'],
     },
     ...(options || {}),
   })

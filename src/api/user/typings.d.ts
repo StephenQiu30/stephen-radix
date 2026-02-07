@@ -84,10 +84,7 @@ declare namespace UserAPI {
   }
 
   type checkParams = {
-    arg0: string
-    arg1: string
-    arg2: string
-    arg3: string
+    arg0: WxMpCheckRequest
   }
 
   type checkWxLoginStatusParams = {
@@ -104,12 +101,18 @@ declare namespace UserAPI {
   }
 
   type getUserVOByIdParams = {
-    arg0: number
+    id: number
+  }
+
+  type GitHubCallbackRequest = {
+    /** 授权码 */
+    code: string
+    /** 防 CSRF 攻击的随机字符串 */
+    state: string
   }
 
   type gitHubLoginCallbackParams = {
-    arg0: string
-    arg1: string
+    arg0: GitHubCallbackRequest
   }
 
   type GitHubLoginRequest = {
@@ -310,5 +313,16 @@ declare namespace UserAPI {
     qrCodeUrl?: string
     /** 场景 ID */
     sceneId?: string
+  }
+
+  type WxMpCheckRequest = {
+    /** 时间戳 */
+    timestamp: string
+    /** 随机数 */
+    nonce: string
+    /** 签名 */
+    signature: string
+    /** 随机字符串 */
+    echostr: string
   }
 }

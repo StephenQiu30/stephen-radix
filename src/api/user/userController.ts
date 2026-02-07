@@ -157,6 +157,8 @@ export async function gitHubLoginCallback(
     method: 'GET',
     params: {
       ...params,
+      arg0: undefined,
+      ...params['arg0'],
     },
     ...(options || {}),
   })
