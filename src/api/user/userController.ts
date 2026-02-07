@@ -109,6 +109,29 @@ export async function userLoginByEmail(
   })
 }
 
+/** 此处后端没有提供注释 POST /user/login/email/code */
+export async function sendEmailLoginCode(
+  body: UserAPI.UserEmailCodeSendRequest,
+  options?: { [key: string]: any }
+) {
+  return request<UserAPI.BaseResponseInteger>('/user/login/email/code', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
+/** 此处后端没有提供注释 GET /user/login/github */
+export async function getGitHubAuthorizeUrl(options?: { [key: string]: any }) {
+  return request<UserAPI.BaseResponseString>('/user/login/github', {
+    method: 'GET',
+    ...(options || {}),
+  })
+}
+
 /** 此处后端没有提供注释 POST /user/login/github */
 export async function userLoginByGitHub(
   body: UserAPI.GitHubLoginRequest,
@@ -120,6 +143,21 @@ export async function userLoginByGitHub(
       'Content-Type': 'application/json',
     },
     data: body,
+    ...(options || {}),
+  })
+}
+
+/** 此处后端没有提供注释 GET /user/login/github/callback */
+export async function gitHubLoginCallback(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: UserAPI.gitHubLoginCallbackParams,
+  options?: { [key: string]: any }
+) {
+  return request<UserAPI.BaseResponseLoginUserVO>('/user/login/github/callback', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
     ...(options || {}),
   })
 }

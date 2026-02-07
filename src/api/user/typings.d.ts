@@ -8,6 +8,15 @@ declare namespace UserAPI {
     message?: string
   }
 
+  type BaseResponseInteger = {
+    /** 状态码 */
+    code?: number
+    /** 数据 */
+    data?: number
+    /** 消息 */
+    message?: string
+  }
+
   type BaseResponseLoginUserVO = {
     /** 状态码 */
     code?: number
@@ -37,6 +46,15 @@ declare namespace UserAPI {
     /** 状态码 */
     code?: number
     data?: PageUserVO
+    /** 消息 */
+    message?: string
+  }
+
+  type BaseResponseString = {
+    /** 状态码 */
+    code?: number
+    /** 数据 */
+    data?: string
     /** 消息 */
     message?: string
   }
@@ -87,6 +105,11 @@ declare namespace UserAPI {
 
   type getUserVOByIdParams = {
     arg0: number
+  }
+
+  type gitHubLoginCallbackParams = {
+    arg0: string
+    arg1: string
   }
 
   type GitHubLoginRequest = {
@@ -205,6 +228,11 @@ declare namespace UserAPI {
     userEmail?: string
     /** 用户电话 */
     userPhone?: string
+  }
+
+  type UserEmailCodeSendRequest = {
+    /** 邮箱 */
+    email?: string
   }
 
   type UserEmailLoginRequest = {
