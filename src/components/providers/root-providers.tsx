@@ -15,18 +15,22 @@ function InitUser() {
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
-      const token = localStorage.getItem('token')
-
-      if (token) {
-        try {
-          const res = (await getLoginUser()) as unknown as UserAPI.BaseResponseUserVO
-          if (res.code === 0 && res.data) {
-            dispatch(setLoginUser(res.data))
-          } else {
-            dispatch(clearLoginUser())
-          }
-        } catch (error) {
+      try {
+        const res = (await getLoginUser({
+          validateStatus: (status: number) =>
+            (status >= 200 && status < 300) || status === 401 || status === 403,
+        })) as unknown as UserAPI.BaseResponseUserVO
+        if (res.code === 0 && res.data) {
+          dispatch(setLoginUser(res.data))
+        } else {
+          dispatch(clearLoginUser())
+        }
+      } catch (error) {
+        const status = (error as any)?.response?.status
+        if (status !== 401 && status !== 403) {
           console.error('获取用户信息失败:', error)
+        }
+        if (status === 401 || status === 403) {
           dispatch(clearLoginUser())
         }
       }
