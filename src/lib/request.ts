@@ -1,5 +1,4 @@
 import axios from 'axios'
-import JSONBigInt from 'json-bigint'
 
 /**
  * 创建 Axios 实例
@@ -8,16 +7,6 @@ const request = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api',
   timeout: 10000,
   withCredentials: true,
-  transformResponse: [
-    function (data) {
-      try {
-        // 使用 json-bigint 解析响应数据，防止大整数精度丢失
-        return JSONBigInt({ storeAsString: true }).parse(data)
-      } catch (err) {
-        return data
-      }
-    },
-  ],
 })
 
 /**
