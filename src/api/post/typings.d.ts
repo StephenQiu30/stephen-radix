@@ -280,6 +280,20 @@ declare namespace PostAPI {
     tags?: string[]
   }
 
+  type PostFavourQueryRequest = {
+    /** 当前页号 */
+    current?: number
+    /** 页面大小 */
+    pageSize?: number
+    /** 排序字段 */
+    sortField?: string
+    /** 排序顺序（默认升序） */
+    sortOrder?: string
+    /** 用户 id */
+    userId?: number
+    postQueryRequest?: PostQueryRequest
+  }
+
   type PostFavourRequest = {
     /** 帖子ID */
     postId?: number

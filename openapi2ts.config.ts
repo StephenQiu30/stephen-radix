@@ -36,6 +36,13 @@ export default [
     serversPath: './src/api',
   },
   {
+    projectName: 'log',
+    namespace: 'LogAPI',
+    requestLibPath: "import request from '@/lib/request'",
+    schemaPath: 'http://localhost:8086/api/v3/api-docs',
+    serversPath: './src/api',
+  },
+  {
     projectName: 'mail',
     namespace: 'MailAPI',
     requestLibPath: "import request from '@/lib/request'",

@@ -47,6 +47,36 @@ export async function getNotificationById(
   })
 }
 
+/** 根据 ID 获取通知实体（管理员） GET /notification/get/admin */
+export async function getNotificationEntityById(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: NotificationAPI.getNotificationEntityByIdParams,
+  options?: { [key: string]: any }
+) {
+  return request<NotificationAPI.BaseResponseNotification>('/notification/get/admin', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  })
+}
+
+/** 根据 ID 获取通知 VO GET /notification/get/vo */
+export async function getNotificationVoById(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: NotificationAPI.getNotificationVOByIdParams,
+  options?: { [key: string]: any }
+) {
+  return request<NotificationAPI.BaseResponseNotificationVO>('/notification/get/vo', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  })
+}
+
 /** 分页获取通知列表 分页获取当前用户的通知列表 POST /notification/list/page */
 export async function listNotificationByPage(
   body: NotificationAPI.NotificationQueryRequest,
@@ -62,33 +92,32 @@ export async function listNotificationByPage(
   })
 }
 
-/** 标记为已读 将指定通知标记为已读 POST /notification/read */
-export async function markAsRead(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: NotificationAPI.markAsReadParams,
+/** 分页获取通知列表（管理员） POST /notification/list/page/admin */
+export async function listNotificationByPageAdmin(
+  body: NotificationAPI.NotificationQueryRequest,
   options?: { [key: string]: any }
 ) {
-  return request<NotificationAPI.BaseResponseBoolean>('/notification/read', {
+  return request<NotificationAPI.BaseResponsePageNotification>('/notification/list/page/admin', {
     method: 'POST',
-    params: {
-      ...params,
+    headers: {
+      'Content-Type': 'application/json',
     },
+    data: body,
     ...(options || {}),
   })
 }
 
-/** 标记所有为已读 将所有通知标记为已读 POST /notification/read/all */
-export async function markAllAsRead(options?: { [key: string]: any }) {
-  return request<NotificationAPI.BaseResponseBoolean>('/notification/read/all', {
+/** 更新通知（管理员） 更新指定通知，仅管理员可操作 POST /notification/update */
+export async function updateNotification(
+  body: NotificationAPI.NotificationUpdateRequest,
+  options?: { [key: string]: any }
+) {
+  return request<NotificationAPI.BaseResponseBoolean>('/notification/update', {
     method: 'POST',
-    ...(options || {}),
-  })
-}
-
-/** 获取未读数量 获取当前用户未读通知数量 GET /notification/unread/count */
-export async function getUnreadCount(options?: { [key: string]: any }) {
-  return request<NotificationAPI.BaseResponseLong>('/notification/unread/count', {
-    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
     ...(options || {}),
   })
 }

@@ -131,8 +131,24 @@ declare namespace UserAPI {
     userAvatar?: string
     /** 用户角色：user/admin/ban */
     userRole?: string
+    /** 用户简介 */
+    userProfile?: string
+    /** 用户邮箱 */
+    userEmail?: string
+    /** 邮箱是否验证：0-未验证，1-已验证 */
+    emailVerified?: number
+    /** GitHub 用户名 */
+    githubLogin?: string
+    /** GitHub 主页 */
+    githubUrl?: string
+    /** 用户电话 */
+    userPhone?: string
+    /** 最后登录时间 */
+    lastLoginTime?: string
     /** 创建时间 */
     createTime?: string
+    /** 更新时间 */
+    updateTime?: string
     /** 登录 token */
     token?: string
   }
@@ -218,6 +234,8 @@ declare namespace UserAPI {
     userAvatar?: string
     /** 用户角色：user/admin/ban */
     userRole?: string
+    /** 用户邮箱 */
+    userEmail: string
   }
 
   type UserEditRequest = {

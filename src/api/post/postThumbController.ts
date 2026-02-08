@@ -13,3 +13,33 @@ export async function doThumb(body: PostAPI.PostThumbRequest, options?: { [key: 
     ...(options || {}),
   })
 }
+
+/** 此处后端没有提供注释 POST /post/thumb/list/page */
+export async function listThumbPostByPage(
+  body: PostAPI.PostFavourQueryRequest,
+  options?: { [key: string]: any }
+) {
+  return request<PostAPI.BaseResponsePagePostVO>('/post/thumb/list/page', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
+/** 此处后端没有提供注释 POST /post/thumb/my/list/page */
+export async function listMyThumbPostByPage(
+  body: PostAPI.PostQueryRequest,
+  options?: { [key: string]: any }
+) {
+  return request<PostAPI.BaseResponsePagePostVO>('/post/thumb/my/list/page', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
