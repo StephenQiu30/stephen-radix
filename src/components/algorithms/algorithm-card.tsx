@@ -18,71 +18,76 @@ interface AlgorithmCardProps {
 export function AlgorithmCard({ algorithm, onVisualize, index = 0 }: AlgorithmCardProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      whileHover={{ scale: 1.02 }}
-      transition={{ duration: 0.2 }}
-      className="h-full"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.05 }}
+      className="h-full group"
     >
-      <div className="group bg-secondary/30 hover:bg-secondary/50 relative h-full overflow-hidden rounded-[32px] border-none p-6 shadow-none backdrop-blur-sm transition-all duration-300">
-        <div className="flex h-full flex-col justify-between space-y-6">
-          <div>
-            <div className="mb-4 flex items-center justify-between">
-              <div className="bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground flex h-12 w-12 items-center justify-center rounded-full transition-colors">
-                <Activity className="h-6 w-6" />
-              </div>
-              <Badge
-                variant="outline"
-                className={cn(
-                  'rounded-full border px-3 py-1 text-xs font-semibold shadow-sm backdrop-blur-md',
-                  algorithm.stable
-                    ? 'border-green-200 bg-green-100 text-green-700 dark:border-green-500/20 dark:bg-green-500/10 dark:text-green-400'
-                    : 'border-amber-200 bg-amber-100 text-amber-700 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-400'
-                )}
-              >
-                {algorithm.stable ? '稳定' : '不稳定'}
-              </Badge>
+      <div className="relative h-full overflow-hidden rounded-[2rem] border border-border/40 bg-card/50 backdrop-blur-xl transition-all hover:shadow-md hover:border-border/80 dark:hover:border-primary/50 dark:hover:shadow-primary/5">
+
+        {/* Header Section like 'Basic Info' */}
+        <div className="border-b border-border/40 p-6 flex items-start justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/20 transition-all group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground">
+              <Activity className="h-6 w-6" />
             </div>
-            <h3 className="text-foreground mb-2 text-2xl font-bold tracking-tight">
-              {algorithm.name}
-            </h3>
-            <p className="text-muted-foreground line-clamp-2 text-sm leading-relaxed dark:text-zinc-400">
-              {algorithm.description}
-            </p>
+            <div>
+              <h3 className="text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
+                {algorithm.name}
+              </h3>
+              <div className="flex items-center gap-2 mt-1">
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    'rounded-full px-2 py-0.5 text-[10px] font-semibold border-0',
+                    algorithm.stable
+                      ? 'bg-emerald-500/10 text-emerald-500'
+                      : 'bg-amber-500/10 text-amber-500'
+                  )}
+                >
+                  {algorithm.stable ? '稳定' : '不稳定'}
+                </Badge>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-6 space-y-6">
+          <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+            {algorithm.description}
+          </p>
+
+          <div className="flex items-center gap-4 py-2">
+            <div className="flex-1 space-y-1.5">
+              <div className="flex items-center gap-1.5 text-[10px] font-medium tracking-wider text-muted-foreground/60 uppercase">
+                <Clock className="h-3 w-3" /> 时间复杂度
+              </div>
+              <div className="font-mono text-sm font-bold text-foreground">{algorithm.averageCase}</div>
+            </div>
+            <div className="w-px h-8 bg-border/40" />
+            <div className="flex-1 space-y-1.5 pl-4">
+              <div className="flex items-center gap-1.5 text-[10px] font-medium tracking-wider text-muted-foreground/60 uppercase">
+                <HardDrive className="h-3 w-3" /> 空间复杂度
+              </div>
+              <div className="font-mono text-sm font-bold text-foreground">{algorithm.spaceComplexity}</div>
+            </div>
           </div>
 
-          <div className="space-y-4">
-            <div className="border-border/10 flex gap-4 border-t pt-4">
-              <div className="space-y-1">
-                <div className="text-muted-foreground flex items-center gap-1.5 text-[10px] font-medium tracking-wider uppercase">
-                  <Clock className="h-3 w-3" /> 时间复杂度
-                </div>
-                <div className="font-mono text-sm font-semibold">{algorithm.averageCase}</div>
-              </div>
-              <div className="border-border/10 space-y-1 border-l pl-4">
-                <div className="text-muted-foreground flex items-center gap-1.5 text-[10px] font-medium tracking-wider uppercase">
-                  <HardDrive className="h-3 w-3" /> 空间复杂度
-                </div>
-                <div className="font-mono text-sm font-semibold">{algorithm.spaceComplexity}</div>
-              </div>
-            </div>
-
-            <div className="flex gap-2 pt-2">
-              <Button
-                className="bg-background/50 hover:bg-background/80 w-full rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98]"
-                variant="secondary"
-                asChild
-              >
-                <Link href={`/algorithms/${algorithm.id}`}>详细介绍</Link>
-              </Button>
-              <Button
-                className="shadow-primary/20 w-full rounded-2xl shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
-                onClick={() => onVisualize(algorithm)}
-              >
-                演示
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Button
+              variant="ghost"
+              className="w-full rounded-xl hover:bg-secondary/80 text-muted-foreground hover:text-foreground"
+              asChild
+            >
+              <Link href={`/algorithms/${algorithm.id}`}>详细介绍</Link>
+            </Button>
+            <Button
+              className="group/btn w-full rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:scale-105 hover:bg-primary/90"
+              onClick={() => onVisualize(algorithm)}
+            >
+              演示
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+            </Button>
           </div>
         </div>
       </div>

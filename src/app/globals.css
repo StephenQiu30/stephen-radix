@@ -103,3 +103,13 @@
   --color-ring: hsl(var(--ring));
   --font-sans: var(--font-geist-sans);
 }
+
+@layer base {
+  .dark .katex {
+    color: hsl(var(--foreground)) !important;
+  }
+  
+  .dark .katex .katex-html {
+    color: hsl(var(--foreground)) !important;
+  }
+}

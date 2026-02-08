@@ -27,6 +27,8 @@ import {
   CommandShortcut,
 } from '@/components/ui/command'
 
+import { ALGORITHMS } from '@/lib/sorting-algorithms'
+
 interface CommandMenuProps {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -73,6 +75,18 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
             <Activity className="mr-2 h-4 w-4" />
             <span>算法 Algorithms</span>
           </CommandItem>
+        </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup heading="Algorithms">
+          {ALGORITHMS.map((algo) => (
+            <CommandItem
+              key={algo.id}
+              onSelect={() => runCommand(() => router.push(`/algorithms/${algo.id}`))}
+            >
+              <Activity className="mr-2 h-4 w-4" />
+              <span>{algo.name} ({algo.id})</span>
+            </CommandItem>
+          ))}
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Settings">
