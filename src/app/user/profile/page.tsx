@@ -7,7 +7,7 @@ import { UserAvatar } from '@/components/header/user-avatar'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { motion } from 'framer-motion'
-import { AtSign, Award, Calendar, Edit, Shield, User as UserIcon, Zap } from 'lucide-react'
+import { AtSign, Award, Calendar, Edit, GitBranch, Github, Shield, User as UserIcon, Zap } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { AuthModal } from '@/components/auth/auth-modal'
@@ -37,6 +37,9 @@ const itemVariants = {
 interface ExtendedUser extends UserAPI.UserVO {
   userProfile?: string
   userPhone?: string
+  userEmail?: string
+  githubLogin?: string
+  githubUrl?: string
 }
 
 export default function ProfilePage() {
@@ -210,6 +213,24 @@ export default function ProfilePage() {
                   value={user.id ? `#${user.id}` : '未知'}
                   description="系统唯一识别码"
                 />
+                {user.githubLogin && (
+                  <InfoItem
+                    label="GitHub"
+                    value={
+                      <div className="flex items-center gap-2">
+                        <Github className="h-4 w-4" />
+                        {user.githubUrl ? (
+                          <a href={user.githubUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                            {user.githubLogin}
+                          </a>
+                        ) : (
+                          user.githubLogin
+                        )}
+                      </div>
+                    }
+                    description="已绑定的 GitHub 账号"
+                  />
+                )}
               </div>
             </div>
           </div>
