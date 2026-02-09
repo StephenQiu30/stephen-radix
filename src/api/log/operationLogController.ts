@@ -2,12 +2,12 @@
 /* eslint-disable */
 import request from '@/lib/request'
 
-/** 创建操作日志 记录用户操作日志 POST /operation-log/create */
+/** 创建操作日志 记录用户操作日志 POST /operation/log/create */
 export async function createLog1(
   body: LogAPI.OperationLogCreateRequest,
   options?: { [key: string]: any }
 ) {
-  return request<LogAPI.BaseResponseBoolean>('/operation-log/create', {
+  return request<LogAPI.BaseResponseBoolean>('/operation/log/create', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -17,9 +17,9 @@ export async function createLog1(
   })
 }
 
-/** 删除操作日志 删除指定操作日志（仅管理员） POST /operation-log/delete */
+/** 删除操作日志 删除指定操作日志（仅管理员） POST /operation/log/delete */
 export async function deleteLog1(body: LogAPI.DeleteRequest, options?: { [key: string]: any }) {
-  return request<LogAPI.BaseResponseBoolean>('/operation-log/delete', {
+  return request<LogAPI.BaseResponseBoolean>('/operation/log/delete', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -29,12 +29,12 @@ export async function deleteLog1(body: LogAPI.DeleteRequest, options?: { [key: s
   })
 }
 
-/** 分页获取操作日志列表 分页查询操作日志（仅管理员） POST /operation-log/list/page */
+/** 分页获取操作日志列表 分页查询操作日志（仅管理员） POST /operation/log/list/page */
 export async function listLogByPage1(
   body: LogAPI.OperationLogQueryRequest,
   options?: { [key: string]: any }
 ) {
-  return request<LogAPI.BaseResponsePageOperationLog>('/operation-log/list/page', {
+  return request<LogAPI.BaseResponsePageOperationLog>('/operation/log/list/page', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
