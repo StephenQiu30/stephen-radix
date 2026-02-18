@@ -10,6 +10,12 @@ import { addPost } from '@/api/post/postController'
 import { toast } from 'sonner'
 import { MarkdownEditor } from '@/components/blog/markdown-editor'
 import { FileUploadBizEnum } from '@/enums/FileUploadBizEnum'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 export default function CreatePostPage() {
   const router = useRouter()
@@ -103,29 +109,47 @@ export default function CreatePostPage() {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-muted-foreground"
-            onClick={handleSave}
-            disabled={loading}
-          >
-            <Save className="mr-2 h-4 w-4" />
-            保存草稿
-          </Button>
+          <TooltipProvider delayDuration={300}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-muted-foreground"
+                  onClick={handleSave}
+                  disabled={loading}
+                >
+                  <Save className="mr-2 h-4 w-4" />
+                  保存草稿
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>保存当前内容到本地草稿箱</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
-          <Button
-            className="bg-foreground text-background hover:bg-foreground/90 rounded-full px-6"
-            onClick={handleSubmit}
-            disabled={loading}
-          >
-            {loading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="mr-2 h-4 w-4" />
-            )}
-            发布
-          </Button>
+          <TooltipProvider delayDuration={300}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  className="bg-foreground text-background hover:bg-foreground/90 rounded-full px-6"
+                  onClick={handleSubmit}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="mr-2 h-4 w-4" />
+                  )}
+                  发布
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>发布文章到博客</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </nav>
 

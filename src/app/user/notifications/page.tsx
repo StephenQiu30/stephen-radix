@@ -4,27 +4,32 @@ import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { useAppSelector } from '@/store/hooks'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { toast } from 'sonner'
 import {
-    Bell,
     Check,
-    CheckCheck,
-    Trash2,
-    Inbox,
     Loader2,
-    MessageSquare,
-    Info,
+    Sparkles,
+    BellOff,
+    ChevronLeft,
+    ChevronRight,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
     listNotificationVoByPage,
     deleteNotification,
+    markRead,
+    markAllRead,
 } from '@/api/notification/notificationController'
 import type { RootState } from '@/store'
-import { cn } from '@/lib/utils'
 import { LoginPromptCard } from '@/components/auth/login-prompt-card'
 import { AuthModal } from '@/components/auth/auth-modal'
+import { NotificationCard } from './notification-card'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import 'dayjs/locale/zh-cn'
+
+dayjs.extend(relativeTime)
+dayjs.locale('zh-cn')
 
 export default function NotificationsPage() {
     const router = useRouter()
@@ -36,88 +41,107 @@ export default function NotificationsPage() {
     const [total, setTotal] = React.useState(0)
     const [current, setCurrent] = React.useState(1)
 
-
-
-    // Redirect if not logged in
-    React.useEffect(() => {
-        if (!user) {
-            // Don't redirect immediately to avoid flashing, handled by rendering check
-        } else {
-            fetchNotifications()
-
-            const handleUpdate = () => {
-                if (current === 1) {
-                    fetchNotifications()
-                }
-            }
-            window.addEventListener('notification-updated', handleUpdate)
-            return () => {
-                window.removeEventListener('notification-updated', handleUpdate)
-            }
-        }
-    }, [user, current])
-
-    const fetchNotifications = async () => {
+    // Fetch logic
+    const fetchNotifications = React.useCallback(async () => {
         setLoading(true)
         try {
             const res = await listNotificationVoByPage({
                 current,
-                pageSize: 10,
+                pageSize: 20,
                 sortField: 'create_time',
                 sortOrder: 'descend',
-
             })
             if (res.code === 0 && res.data) {
                 setNotifications(res.data.records || [])
                 setTotal(res.data.total || 0)
             } else {
-                toast.error(res.message || '获取通知失败', {
-                    description: '请稍后重试',
-                })
+                toast.error(res.message || '获取通知失败')
             }
         } catch (error) {
-            toast.error('获取通知失败', {
-                description: '网络错误，请稍后重试',
-            })
+            toast.error('获取通知失败')
         } finally {
             setLoading(false)
         }
-    }
+    }, [current])
 
+    React.useEffect(() => {
+        if (user) {
+            fetchNotifications()
+            const handleUpdate = () => {
+                if (current === 1) fetchNotifications()
+            }
+            window.addEventListener('notification-updated', handleUpdate)
+            return () => window.removeEventListener('notification-updated', handleUpdate)
+        }
+    }, [user, current, fetchNotifications])
 
-
-    const handleDelete = async (id: number) => {
+    // Actions
+    const handleDelete = async (id: number, e: React.MouseEvent) => {
+        e.stopPropagation()
         try {
             const res = await deleteNotification({ id })
             if (res.code === 0) {
-                toast.success('删除成功', {
-                    description: '通知已删除',
-                })
+                toast.success('已删除')
                 fetchNotifications()
             } else {
-                toast.error('删除失败', {
-                    description: res.message,
-                })
+                toast.error('删除失败')
             }
         } catch (error) {
-            toast.error('删除失败', {
-                description: '网络错误',
-            })
+            toast.error('删除失败')
         }
     }
 
-    const getIcon = (type?: string) => {
-        switch (type) {
-            case 'system':
-                return <Info className="h-5 w-5 text-blue-500" />
-            case 'reply':
-                return <MessageSquare className="h-5 w-5 text-green-500" />
-            case 'like':
-                return <CheckCheck className="h-5 w-5 text-pink-500" />
-            default:
-                return <Bell className="h-5 w-5 text-gray-500" />
+    const handleMarkRead = async (notification: NotificationAPI.NotificationVO) => {
+        if (notification.isRead === 1) return
+        try {
+            const res = await markRead({ id: notification.id })
+            if (res.code === 0) {
+                setNotifications((prev) =>
+                    prev.map((item) => (item.id === notification.id ? { ...item, isRead: 1 } : item))
+                )
+            }
+        } catch (error) {
+            console.error('Mark read failed', error)
         }
     }
+
+    const handleMarkAllRead = async () => {
+        try {
+            const res = await markAllRead()
+            if (res.code === 0) {
+                toast.success('全部已读')
+                fetchNotifications()
+            }
+        } catch (error) {
+            toast.error('操作失败')
+        }
+    }
+
+    // Grouping
+    const groupedNotifications = React.useMemo(() => {
+        const groups: Record<string, NotificationAPI.NotificationVO[]> = {
+            今天: [],
+            昨天: [],
+            更早: [],
+        }
+
+        notifications.forEach((note) => {
+            if (!note.createTime) {
+                groups['更早'].push(note)
+                return
+            }
+            const date = dayjs(note.createTime)
+            if (date.isSame(dayjs(), 'day')) {
+                groups['今天'].push(note)
+            } else if (date.isSame(dayjs().subtract(1, 'day'), 'day')) {
+                groups['昨天'].push(note)
+            } else {
+                groups['更早'].push(note)
+            }
+        })
+
+        return Object.entries(groups).filter(([_, items]) => items.length > 0)
+    }, [notifications])
 
     if (!user) {
         return (
@@ -133,122 +157,119 @@ export default function NotificationsPage() {
     }
 
     return (
-        <div className="container mx-auto max-w-4xl space-y-8 py-8 md:py-12">
-            <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                    <h1 className="text-3xl font-bold tracking-tight">消息通知</h1>
-                    <p className="text-muted-foreground">
-                        查看和管理您的系统通知和消息
-                    </p>
-                </div>
-                <div className="flex gap-2">
-                </div>
+        <div className="relative min-h-screen w-full bg-background selection:bg-blue-500/30">
+            {/* 
+        Apple-style Mesh Gradient Background 
+        - Subtle, moving, deeply blurred.
+      */}
+            <div className="fixed inset-0 pointer-events-none overflow-hidden">
+                <div className="absolute -top-[20%] -left-[10%] w-[80vw] h-[80vw] rounded-full bg-blue-400/10 dark:bg-blue-900/10 blur-[130px] mix-blend-multiply dark:mix-blend-screen opacity-70 animate-pulse" />
+                <div className="absolute top-[10%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-indigo-400/10 dark:bg-indigo-900/10 blur-[130px] mix-blend-multiply dark:mix-blend-screen opacity-70" />
             </div>
 
-            <div className="space-y-4">
-                {loading ? (
-                    <div className="flex h-40 items-center justify-center">
-                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            <div className="relative z-10 w-full max-w-2xl mx-auto px-4 sm:px-6 pt-24 pb-20">
+
+                {/* Header - iOS style Large Title */}
+                <div className="flex items-end justify-between mb-8 px-1">
+                    <div>
+                        <h1 className="text-[34px] font-bold tracking-tight text-[#1D1D1F] dark:text-[#F5F5F7] leading-tight">
+                            通知中心
+                        </h1>
                     </div>
-                ) : notifications.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center space-y-4 py-16 text-center">
-                        <div className="bg-muted/50 rounded-full p-4">
-                            <Inbox className="h-10 w-10 text-muted-foreground" />
+                    {notifications.some((n) => n.isRead === 0) && (
+                        <Button
+                            variant="ghost"
+                            className="rounded-full text-[#007AFF] hover:text-[#007AFF] hover:bg-[#007AFF]/10 font-medium text-[15px] px-4 h-9"
+                            onClick={handleMarkAllRead}
+                        >
+                            <Check className="mr-1.5 h-4 w-4" />
+                            全部已读
+                        </Button>
+                    )}
+                </div>
+
+                {/* Content Area */}
+                <div className="min-h-[300px]">
+                    {loading ? (
+                        <div className="flex flex-col items-center justify-center py-20 space-y-4">
+                            <Loader2 className="w-8 h-8 text-black/20 dark:text-white/20 animate-spin" />
                         </div>
-                        <div className="space-y-1">
-                            <h3 className="text-lg font-semibold">暂无通知</h3>
-                            <p className="text-muted-foreground">
-                                目前没有任何消息通知。
-                            </p>
+                    ) : notifications.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-32 text-center space-y-6">
+                            <div className="h-24 w-24 rounded-[28px] bg-gradient-to-br from-white/80 to-white/40 dark:from-zinc-800/80 dark:to-zinc-800/40 backdrop-blur-xl shadow-lg flex items-center justify-center">
+                                <BellOff className="h-10 w-10 text-muted-foreground/40" />
+                            </div>
+                            <div className="space-y-2">
+                                <h3 className="text-xl font-semibold text-foreground/80">暂无通知</h3>
+                                <p className="text-muted-foreground/60 text-sm">
+                                    当有新的互动时，它们会出现在这里
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                ) : (
-                    <AnimatePresence mode="popLayout">
-                        {notifications.map((notification) => (
-                            <motion.div
-                                key={notification.id}
-                                layout
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                transition={{ duration: 0.2 }}
+                    ) : (
+                        <div className="space-y-10">
+                            <AnimatePresence mode="popLayout">
+                                {groupedNotifications.map(([group, items], groupIndex) => (
+                                    <motion.div
+                                        key={group}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: groupIndex * 0.08, duration: 0.4 }}
+                                        className="space-y-3"
+                                    >
+                                        {/* Sticky Section Header - iOS Style */}
+                                        <div className="sticky top-[72px] z-20 px-1 py-2 backdrop-blur-xl -mx-4 px-4 bg-[#F5F5F7]/80 dark:bg-black/80 supports-[backdrop-filter]:bg-transparent">
+                                            <h2 className="text-[19px] font-bold text-[#1D1D1F] dark:text-[#F5F5F7] tracking-tight">
+                                                {group}
+                                            </h2>
+                                        </div>
+
+                                        <div className="grid gap-3">
+                                            {items.map((notification) => (
+                                                <NotificationCard
+                                                    key={notification.id}
+                                                    notification={notification}
+                                                    onMarkRead={handleMarkRead}
+                                                    onDelete={handleDelete}
+                                                />
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </AnimatePresence>
+                        </div>
+                    )}
+                </div>
+
+                {/* Pagination - iOS style 'Load More' feel */}
+                {total > 20 && (
+                    <div className="mt-12 flex justify-center pb-12">
+                        <div className="flex items-center gap-1 bg-white/60 dark:bg-zinc-800/60 backdrop-blur-xl shadow-sm rounded-full p-1.5 ring-1 ring-black/5 dark:ring-white/10">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 rounded-full"
+                                onClick={() => setCurrent((p) => Math.max(1, p - 1))}
+                                disabled={current === 1 || loading}
                             >
-                                <Card
-                                    className={cn(
-                                        'group relative overflow-hidden transition-all hover:shadow-md',
-                                        notification.isRead === 0 ? 'bg-card border-l-4 border-l-primary' : 'bg-muted/30 opacity-70'
-                                    )}
-                                >
-                                    <div className="flex p-4 sm:p-6">
-                                        <div className="mr-4 mt-1 flex-shrink-0">
-                                            <div className={cn(
-                                                "flex h-10 w-10 items-center justify-center rounded-full bg-secondary",
-                                                notification.isRead === 0 && "bg-primary/10"
-                                            )}>
-                                                {getIcon(notification.type)}
-                                            </div>
-                                        </div>
-                                        <div className="flex-1 space-y-1">
-                                            <div className="flex items-start justify-between">
-                                                <h4 className={cn(
-                                                    "font-semibold leading-none",
-                                                    notification.isRead === 0 ? "text-foreground" : "text-muted-foreground"
-                                                )}>
-                                                    {notification.title}
-                                                </h4>
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-xs text-muted-foreground whitespace-nowrap ml-2">
-                                                        {notification.createTime && new Date(notification.createTime).toLocaleString()}
-                                                    </span>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        className="h-6 w-6 text-muted-foreground hover:text-destructive"
-                                                        onClick={() => notification.id && handleDelete(notification.id)}
-                                                    >
-                                                        <Trash2 className="h-3 w-3" />
-                                                        <span className="sr-only">删除</span>
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                            <p className="text-sm text-muted-foreground line-clamp-2">
-                                                {notification.content}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </Card>
-                            </motion.div>
-                        ))}
-                    </AnimatePresence>
+                                <ChevronLeft className="h-4 w-4" />
+                            </Button>
+                            <span className="text-[13px] font-medium px-3 tabular-nums min-w-[3rem] text-center text-secondary-foreground/80">
+                                {current} / {Math.ceil(total / 20)}
+                            </span>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 rounded-full"
+                                onClick={() => setCurrent((p) => p + 1)}
+                                disabled={current * 20 >= total || loading}
+                            >
+                                <ChevronRight className="h-4 w-4" />
+                            </Button>
+                        </div>
+                    </div>
                 )}
             </div>
-
-            {/* Improved Pagination */}
-            {total > 10 && (
-                <div className="flex justify-center pt-8">
-                    <div className="flex items-center gap-2">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setCurrent(p => Math.max(1, p - 1))}
-                            disabled={current === 1 || loading}
-                        >
-                            上一页
-                        </Button>
-                        <span className="text-sm text-muted-foreground">
-                            第 {current} 页 / 共 {Math.ceil(total / 10)} 页
-                        </span>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setCurrent(p => p + 1)}
-                            disabled={current * 10 >= total || loading}
-                        >
-                            下一页
-                        </Button>
-                    </div>
-                </div>
-            )}
         </div>
     )
 }

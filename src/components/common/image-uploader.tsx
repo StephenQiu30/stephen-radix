@@ -7,6 +7,13 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { FileUploadBizEnum } from '@/enums/FileUploadBizEnum'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 interface ImageUploaderProps {
   value?: string
@@ -118,30 +125,94 @@ export function ImageUploader({
             <span className="text-xs font-medium">上传中...</span>
           </div>
         ) : value ? (
-          <div className="group relative h-full w-full">
-            <img
-              src={value}
-              alt="Uploaded cover"
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={e => {
-                    e.stopPropagation()
-                    inputRef.current?.click()
-                  }}
-                >
-                  更换
-                </Button>
-                <Button size="sm" variant="destructive" onClick={handleRemove}>
-                  移除
-                </Button>
+          biz === FileUploadBizEnum.USER_AVATAR ? (
+            <div className="flex h-full w-full items-center justify-center">
+              <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
+                <AvatarImage src={value} alt="Uploaded avatar" />
+                <AvatarFallback>User</AvatarFallback>
+              </Avatar>
+              <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                <div className="flex gap-2">
+                  <TooltipProvider delayDuration={300}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={e => {
+                            e.stopPropagation()
+                            inputRef.current?.click()
+                          }}
+                        >
+                          更换
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>更换图片</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+
+                  <TooltipProvider delayDuration={300}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button size="sm" variant="destructive" onClick={handleRemove}>
+                          移除
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>移除图片</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <>
+              <img
+                src={value}
+                alt="Uploaded cover"
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                <div className="flex gap-2">
+                  <TooltipProvider delayDuration={300}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={e => {
+                            e.stopPropagation()
+                            inputRef.current?.click()
+                          }}
+                        >
+                          更换
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>更换图片</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+
+                  <TooltipProvider delayDuration={300}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button size="sm" variant="destructive" onClick={handleRemove}>
+                          移除
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>移除图片</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              </div>
+            </>
+          )
         ) : (
           <div className="text-muted-foreground flex flex-col items-center gap-2 p-4 text-center">
             <div className="bg-muted rounded-full p-3">
