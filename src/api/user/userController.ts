@@ -64,6 +64,29 @@ export async function getUserVoById(
   })
 }
 
+/** 此处后端没有提供注释 GET /user/get/vo/batch */
+export async function getUserVoByIds(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: UserAPI.getUserVOByIdsParams,
+  options?: { [key: string]: any }
+) {
+  return request<UserAPI.BaseResponseListUserVO>('/user/get/vo/batch', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  })
+}
+
+/** 是否管理员 返回当前登录用户是否为管理员 GET /user/is/admin */
+export async function isAdmin(options?: { [key: string]: any }) {
+  return request<UserAPI.BaseResponseBoolean>('/user/is/admin', {
+    method: 'GET',
+    ...(options || {}),
+  })
+}
+
 /** 此处后端没有提供注释 POST /user/list/page */
 export async function listUserByPage(
   body: UserAPI.UserQueryRequest,

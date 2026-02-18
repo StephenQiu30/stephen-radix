@@ -34,7 +34,7 @@ export async function listRecordByPage(
   body: LogAPI.FileUploadRecordQueryRequest,
   options?: { [key: string]: any }
 ) {
-  return request<LogAPI.BaseResponsePageFileUploadRecord>('/file/upload/record/list/page', {
+  return request<LogAPI.BaseResponsePageFileUploadRecordVO>('/file/upload/record/list/page', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

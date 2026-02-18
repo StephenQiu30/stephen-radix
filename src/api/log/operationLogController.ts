@@ -34,7 +34,7 @@ export async function listLogByPage1(
   body: LogAPI.OperationLogQueryRequest,
   options?: { [key: string]: any }
 ) {
-  return request<LogAPI.BaseResponsePageOperationLog>('/operation/log/list/page', {
+  return request<LogAPI.BaseResponsePageOperationLogVO>('/operation/log/list/page', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

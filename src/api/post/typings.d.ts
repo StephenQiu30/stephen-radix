@@ -26,22 +26,6 @@ declare namespace PostAPI {
     message?: string
   }
 
-  type BaseResponsePagePost = {
-    /** 状态码 */
-    code?: number
-    data?: PagePost
-    /** 消息 */
-    message?: string
-  }
-
-  type BaseResponsePagePostComment = {
-    /** 状态码 */
-    code?: number
-    data?: PagePostComment
-    /** 消息 */
-    message?: string
-  }
-
   type BaseResponsePagePostCommentVO = {
     /** 状态码 */
     code?: number
@@ -92,34 +76,6 @@ declare namespace PostAPI {
     asc?: boolean
   }
 
-  type PagePost = {
-    records?: Post[]
-    total?: number
-    size?: number
-    current?: number
-    orders?: OrderItem[]
-    optimizeCountSql?: PagePost
-    searchCount?: PagePost
-    optimizeJoinOfCountSql?: boolean
-    maxLimit?: number
-    countId?: string
-    pages?: number
-  }
-
-  type PagePostComment = {
-    records?: PostComment[]
-    total?: number
-    size?: number
-    current?: number
-    orders?: OrderItem[]
-    optimizeCountSql?: PagePostComment
-    searchCount?: PagePostComment
-    optimizeJoinOfCountSql?: boolean
-    maxLimit?: number
-    countId?: string
-    pages?: number
-  }
-
   type PagePostCommentVO = {
     records?: PostCommentVO[]
     total?: number
@@ -148,31 +104,6 @@ declare namespace PostAPI {
     pages?: number
   }
 
-  type Post = {
-    /** id */
-    id?: number
-    /** 标题 */
-    title?: string
-    /** 内容 */
-    content?: string
-    /** 封面 */
-    cover?: string
-    /** 标签列表 json */
-    tags?: string
-    /** 点赞数 */
-    thumbNum?: number
-    /** 收藏数 */
-    favourNum?: number
-    /** 创建用户 id */
-    userId?: number
-    /** 创建时间 */
-    createTime?: string
-    /** 更新时间 */
-    updateTime?: string
-    /** 是否删除 */
-    isDelete?: number
-  }
-
   type PostAddRequest = {
     /** 标题 */
     title?: string
@@ -184,36 +115,17 @@ declare namespace PostAPI {
     tags?: string[]
   }
 
-  type PostComment = {
-    /** id */
-    id?: number
-    /** 评论内容 */
-    content?: string
-    /** 帖子 id */
-    postId?: number
-    /** 评论用户 id */
-    userId?: number
-    /** 父评论 id（0表示一级评论） */
-    parentId?: number
-    /** 创建时间 */
-    createTime?: string
-    /** 更新时间 */
-    updateTime?: string
-    /** 是否删除 */
-    isDelete?: number
-  }
-
   type PostCommentAddRequest = {
     /** 评论内容 */
     content?: string
-    /** 帖子 id */
+    /** 帖子ID */
     postId?: number
-    /** 父评论 id（0表示一级评论） */
+    /** 父评论ID */
     parentId?: number
   }
 
   type PostCommentEditRequest = {
-    /** id */
+    /** 评论ID */
     id?: number
     /** 评论内容 */
     content?: string
@@ -228,35 +140,39 @@ declare namespace PostAPI {
     sortField?: string
     /** 排序顺序（默认升序） */
     sortOrder?: string
-    /** id */
+    /** 最小更新时间 */
+    minUpdateTime?: string
+    /** 最大更新时间 */
+    maxUpdateTime?: string
+    /** 评论ID */
     id?: number
-    /** 帖子 id */
+    /** 帖子ID */
     postId?: number
-    /** 评论用户 id */
+    /** 评论用户ID */
     userId?: number
-    /** 父评论 id */
+    /** 父评论ID */
     parentId?: number
-    /** 评论内容（模糊搜索） */
+    /** 评论内容 */
     content?: string
   }
 
   type PostCommentUpdateRequest = {
-    /** id */
+    /** 评论ID */
     id?: number
     /** 评论内容 */
     content?: string
   }
 
   type PostCommentVO = {
-    /** id */
+    /** 评论ID */
     id?: number
     /** 评论内容 */
     content?: string
-    /** 帖子 id */
+    /** 帖子ID */
     postId?: number
-    /** 评论用户 id */
+    /** 评论用户ID */
     userId?: number
-    /** 父评论 id（0表示一级评论） */
+    /** 父评论ID */
     parentId?: number
     /** 创建时间 */
     createTime?: string
@@ -268,7 +184,7 @@ declare namespace PostAPI {
   }
 
   type PostEditRequest = {
-    /** id */
+    /** 帖子ID */
     id?: number
     /** 标题 */
     title?: string
@@ -289,7 +205,11 @@ declare namespace PostAPI {
     sortField?: string
     /** 排序顺序（默认升序） */
     sortOrder?: string
-    /** 用户 id */
+    /** 最小更新时间 */
+    minUpdateTime?: string
+    /** 最大更新时间 */
+    maxUpdateTime?: string
+    /** 用户ID */
     userId?: number
     postQueryRequest?: PostQueryRequest
   }
@@ -308,9 +228,13 @@ declare namespace PostAPI {
     sortField?: string
     /** 排序顺序（默认升序） */
     sortOrder?: string
-    /** id */
+    /** 最小更新时间 */
+    minUpdateTime?: string
+    /** 最大更新时间 */
+    maxUpdateTime?: string
+    /** 帖子ID */
     id?: number
-    /** notId */
+    /** 排除的帖子ID */
     notId?: number
     /** 搜索词 */
     searchText?: string
@@ -322,9 +246,9 @@ declare namespace PostAPI {
     tags?: string[]
     /** 至少有一个标签 */
     orTags?: string[]
-    /** 创建用户 id */
+    /** 创建用户ID */
     userId?: number
-    /** 收藏用户 id */
+    /** 收藏用户ID */
     favourUserId?: number
   }
 
@@ -334,7 +258,7 @@ declare namespace PostAPI {
   }
 
   type PostUpdateRequest = {
-    /** id */
+    /** 帖子ID */
     id?: number
     /** 标题 */
     title?: string
@@ -347,7 +271,7 @@ declare namespace PostAPI {
   }
 
   type PostVO = {
-    /** id */
+    /** 帖子ID */
     id?: number
     /** 标题 */
     title?: string
@@ -359,7 +283,7 @@ declare namespace PostAPI {
     thumbNum?: number
     /** 收藏数 */
     favourNum?: number
-    /** 创建用户 id */
+    /** 创建用户ID */
     userId?: number
     /** 创建时间 */
     createTime?: string
@@ -375,19 +299,23 @@ declare namespace PostAPI {
   }
 
   type UserVO = {
-    /** id */
+    /** 用户ID */
     id?: number
     /** 用户昵称 */
     userName?: string
     /** 用户头像 */
     userAvatar?: string
-    /** 用户角色：user/admin/ban */
+    /** 用户角色 */
     userRole?: string
     /** 用户邮箱 */
     userEmail?: string
     /** 用户电话 */
     userPhone?: string
+    /** 用户简介 */
+    userProfile?: string
     /** 创建时间 */
     createTime?: string
+    /** 更新时间 */
+    updateTime?: string
   }
 }

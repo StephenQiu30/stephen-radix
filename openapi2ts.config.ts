@@ -49,11 +49,4 @@ export default [
     schemaPath: 'http://localhost:8087/api/v3/api-docs',
     serversPath: './src/api',
   },
-  {
-    projectName: 'websocket',
-    namespace: 'WebSocketAPI',
-    requestLibPath: "import request from '@/lib/request'",
-    schemaPath: 'http://localhost:8088/api/v3/api-docs',
-    serversPath: './src/api',
-  },
 ]

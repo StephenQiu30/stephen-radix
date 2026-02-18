@@ -67,7 +67,7 @@ export async function listPostCommentByPage(
   body: PostAPI.PostCommentQueryRequest,
   options?: { [key: string]: any }
 ) {
-  return request<PostAPI.BaseResponsePagePostComment>('/post/comment/list/page', {
+  return request<PostAPI.BaseResponsePagePostCommentVO>('/post/comment/list/page', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

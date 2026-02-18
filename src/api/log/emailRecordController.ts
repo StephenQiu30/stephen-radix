@@ -34,7 +34,7 @@ export async function listRecordByPage1(
   body: LogAPI.EmailRecordQueryRequest,
   options?: { [key: string]: any }
 ) {
-  return request<LogAPI.BaseResponsePageEmailRecord>('/email/record/list/page', {
+  return request<LogAPI.BaseResponsePageEmailRecordVO>('/email/record/list/page', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
