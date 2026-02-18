@@ -34,17 +34,8 @@ const itemVariants = {
   },
 }
 
-interface ExtendedUser extends UserAPI.UserVO {
-  userProfile?: string
-  userPhone?: string
-  userEmail?: string
-  githubLogin?: string
-  githubUrl?: string
-}
-
 export default function ProfilePage() {
-  const { user: baseUser } = useAppSelector((state: RootState) => state.user)
-  const user = baseUser as ExtendedUser
+  const { user } = useAppSelector((state: RootState) => state.user)
   const [authModalOpen, setAuthModalOpen] = React.useState(false)
 
   if (!user) {
@@ -61,7 +52,7 @@ export default function ProfilePage() {
   }
 
   // 计算账户年龄
-  const accountAge = user.createTime
+  const accountAge = user?.createTime
     ? Math.floor((Date.now() - new Date(user.createTime).getTime()) / (1000 * 60 * 60 * 24))
     : 0
 
@@ -84,7 +75,7 @@ export default function ProfilePage() {
     },
   }
 
-  const roleInfo = roleConfig[user.userRole as keyof typeof roleConfig] || roleConfig.user
+  const roleInfo = roleConfig[(user?.userRole as keyof typeof roleConfig) || 'user']
   const RoleIcon = roleInfo.icon
 
   return (
@@ -101,7 +92,7 @@ export default function ProfilePage() {
             个人档案
           </h1>
           <p className="text-muted-foreground text-lg">
-            你好，{user.userName || '探索者'}。这是你的个人中心。
+            你好，{user?.userName || '探索者'}。这是你的个人中心。
           </p>
         </div>
         <Link href="/user/settings">
@@ -145,11 +136,11 @@ export default function ProfilePage() {
               <div className="space-y-4 text-center">
                 <div className="space-y-1">
                   <h2 className="text-2xl font-bold tracking-tight">
-                    {user.userName || '未设置用户名'}
+                    {user?.userName || '未设置用户名'}
                   </h2>
                   <p className="text-muted-foreground flex items-center justify-center gap-1 text-sm font-medium">
                     <AtSign className="h-3 w-3" />
-                    {user.userEmail?.split('@')[0] || 'unknown'}
+                    {user?.userEmail?.split('@')[0] || 'unknown'}
                   </p>
                 </div>
 
@@ -166,7 +157,7 @@ export default function ProfilePage() {
 
                 <div className="bg-secondary/30 rounded-2xl p-6 text-sm">
                   <p className="text-muted-foreground leading-relaxed">
-                    "{user.userProfile || '这个人很懒，什么都没留下...'}"
+                    "{user?.userProfile || '这个人很懒，什么都没留下...'}"
                   </p>
                 </div>
 
@@ -195,36 +186,36 @@ export default function ProfilePage() {
               <div className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
                 <InfoItem
                   label="用户昵称"
-                  value={user.userName || '未设置'}
+                  value={user?.userName || '未设置'}
                   description="在社区展示的名字"
                 />
                 <InfoItem
                   label="电子邮箱"
-                  value={user.userEmail || '未绑定'}
+                  value={user?.userEmail || '未绑定'}
                   description="用于接收重要通知"
                 />
                 <InfoItem
                   label="手机号码"
-                  value={user.userPhone || '未绑定'}
+                  value={user?.userPhone || '未绑定'}
                   description="账号安全验证"
                 />
                 <InfoItem
                   label="用户 ID"
-                  value={user.id ? `#${user.id}` : '未知'}
+                  value={user?.id ? `#${user.id}` : '未知'}
                   description="系统唯一识别码"
                 />
-                {user.githubLogin && (
+                {user?.githubLogin && (
                   <InfoItem
                     label="GitHub"
                     value={
                       <div className="flex items-center gap-2">
                         <Github className="h-4 w-4" />
-                        {user.githubUrl ? (
+                        {user?.githubUrl ? (
                           <a href={user.githubUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
                             {user.githubLogin}
                           </a>
                         ) : (
-                          user.githubLogin
+                          user?.githubLogin
                         )}
                       </div>
                     }
@@ -248,7 +239,7 @@ export default function ProfilePage() {
                 <InfoItem
                   label="注册日期"
                   value={
-                    user.createTime
+                    user?.createTime
                       ? new Date(user.createTime).toLocaleDateString('zh-CN', {
                         year: 'numeric',
                         month: 'long',
