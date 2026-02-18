@@ -6,6 +6,7 @@ import { uploadFile } from '@/api/file/fileController'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
+import { FileUploadBizEnum } from '@/enums/FileUploadBizEnum'
 
 interface ImageUploaderProps {
   value?: string
@@ -18,7 +19,7 @@ interface ImageUploaderProps {
 export function ImageUploader({
   value,
   onChange,
-  biz = 'post_cover',
+  biz = FileUploadBizEnum.POST_COVER,
   className,
   placeholder = '点击或拖拽上传封面',
 }: ImageUploaderProps) {
@@ -43,7 +44,7 @@ export function ImageUploader({
 
     setLoading(true)
     try {
-      const res = (await uploadFile({ biz }, file)) as unknown as FileAPI.BaseResponseString
+      const res = await uploadFile({ biz }, file)
       if (res.code === 0 && res.data) {
         onChange?.(res.data)
         toast.success('图片上传成功')

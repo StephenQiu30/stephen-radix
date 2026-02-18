@@ -9,6 +9,7 @@ import { uploadFile } from '@/api/file/fileController'
 import { addPost } from '@/api/post/postController'
 import { toast } from 'sonner'
 import { MarkdownEditor } from '@/components/blog/markdown-editor'
+import { FileUploadBizEnum } from '@/enums/FileUploadBizEnum'
 
 export default function CreatePostPage() {
   const router = useRouter()
@@ -37,7 +38,7 @@ export default function CreatePostPage() {
 
     const toastId = toast.loading('正在上传封面...')
     try {
-      const res = (await uploadFile({ biz: 'post_cover' }, file)) as unknown as FileAPI.BaseResponseString
+      const res = await uploadFile({ biz: FileUploadBizEnum.POST_COVER }, file)
       if (res.code === 0 && res.data) {
         setCover(res.data)
         toast.success('封面上传成功', { id: toastId })
@@ -64,12 +65,12 @@ export default function CreatePostPage() {
         .map(t => t.trim())
         .filter(Boolean)
 
-      const res = (await addPost({
+      const res = await addPost({
         title,
         content,
         tags: tagList,
         cover,
-      })) as unknown as PostAPI.BaseResponseLong
+      })
 
       if (res.code === 0) {
         toast.success('发布成功！', { id: toastId })

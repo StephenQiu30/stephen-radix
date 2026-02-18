@@ -18,7 +18,7 @@ import {
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-    listNotificationByPage,
+    listNotificationVoByPage,
     deleteNotification,
 } from '@/api/notification/notificationController'
 import type { RootState } from '@/store'
@@ -60,13 +60,13 @@ export default function NotificationsPage() {
     const fetchNotifications = async () => {
         setLoading(true)
         try {
-            const res = (await listNotificationByPage({
+            const res = await listNotificationVoByPage({
                 current,
                 pageSize: 10,
-                sortField: 'createTime',
+                sortField: 'create_time',
                 sortOrder: 'descend',
 
-            })) as unknown as NotificationAPI.BaseResponsePageNotificationVO
+            })
             if (res.code === 0 && res.data) {
                 setNotifications(res.data.records || [])
                 setTotal(res.data.total || 0)
@@ -88,7 +88,7 @@ export default function NotificationsPage() {
 
     const handleDelete = async (id: number) => {
         try {
-            const res = (await deleteNotification({ id })) as unknown as NotificationAPI.BaseResponseBoolean
+            const res = await deleteNotification({ id })
             if (res.code === 0) {
                 toast.success('删除成功', {
                     description: '通知已删除',

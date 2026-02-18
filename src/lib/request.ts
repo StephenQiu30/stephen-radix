@@ -1,9 +1,10 @@
-import axios from 'axios'
+import axios, { AxiosRequestConfig } from 'axios'
+import { toast } from 'sonner'
 
 /**
  * 创建 Axios 实例
  */
-const request = axios.create({
+const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api',
   timeout: 10000,
   withCredentials: true,
@@ -12,7 +13,7 @@ const request = axios.create({
 /**
  * 创建请求拦截器
  */
-request.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   function (config) {
     if (typeof window !== 'undefined') {
       try {
@@ -34,7 +35,7 @@ request.interceptors.request.use(
 /**
  * 创建响应拦截器
  */
-request.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   // 2xx 响应触发
   function (response) {
     // 处理响应数据
@@ -44,8 +45,25 @@ request.interceptors.response.use(
   // 非 2xx 响应触发
   function (error) {
     // 处理响应错误
+    const { response } = error
+    if (response?.data?.message) {
+      toast.error(response.data.message)
+    } else {
+      toast.error('Request failed', {
+        description: error.message || 'Unknown error occurred',
+      })
+    }
     return Promise.reject(error)
   }
 )
+
+/**
+ * 封装 request 方法，支持泛型 T
+ * @param url 请求地址
+ * @param config 请求配置
+ */
+const request = <T>(url: string, config: AxiosRequestConfig): Promise<T> => {
+  return axiosInstance(url, config) as Promise<T>
+}
 
 export default request

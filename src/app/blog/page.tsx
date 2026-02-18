@@ -56,13 +56,13 @@ function BlogList() {
     }
     setError(null)
     try {
-      const res = (await searchPostByPage({
+      const res = await searchPostByPage({
         current: currentPage,
         pageSize,
         searchText: currentSearchText || undefined,
-        sortField: activeTab === 'latest' ? 'createTime' : 'thumbNum',
+        sortField: activeTab === 'latest' ? 'create_time' : 'thumbNum',
         sortOrder: 'descend',
-      })) as unknown as SearchAPI.BaseResponsePage
+      })
 
       if (res && res.code === 0 && res.data) {
         let records = (res.data.records || []) as PostAPI.PostVO[]
