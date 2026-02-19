@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils'
 import { UserCircle } from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 interface UserAvatarProps {
   user?: UserAPI.UserVO | null
@@ -28,31 +29,21 @@ export function UserAvatar({ user, size = 'md', className, alt }: UserAvatarProp
   const avatarUrl = user?.userAvatar
   const userName = user?.userName || alt || '用户头像'
 
-  if (avatarUrl) {
-    return (
-      <img
-        src={avatarUrl}
-        alt={userName}
-        className={cn('flex-shrink-0 rounded-full object-cover', sizeClass, className)}
-      />
-    )
-  }
-
   return (
-    <div
-      className={cn(
-        'flex flex-shrink-0 items-center justify-center rounded-full',
-        size === 'lg' || size === 'xl' ? 'bg-primary/10' : 'bg-muted',
-        sizeClass,
-        className
-      )}
-    >
-      <UserCircle
+    <Avatar className={cn(sizeClass, className)}>
+      <AvatarImage src={avatarUrl} alt={userName} className="object-cover" />
+      <AvatarFallback
         className={cn(
-          size === 'lg' || size === 'xl' ? 'text-primary' : 'text-muted-foreground',
-          iconSizeClass
+          size === 'lg' || size === 'xl' ? 'bg-primary/10' : 'bg-muted'
         )}
-      />
-    </div>
+      >
+        <UserCircle
+          className={cn(
+            size === 'lg' || size === 'xl' ? 'text-primary' : 'text-muted-foreground',
+            iconSizeClass
+          )}
+        />
+      </AvatarFallback>
+    </Avatar>
   )
 }

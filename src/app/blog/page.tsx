@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { PostCard } from '@/components/blog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { searchPostByPage } from '@/api/search/searchController'
 import { BookOpen, FileWarning, Loader2, Plus, Search } from 'lucide-react'
@@ -162,30 +163,22 @@ function BlogList() {
         <motion.div variants={itemVariants} className="sticky top-20 z-30 mx-auto mb-12 max-w-4xl">
           <div className="bg-background/60 border-border/40 hover:border-border/60 flex flex-col gap-3 rounded-3xl border p-2 shadow-lg backdrop-blur-xl transition-all hover:shadow-xl sm:flex-row sm:gap-2 sm:rounded-full">
             {/* Tab Switcher */}
-            <div className="bg-muted/50 flex shrink-0 rounded-full p-1">
-              <button
-                onClick={() => setActiveTab('latest')}
-                className={cn(
-                  'rounded-full px-6 py-2 text-sm font-medium transition-all duration-300',
-                  activeTab === 'latest'
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
-                最新发布
-              </button>
-              <button
-                onClick={() => setActiveTab('popular')}
-                className={cn(
-                  'rounded-full px-6 py-2 text-sm font-medium transition-all duration-300',
-                  activeTab === 'popular'
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
-                热门精选
-              </button>
-            </div>
+            <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as 'latest' | 'popular')} className="shrink-0">
+              <TabsList className="bg-muted/50 rounded-full p-1 h-auto">
+                <TabsTrigger
+                  value="latest"
+                  className="rounded-full px-6 py-2 text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                >
+                  最新发布
+                </TabsTrigger>
+                <TabsTrigger
+                  value="popular"
+                  className="rounded-full px-6 py-2 text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                >
+                  热门精选
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
 
             <div className="relative flex-1">
               <Search className="text-muted-foreground absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2" />

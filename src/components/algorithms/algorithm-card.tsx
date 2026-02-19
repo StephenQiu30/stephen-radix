@@ -6,6 +6,13 @@ import Link from 'next/link'
 import { Activity, ArrowRight, Clock, HardDrive } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { AlgorithmMeta } from '@/lib/sorting-algorithms'
 import { cn } from '@/lib/utils'
 
@@ -23,18 +30,16 @@ export function AlgorithmCard({ algorithm, onVisualize, index = 0 }: AlgorithmCa
       transition={{ duration: 0.4, delay: index * 0.05 }}
       className="h-full group"
     >
-      <div className="relative h-full overflow-hidden rounded-[2rem] border border-border/40 bg-card/50 backdrop-blur-xl transition-all hover:shadow-md hover:border-border/80 dark:hover:border-primary/50 dark:hover:shadow-primary/5">
-
-        {/* Header Section like 'Basic Info' */}
-        <div className="border-b border-border/40 p-6 flex items-start justify-between">
+      <Card className="h-full overflow-hidden rounded-[2rem] border-border/40 bg-card/50 backdrop-blur-xl transition-all hover:shadow-md hover:border-border/80 dark:hover:border-primary/50 dark:hover:shadow-primary/5 flex flex-col">
+        <CardHeader className="border-b border-border/40 p-6">
           <div className="flex items-center gap-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/20 transition-all group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground">
               <Activity className="h-6 w-6" />
             </div>
             <div>
-              <h3 className="text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
+              <CardTitle className="text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
                 {algorithm.name}
-              </h3>
+              </CardTitle>
               <div className="flex items-center gap-2 mt-1">
                 <Badge
                   variant="outline"
@@ -50,9 +55,9 @@ export function AlgorithmCard({ algorithm, onVisualize, index = 0 }: AlgorithmCa
               </div>
             </div>
           </div>
-        </div>
+        </CardHeader>
 
-        <div className="p-6 space-y-6">
+        <CardContent className="p-6 space-y-6 flex-1">
           <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
             {algorithm.description}
           </p>
@@ -72,8 +77,10 @@ export function AlgorithmCard({ algorithm, onVisualize, index = 0 }: AlgorithmCa
               <div className="font-mono text-sm font-bold text-foreground">{algorithm.spaceComplexity}</div>
             </div>
           </div>
+        </CardContent>
 
-          <div className="grid grid-cols-2 gap-3">
+        <CardFooter className="p-6 pt-0">
+          <div className="grid grid-cols-2 gap-3 w-full">
             <Button
               variant="ghost"
               className="w-full rounded-xl hover:bg-secondary/80 text-muted-foreground hover:text-foreground"
@@ -89,8 +96,8 @@ export function AlgorithmCard({ algorithm, onVisualize, index = 0 }: AlgorithmCa
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
             </Button>
           </div>
-        </div>
-      </div>
+        </CardFooter>
+      </Card>
     </motion.div>
   )
 }

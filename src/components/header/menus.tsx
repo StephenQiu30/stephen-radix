@@ -6,6 +6,13 @@ import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import { Activity, BookOpen, Home, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  navigationMenuTriggerStyle,
+} from '@/components/ui/navigation-menu'
 
 export interface MenuItem {
   title: string
@@ -46,52 +53,57 @@ export function Menus({ className, vertical = false }: { className?: string; ver
     return item.href ? pathname.startsWith(item.href) : false
   }
 
-  return (
-    <nav
-      className={cn(
-        'relative flex items-center p-1',
-        vertical
-          ? 'w-full flex-col gap-1 bg-transparent p-0'
-          : 'rounded-full border border-black/5 bg-black/5 backdrop-blur-md dark:border-white/5 dark:bg-white/10',
-        className
-      )}
-    >
-      {menuItems.map(item => {
-        const active = isActive(item)
-        return (
-          <Link
-            key={item.href}
-            href={item.href || '#'}
-            className={cn(
-              'relative z-10 flex items-center gap-3 px-4 py-2 text-sm font-medium transition-colors duration-200 outline-none',
-              vertical
-                ? 'w-full justify-start rounded-xl py-3.5 text-base'
-                : 'justify-center rounded-full',
-              active
-                ? 'text-foreground font-semibold'
-                : 'text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5',
-              vertical && active && 'bg-black/5 dark:bg-white/10' // Mobile active background
-            )}
-          >
-            {!vertical && active && (
-              <motion.div
-                layoutId="active-menu-pill"
-                className="bg-background absolute inset-0 z-[-1] rounded-full border border-black/5 shadow-sm dark:border-white/5"
-                transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-              />
-            )}
-            <span
+  if (vertical) {
+    return (
+      <nav className={cn('flex flex-col gap-1', className)}>
+        {menuItems.map(item => {
+          const active = isActive(item)
+          return (
+            <Link
+              key={item.href}
+              href={item.href || '#'}
               className={cn(
-                'relative z-10',
-                active && !vertical && 'scale-105 transition-transform duration-200'
+                'flex items-center gap-3 rounded-xl px-4 py-3.5 text-base font-medium transition-colors duration-200',
+                active
+                  ? 'bg-accent/50 text-accent-foreground'
+                  : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
               )}
             >
-              {item.icon}
-            </span>
-            <span className="relative z-10">{item.title}</span>
-          </Link>
-        )
-      })}
-    </nav>
+              <span className={cn('relative z-10', active && 'text-primary')}>
+                {item.icon}
+              </span>
+              <span className="relative z-10">{item.title}</span>
+            </Link>
+          )
+        })}
+      </nav>
+    )
+  }
+
+  return (
+    <NavigationMenu className={className}>
+      <NavigationMenuList className="rounded-full border bg-background/50 px-2 py-1 backdrop-blur-md dark:bg-accent/10">
+        {menuItems.map(item => {
+          const active = isActive(item)
+          return (
+            <NavigationMenuItem key={item.title}>
+              <Link href={item.href || '#'} legacyBehavior passHref>
+                <NavigationMenuLink
+                  active={active}
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    'rounded-full bg-transparent px-4 py-2 hover:bg-accent/50 focus:bg-accent/50 data-[active]:bg-accent data-[active]:text-accent-foreground',
+                    active && 'bg-accent text-accent-foreground'
+                  )}
+                >
+                  <span className="mr-2 h-4 w-4">{item.icon}</span>
+                  {item.title}
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+          )
+        })}
+      </NavigationMenuList>
+    </NavigationMenu>
   )
 }

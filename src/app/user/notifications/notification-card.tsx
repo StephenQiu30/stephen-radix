@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { Trash2, Bell, Check, MessageSquare, Heart, Info, Star } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import dayjs from 'dayjs'
@@ -29,34 +30,34 @@ export function NotificationCard({
         switch (type) {
             case 'system':
                 return {
-                    icon: <Info className="h-5 w-5 text-white" />,
+                    icon: <Info className="h-4 w-4 text-white" />,
                     colorClass: 'text-blue-500',
                     gradientClass: 'from-blue-500 to-blue-600',
                 }
             case 'reply':
             case 'comment':
                 return {
-                    icon: <MessageSquare className="h-5 w-5 text-white" />,
+                    icon: <MessageSquare className="h-4 w-4 text-white" />,
                     colorClass: 'text-green-500',
                     gradientClass: 'from-green-500 to-green-600',
                 }
             case 'like':
             case 'thumb':
                 return {
-                    icon: <Heart className="h-5 w-5 text-white fill-white" />,
+                    icon: <Heart className="h-4 w-4 text-white fill-white" />,
                     colorClass: 'text-pink-500',
                     gradientClass: 'from-pink-500 to-rose-600',
                 }
             case 'star':
             case 'favourite':
                 return {
-                    icon: <Star className="h-5 w-5 text-white fill-white" />,
+                    icon: <Star className="h-4 w-4 text-white fill-white" />,
                     colorClass: 'text-amber-500',
                     gradientClass: 'from-amber-400 to-orange-500',
                 }
             default:
                 return {
-                    icon: <Bell className="h-5 w-5 text-white" />,
+                    icon: <Bell className="h-4 w-4 text-white" />,
                     colorClass: 'text-purple-500',
                     gradientClass: 'from-violet-500 to-purple-600',
                 }
@@ -82,7 +83,7 @@ export function NotificationCard({
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
             className="group relative"
         >
-            <div
+            <Card
                 role="button"
                 tabIndex={0}
                 onClick={() => onMarkRead(notification)}
@@ -93,25 +94,26 @@ export function NotificationCard({
                     }
                 }}
                 className={cn(
-                    'relative flex cursor-pointer gap-4 p-4 transition-all duration-300 outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                    'rounded-[22px] border',
-                    // Apple Glassmorphism Style
+                    'relative flex cursor-pointer gap-3 p-3 transition-all duration-300 outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                    'rounded-[18px] border',
+                    // Apple Glassmorphism Style & Read/Unread distinction
                     notification.isRead === 0
                         ? 'bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl border-white/50 dark:border-white/10 shadow-[0_8px_24px_rgba(0,0,0,0.04)]'
-                        : 'bg-white/40 dark:bg-zinc-900/40 backdrop-blur-md border-white/20 dark:border-white/5 hover:bg-white/60 dark:hover:bg-zinc-800/60'
+                        : 'bg-white/40 dark:bg-zinc-900/20 backdrop-blur-sm border-transparent dark:border-white/5 hover:bg-white/60 dark:hover:bg-zinc-800/40 opacity-75 grayscale-[0.3]'
                 )}
             >
                 {/* Unread Indicator - Blue Dot */}
                 {notification.isRead === 0 && (
-                    <div className="absolute right-4 top-4 h-2.5 w-2.5 rounded-full bg-[#007AFF] shadow-[0_0_8px_rgba(0,122,255,0.5)] ring-2 ring-white dark:ring-zinc-900" />
+                    <div className="absolute right-3 top-3 h-2 w-2 rounded-full bg-[#007AFF] shadow-[0_0_8px_rgba(0,122,255,0.5)] ring-2 ring-white dark:ring-zinc-900" />
                 )}
 
                 {/* Icon Container - Squircle */}
-                <div className="shrink-0 pt-1">
+                <div className="shrink-0 pt-0.5">
                     <div
                         className={cn(
-                            'flex h-10 w-10 items-center justify-center rounded-[12px] shadow-sm bg-gradient-to-br',
-                            gradientClass
+                            'flex h-9 w-9 items-center justify-center rounded-[10px] shadow-sm bg-gradient-to-br',
+                            gradientClass,
+                            notification.isRead !== 0 && 'opacity-80'
                         )}
                     >
                         {icon}
@@ -119,11 +121,11 @@ export function NotificationCard({
                 </div>
 
                 {/* Content Container */}
-                <div className="flex-1 min-w-0 space-y-1">
-                    <div className="flex items-center justify-between pr-6">
+                <div className="flex-1 min-w-0 space-y-0.5">
+                    <div className="flex items-center justify-between pr-4">
                         <h4
                             className={cn(
-                                'text-[16px] leading-tight tracking-tight truncate',
+                                'text-[15px] leading-tight tracking-tight truncate',
                                 notification.isRead === 0
                                     ? 'font-semibold text-foreground'
                                     : 'font-medium text-foreground/70'
@@ -131,14 +133,14 @@ export function NotificationCard({
                         >
                             {notification.title || '新通知'}
                         </h4>
-                        <span className="text-[12px] font-medium text-muted-foreground/50 shrink-0 tabular-nums">
+                        <span className="text-[11px] font-medium text-muted-foreground/50 shrink-0 tabular-nums">
                             {dayjs(notification.createTime).fromNow(true).replace(' ', '')}前
                         </span>
                     </div>
 
                     <p
                         className={cn(
-                            'text-[14px] leading-relaxed line-clamp-2 text-pretty',
+                            'text-[13px] leading-normal line-clamp-2 text-pretty',
                             notification.isRead === 0 ? 'text-foreground/90' : 'text-muted-foreground/80'
                         )}
                     >
@@ -147,20 +149,20 @@ export function NotificationCard({
                 </div>
 
                 {/* Hover Actions (Delete) */}
-                <div className="absolute right-3 bottom-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <div className="absolute right-2 bottom-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 rounded-full text-muted-foreground/40 hover:text-red-500 hover:bg-red-500/10"
+                        className="h-7 w-7 rounded-full text-muted-foreground/40 hover:text-red-500 hover:bg-red-500/10"
                         onClick={(e) => {
                             e.stopPropagation()
                             if (notification.id) onDelete(notification.id, e)
                         }}
                     >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                 </div>
-            </div>
+            </Card>
         </motion.div>
     )
 }

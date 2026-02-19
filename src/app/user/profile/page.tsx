@@ -4,7 +4,7 @@ import * as React from 'react'
 import { useAppSelector } from '@/store/hooks'
 import type { RootState } from '@/store'
 import { UserAvatar } from '@/components/header/user-avatar'
-import { Card } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { motion } from 'framer-motion'
 import { AtSign, Award, Calendar, Edit, GitBranch, Github, Shield, User as UserIcon, Zap } from 'lucide-react'
@@ -12,6 +12,8 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { AuthModal } from '@/components/auth/auth-modal'
 import { LoginPromptCard } from '@/components/auth/login-prompt-card'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -109,7 +111,7 @@ export default function ProfilePage() {
       <div className="grid gap-8 lg:grid-cols-12">
         {/* 左侧 - 用户名片 (4cols) */}
         <motion.div className="lg:col-span-4" variants={itemVariants}>
-          <div className="border-border/40 bg-card/50 overflow-hidden rounded-[2rem] border shadow-sm backdrop-blur-xl transition-all hover:shadow-md">
+          <Card className="border-border/40 bg-card/50 overflow-hidden rounded-[2rem] shadow-sm backdrop-blur-xl transition-all hover:shadow-md">
             {/* 简约背景 */}
             <div className="h-32 bg-gradient-to-b from-blue-500/10 to-transparent dark:from-blue-400/10">
               <div className="absolute top-4 right-4">
@@ -119,7 +121,7 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="relative px-8 pb-8">
+            <CardContent className="relative px-8 pb-8 pt-0">
               {/* 头像 */}
               <div className="-mt-16 mb-6 flex justify-center">
                 <div className="relative">
@@ -145,20 +147,41 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="flex justify-center gap-2">
-                  <Badge variant="secondary" className="bg-secondary/50 font-medium">
-                    <RoleIcon className="mr-1.5 h-3.5 w-3.5 opacity-70" />
-                    {roleInfo.label}
-                  </Badge>
-                  <Badge variant="outline" className="border-primary/20 text-primary font-medium">
-                    <Award className="mr-1.5 h-3.5 w-3.5" />
-                    Lv.1 成员
-                  </Badge>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Badge variant="secondary" className="bg-secondary/50 font-medium cursor-help">
+                          <RoleIcon className="mr-1.5 h-3.5 w-3.5 opacity-70" />
+                          {roleInfo.label}
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>当前用户角色: {roleInfo.label}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Badge variant="outline" className="border-primary/20 text-primary font-medium cursor-help">
+                          <Award className="mr-1.5 h-3.5 w-3.5" />
+                          Lv.1 成员
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>当前等级: Lv.1 (初级探索者)</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
 
-                <div className="bg-secondary/30 rounded-2xl p-6 text-sm">
-                  <p className="text-muted-foreground leading-relaxed">
-                    "{user?.userProfile || '这个人很懒，什么都没留下...'}"
-                  </p>
+                <div className="bg-secondary/30 rounded-2xl p-4 text-sm">
+                  <ScrollArea className="h-24 w-full pr-4">
+                    <p className="text-muted-foreground leading-relaxed">
+                      "{user?.userProfile || '这个人很懒，什么都没留下...'}"
+                    </p>
+                  </ScrollArea>
                 </div>
 
                 {/* 核心数据 */}
@@ -168,21 +191,22 @@ export default function ProfilePage() {
                   <StatItem label="获赞" value={0} />
                 </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </motion.div>
 
         {/* 右侧 - 详情模块 (8cols) */}
         <motion.div className="space-y-6 lg:col-span-8" variants={itemVariants}>
           {/* 基本信息网格 */}
-          <div className="border-border/40 bg-card/50 rounded-[2rem] border shadow-sm backdrop-blur-xl">
-            <div className="border-border/40 border-b px-8 py-6">
-              <h3 className="flex items-center gap-2 text-lg font-semibold">
+          {/* 基本信息网格 */}
+          <Card className="border-border/40 bg-card/50 rounded-[2rem] shadow-sm backdrop-blur-xl">
+            <CardHeader className="border-border/40 border-b px-8 py-6">
+              <CardTitle className="flex items-center gap-2 text-lg">
                 <UserIcon className="text-primary h-5 w-5" />
                 基本信息
-              </h3>
-            </div>
-            <div className="p-8">
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-8">
               <div className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
                 <InfoItem
                   label="用户昵称"
@@ -223,18 +247,19 @@ export default function ProfilePage() {
                   />
                 )}
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* 账户历程 */}
-          <div className="border-border/40 bg-card/50 rounded-[2rem] border shadow-sm backdrop-blur-xl">
-            <div className="border-border/40 border-b px-8 py-6">
-              <h3 className="flex items-center gap-2 text-lg font-semibold">
+          {/* 账户历程 */}
+          <Card className="border-border/40 bg-card/50 rounded-[2rem] shadow-sm backdrop-blur-xl">
+            <CardHeader className="border-border/40 border-b px-8 py-6">
+              <CardTitle className="flex items-center gap-2 text-lg">
                 <Calendar className="text-primary h-5 w-5" />
                 账户历程
-              </h3>
-            </div>
-            <div className="p-8">
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-8">
               <div className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
                 <InfoItem
                   label="注册日期"
@@ -259,8 +284,8 @@ export default function ProfilePage() {
                   <p className="text-muted-foreground text-xs">通过所有安全验证</p>
                 </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* 账户安全 & 隐私 */}
           <div className="flex gap-4">

@@ -4,6 +4,7 @@ import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { useAppSelector } from '@/store/hooks'
 import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from 'sonner'
 import {
     Check,
@@ -36,6 +37,7 @@ export default function NotificationsPage() {
     const { user } = useAppSelector((state: RootState) => state.user)
     const [authModalOpen, setAuthModalOpen] = React.useState(false)
 
+    const [activeTab, setActiveTab] = React.useState('all')
     const [loading, setLoading] = React.useState(true)
     const [notifications, setNotifications] = React.useState<NotificationAPI.NotificationVO[]>([])
     const [total, setTotal] = React.useState(0)
@@ -50,6 +52,7 @@ export default function NotificationsPage() {
                 pageSize: 20,
                 sortField: 'create_time',
                 sortOrder: 'descend',
+                isRead: activeTab === 'unread' ? 0 : undefined,
             })
             if (res.code === 0 && res.data) {
                 setNotifications(res.data.records || [])
@@ -62,18 +65,24 @@ export default function NotificationsPage() {
         } finally {
             setLoading(false)
         }
-    }, [current])
+    }, [current, activeTab])
 
     React.useEffect(() => {
         if (user) {
             fetchNotifications()
             const handleUpdate = () => {
+                // Refresh if we are on the first page or if it might affect current view
                 if (current === 1) fetchNotifications()
             }
             window.addEventListener('notification-updated', handleUpdate)
             return () => window.removeEventListener('notification-updated', handleUpdate)
         }
     }, [user, current, fetchNotifications])
+
+    const handleTabChange = (value: string) => {
+        setActiveTab(value)
+        setCurrent(1)
+    }
 
     // Actions
     const handleDelete = async (id: number, e: React.MouseEvent) => {
@@ -96,9 +105,14 @@ export default function NotificationsPage() {
         try {
             const res = await markRead({ id: notification.id })
             if (res.code === 0) {
+                // If we are in 'unread' tab, removing it from view might be abrupt, but standard behavior.
+                // However, user might misclick. 
+                // For now, let's just update locally.
                 setNotifications((prev) =>
                     prev.map((item) => (item.id === notification.id ? { ...item, isRead: 1 } : item))
                 )
+                // If in unread tab, maybe fetch again or filter out?
+                // Let's keep it visible but marked read until refresh/tab switch to avoid layout jump.
             }
         } catch (error) {
             console.error('Mark read failed', error)
@@ -170,22 +184,41 @@ export default function NotificationsPage() {
             <div className="relative z-10 w-full max-w-2xl mx-auto px-4 sm:px-6 pt-24 pb-20">
 
                 {/* Header - iOS style Large Title */}
-                <div className="flex items-end justify-between mb-8 px-1">
-                    <div>
-                        <h1 className="text-[34px] font-bold tracking-tight text-[#1D1D1F] dark:text-[#F5F5F7] leading-tight">
-                            通知中心
-                        </h1>
+                <div className="flex flex-col gap-4 mb-8">
+                    <div className="flex items-end justify-between px-1">
+                        <div>
+                            <h1 className="text-[34px] font-bold tracking-tight text-[#1D1D1F] dark:text-[#F5F5F7] leading-tight">
+                                通知中心
+                            </h1>
+                        </div>
+                        {notifications.some((n) => n.isRead === 0) && (
+                            <Button
+                                variant="ghost"
+                                className="rounded-full text-[#007AFF] hover:text-[#007AFF] hover:bg-[#007AFF]/10 font-medium text-[15px] px-4 h-9"
+                                onClick={handleMarkAllRead}
+                            >
+                                <Check className="mr-1.5 h-4 w-4" />
+                                全部已读
+                            </Button>
+                        )}
                     </div>
-                    {notifications.some((n) => n.isRead === 0) && (
-                        <Button
-                            variant="ghost"
-                            className="rounded-full text-[#007AFF] hover:text-[#007AFF] hover:bg-[#007AFF]/10 font-medium text-[15px] px-4 h-9"
-                            onClick={handleMarkAllRead}
-                        >
-                            <Check className="mr-1.5 h-4 w-4" />
-                            全部已读
-                        </Button>
-                    )}
+
+                    <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+                        <TabsList className="bg-muted/50 p-1 rounded-full">
+                            <TabsTrigger
+                                value="all"
+                                className="rounded-full px-6 transition-all data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                            >
+                                全部
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="unread"
+                                className="rounded-full px-6 transition-all data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                            >
+                                未读
+                            </TabsTrigger>
+                        </TabsList>
+                    </Tabs>
                 </div>
 
                 {/* Content Area */}
@@ -200,14 +233,18 @@ export default function NotificationsPage() {
                                 <BellOff className="h-10 w-10 text-muted-foreground/40" />
                             </div>
                             <div className="space-y-2">
-                                <h3 className="text-xl font-semibold text-foreground/80">暂无通知</h3>
+                                <h3 className="text-xl font-semibold text-foreground/80">
+                                    {activeTab === 'unread' ? '没有未读通知' : '暂无通知'}
+                                </h3>
                                 <p className="text-muted-foreground/60 text-sm">
-                                    当有新的互动时，它们会出现在这里
+                                    {activeTab === 'unread'
+                                        ? '你已读完所有通知'
+                                        : '当有新的互动时，它们会出现在这里'}
                                 </p>
                             </div>
                         </div>
                     ) : (
-                        <div className="space-y-10">
+                        <div className="space-y-8">
                             <AnimatePresence mode="popLayout">
                                 {groupedNotifications.map(([group, items], groupIndex) => (
                                     <motion.div
@@ -215,16 +252,16 @@ export default function NotificationsPage() {
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: groupIndex * 0.08, duration: 0.4 }}
-                                        className="space-y-3"
+                                        className="space-y-2"
                                     >
                                         {/* Sticky Section Header - iOS Style */}
-                                        <div className="sticky top-[72px] z-20 px-1 py-2 backdrop-blur-xl -mx-4 px-4 bg-[#F5F5F7]/80 dark:bg-black/80 supports-[backdrop-filter]:bg-transparent">
-                                            <h2 className="text-[19px] font-bold text-[#1D1D1F] dark:text-[#F5F5F7] tracking-tight">
+                                        <div className="sticky top-[72px] z-20 px-1 py-1.5 backdrop-blur-xl -mx-4 px-4 bg-[#F5F5F7]/80 dark:bg-black/80 supports-[backdrop-filter]:bg-transparent">
+                                            <h2 className="text-[15px] font-semibold text-muted-foreground/80 tracking-normal uppercase">
                                                 {group}
                                             </h2>
                                         </div>
 
-                                        <div className="grid gap-3">
+                                        <div className="grid gap-2">
                                             {items.map((notification) => (
                                                 <NotificationCard
                                                     key={notification.id}
