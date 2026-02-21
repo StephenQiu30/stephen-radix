@@ -49,4 +49,11 @@ export default [
     schemaPath: 'http://localhost:8087/api/v3/api-docs',
     serversPath: './src/api',
   },
+  {
+    projectName: 'ai',
+    namespace: 'AiAPI',
+    requestLibPath: "import request from '@/lib/request'",
+    schemaPath: 'http://localhost:8089/api/v3/api-docs',
+    serversPath: './src/api',
+  },
 ]

@@ -2,6 +2,36 @@
 /* eslint-disable */
 import request from '@/lib/request'
 
+/** 批量同步 AI 消息到 ES POST /search/ai/chat/message/batch/upsert */
+export async function batchUpsertAiChatMessage(
+  body: SearchAPI.AiChatMessageEsDTO[],
+  options?: { [key: string]: any }
+) {
+  return request<SearchAPI.BaseResponseBoolean>('/search/ai/chat/message/batch/upsert', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
+/** 批量同步 AI 会话到 ES POST /search/ai/chat/session/batch/upsert */
+export async function batchUpsertAiChatSession(
+  body: SearchAPI.AiChatSessionEsDTO[],
+  options?: { [key: string]: any }
+) {
+  return request<SearchAPI.BaseResponseBoolean>('/search/ai/chat/session/batch/upsert', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
 /** 聚合搜索查询 POST /search/all */
 export async function doSearchAll(body: SearchAPI.SearchRequest, options?: { [key: string]: any }) {
   return request<SearchAPI.BaseResponseSearchVOObject>('/search/all', {

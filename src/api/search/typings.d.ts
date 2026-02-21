@@ -1,4 +1,24 @@
 declare namespace SearchAPI {
+  type AiChatMessageEsDTO = {
+    id?: number
+    createTime?: string
+    updateTime?: string
+    isDelete?: number
+    sessionId?: number
+    userId?: number
+    role?: string
+    content?: string
+  }
+
+  type AiChatSessionEsDTO = {
+    id?: number
+    createTime?: string
+    updateTime?: string
+    isDelete?: number
+    userId?: number
+    title?: string
+  }
+
   type ApiAccessLogEsDTO = {
     id?: number
     createTime?: string

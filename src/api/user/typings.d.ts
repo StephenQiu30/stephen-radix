@@ -93,11 +93,11 @@ declare namespace UserAPI {
   }
 
   type checkParams = {
-    arg0: WxMpCheckRequest
+    request: WxMpCheckRequest
   }
 
   type checkWxLoginStatusParams = {
-    arg0: string
+    sceneId: string
   }
 
   type DeleteRequest = {
@@ -106,7 +106,7 @@ declare namespace UserAPI {
   }
 
   type getUserByIdParams = {
-    arg0: number
+    id: number
   }
 
   type getUserVOByIdParams = {
@@ -125,7 +125,7 @@ declare namespace UserAPI {
   }
 
   type gitHubLoginCallbackParams = {
-    arg0: GitHubCallbackRequest
+    request: GitHubCallbackRequest
   }
 
   type GitHubLoginRequest = {

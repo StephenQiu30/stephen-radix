@@ -64,11 +64,11 @@ declare namespace PostAPI {
   }
 
   type getPostCommentVOByIdParams = {
-    arg0: number
+    id: number
   }
 
   type getPostVOByIdParams = {
-    arg0: number
+    id: number
   }
 
   type OrderItem = {
