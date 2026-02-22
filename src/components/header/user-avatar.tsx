@@ -32,11 +32,7 @@ export function UserAvatar({ user, size = 'md', className, alt }: UserAvatarProp
   return (
     <Avatar className={cn(sizeClass, className)}>
       <AvatarImage src={avatarUrl} alt={userName} className="object-cover" />
-      <AvatarFallback
-        className={cn(
-          size === 'lg' || size === 'xl' ? 'bg-primary/10' : 'bg-muted'
-        )}
-      >
+      <AvatarFallback className={cn(size === 'lg' || size === 'xl' ? 'bg-primary/10' : 'bg-muted')}>
         <UserCircle
           className={cn(
             size === 'lg' || size === 'xl' ? 'text-primary' : 'text-muted-foreground',

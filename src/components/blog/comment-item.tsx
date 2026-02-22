@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { addPostComment, deletePostComment } from '@/api/post/postCommentController'
+import { deletePostComment } from '@/api/post/postCommentController'
 import { CommentInput } from './comment-input'
 import { useAppSelector } from '@/store/hooks'
 import { RootState } from '@/store'

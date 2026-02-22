@@ -127,7 +127,7 @@ export function MarkdownEditor({
       className={cn(
         'border-border/40 bg-card/30 flex flex-1 flex-col overflow-hidden rounded-xl border shadow-sm transition-all duration-300',
         isFullscreen &&
-        'bg-background fixed inset-0 z-50 h-screen w-screen rounded-none border-none',
+          'bg-background fixed inset-0 z-50 h-screen w-screen rounded-none border-none',
         className
       )}
     >

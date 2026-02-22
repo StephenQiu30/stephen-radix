@@ -1,7 +1,6 @@
 'use client'
 
 import * as React from 'react'
-import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Bookmark, Heart, MessageSquare, Share2 } from 'lucide-react'
 import { cn } from '@/lib/utils'

@@ -5,8 +5,6 @@ interface UserState {
   token: string | null
 }
 
-
-
 export const userSlice = createSlice({
   name: 'user',
   initialState: {
@@ -16,7 +14,6 @@ export const userSlice = createSlice({
   reducers: {
     setLoginUser: (state, action: PayloadAction<UserAPI.LoginUserVO>) => {
       state.user = action.payload
-
     },
     clearLoginUser: state => {
       state.user = null

@@ -4,11 +4,11 @@ import * as React from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion, useScroll, useSpring } from 'framer-motion'
 import {
+  CommentSection,
   MarkdownRender,
   MarkdownToc,
-  PostHeader,
-  CommentSection,
   PostActionBar,
+  PostHeader,
 } from '@/components/blog'
 import { Button } from '@/components/ui/button'
 import { getPostVoById } from '@/api/post/postController'
@@ -18,7 +18,6 @@ import { useAppSelector } from '@/store/hooks'
 import type { RootState } from '@/store'
 import { ArrowLeft, FileWarning, Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
 
 export default function PostDetailPage() {
   const params = useParams()
@@ -52,7 +51,9 @@ export default function PostDetailPage() {
       setLoading(true)
       setError(null)
       try {
-        const res = (await getPostVoById({ arg0: postId as any })) as unknown as PostAPI.BaseResponsePostVO
+        const res = (await getPostVoById({
+          arg0: postId as any,
+        })) as unknown as PostAPI.BaseResponsePostVO
         if (res && res.code === 0 && res.data) {
           setPost(res.data)
           setHasThumb(res.data.hasThumb || false)
@@ -77,7 +78,9 @@ export default function PostDetailPage() {
   const handleThumb = async () => {
     if (!user) return router.push('/')
     try {
-      const res = (await doThumb({ postId: postId as any })) as unknown as PostAPI.BaseResponseInteger
+      const res = (await doThumb({
+        postId: postId as any,
+      })) as unknown as PostAPI.BaseResponseInteger
       if (res.code === 0) {
         const delta = res.data || 0
         setHasThumb(delta > 0)
@@ -91,7 +94,9 @@ export default function PostDetailPage() {
   const handleFavour = async () => {
     if (!user) return router.push('/')
     try {
-      const res = (await doFavour({ postId: postId as any })) as unknown as PostAPI.BaseResponseInteger
+      const res = (await doFavour({
+        postId: postId as any,
+      })) as unknown as PostAPI.BaseResponseInteger
       if (res.code === 0) {
         const delta = res.data || 0
         setHasFavour(delta > 0)

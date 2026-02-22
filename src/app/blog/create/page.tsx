@@ -10,12 +10,7 @@ import { addPost } from '@/api/post/postController'
 import { toast } from 'sonner'
 import { MarkdownEditor } from '@/components/blog/markdown-editor'
 import { FileUploadBizEnum } from '@/enums/FileUploadBizEnum'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 export default function CreatePostPage() {
   const router = useRouter()

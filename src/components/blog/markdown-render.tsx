@@ -64,7 +64,7 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
 
           // 段落
           p: ({ children }) => (
-            <p className="text-foreground/90 dark:text-zinc-200 text-lg leading-relaxed [&:not(:first-child)]:mt-8">
+            <p className="text-foreground/90 text-lg leading-relaxed dark:text-zinc-200 [&:not(:first-child)]:mt-8">
               {children}
             </p>
           ),
@@ -114,7 +114,7 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
             if (isInline) {
               return (
                 <code
-                  className="bg-muted/50 text-foreground dark:text-zinc-200 border-border/50 rounded-md border px-1.5 py-0.5 font-mono text-sm font-medium"
+                  className="bg-muted/50 text-foreground border-border/50 rounded-md border px-1.5 py-0.5 font-mono text-sm font-medium dark:text-zinc-200"
                   {...props}
                 >
                   {children}
@@ -179,51 +179,63 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
 
           // 引用块
           blockquote: ({ children }) => (
-            <blockquote className="border-primary/40 text-muted-foreground/90 dark:text-zinc-400 my-8 border-l-2 pl-6 text-lg leading-relaxed italic">
+            <blockquote className="border-primary/40 text-muted-foreground/90 my-8 border-l-2 pl-6 text-lg leading-relaxed italic dark:text-zinc-400">
               {children}
             </blockquote>
           ),
 
           // 列表
           ul: ({ children }) => (
-            <ul className="text-foreground/90 dark:text-zinc-200 my-8 ml-6 list-disc [&>li]:mt-3">{children}</ul>
+            <ul className="text-foreground/90 my-8 ml-6 list-disc dark:text-zinc-200 [&>li]:mt-3">
+              {children}
+            </ul>
           ),
           ol: ({ children }) => (
-            <ol className="text-foreground/90 dark:text-zinc-200 my-8 ml-6 list-decimal [&>li]:mt-3">{children}</ol>
+            <ol className="text-foreground/90 my-8 ml-6 list-decimal dark:text-zinc-200 [&>li]:mt-3">
+              {children}
+            </ol>
           ),
           li: ({ children }) => (
-            <li className="pl-2 text-foreground/90 dark:text-zinc-200">{children}</li>
+            <li className="text-foreground/90 pl-2 dark:text-zinc-200">{children}</li>
           ),
 
           // 强调
           strong: ({ children }) => (
-            <strong className="font-bold text-foreground dark:text-white">{children}</strong>
+            <strong className="text-foreground font-bold dark:text-white">{children}</strong>
           ),
 
           // 表格
           table: ({ children }) => (
-            <div className="not-prose border-border dark:border-white/10 my-8 w-full overflow-hidden rounded-lg border shadow-sm">
+            <div className="not-prose border-border my-8 w-full overflow-hidden rounded-lg border shadow-sm dark:border-white/10">
               <table className="w-full text-left text-sm">{children}</table>
             </div>
           ),
           thead: ({ children }) => (
-            <thead className="bg-muted/50 dark:bg-white/5 text-foreground dark:text-white font-semibold uppercase">
+            <thead className="bg-muted/50 text-foreground font-semibold uppercase dark:bg-white/5 dark:text-white">
               {children}
             </thead>
           ),
-          tbody: ({ children }) => <tbody className="divide-border dark:divide-white/10 divide-y">{children}</tbody>,
+          tbody: ({ children }) => (
+            <tbody className="divide-border divide-y dark:divide-white/10">{children}</tbody>
+          ),
           tr: ({ children }) => (
-            <tr className="hover:bg-muted/50 dark:hover:bg-white/5 transition-colors">{children}</tr>
+            <tr className="hover:bg-muted/50 transition-colors dark:hover:bg-white/5">
+              {children}
+            </tr>
           ),
           th: ({ children }) => (
-            <th className="px-6 py-4 font-medium tracking-wider text-left text-foreground dark:text-white">{children}</th>
+            <th className="text-foreground px-6 py-4 text-left font-medium tracking-wider dark:text-white">
+              {children}
+            </th>
           ),
           td: ({ children }) => (
-            <td className="text-foreground/90 dark:text-zinc-200 px-6 py-4 align-top">{children}</td>
+            <td className="text-foreground/90 px-6 py-4 align-top dark:text-zinc-200">
+              {children}
+            </td>
           ),
 
           // 分隔线
-          hr: () => <hr className="border-border/40 dark:border-white/20 my-12 border-t" />,
+          hr: () => <hr className="border-border/40 my-12 border-t dark:border-white/20" />,
         }}
       >
         {content}

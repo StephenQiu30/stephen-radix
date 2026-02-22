@@ -52,7 +52,7 @@ const quickSort = async (
       while (tempArr[j] > pivot) j--
       if (i <= j) {
         if (signal.aborted) return -1
-          ;[tempArr[i], tempArr[j]] = [tempArr[j], tempArr[i]]
+        ;[tempArr[i], tempArr[j]] = [tempArr[j], tempArr[i]]
         setArr([...tempArr])
         await new Promise(resolve => setTimeout(resolve, speed))
         i++
@@ -295,7 +295,7 @@ export default function SortingVisualizer() {
           <p className="text-muted-foreground text-sm">调整速度和数据量，按需理解算法复杂度。</p>
         </div>
         <div className="flex items-center justify-center gap-4 sm:justify-end">
-          <div className="flex flex-col items-center gap-2 sm:items-end p-2">
+          <div className="flex flex-col items-center gap-2 p-2 sm:items-end">
             <span className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
               速度
             </span>
@@ -309,7 +309,7 @@ export default function SortingVisualizer() {
               className="w-24"
             />
           </div>
-          <div className="flex flex-col items-center gap-2 sm:items-end p-2">
+          <div className="flex flex-col items-center gap-2 p-2 sm:items-end">
             <span className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
               数据量
             </span>

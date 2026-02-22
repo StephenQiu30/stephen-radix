@@ -1,5 +1,5 @@
-
-选择排序（Selection Sort）是一种简单直观的排序算法。它的工作原理是：第一次从待排序的数据元素中选出最小（或最大）的一个元素，存放在序列的起始位置，然后再从剩余的未排序元素中寻找到最小（大）元素，然后放到已排序的序列的末尾。
+选择排序（Selection
+Sort）是一种简单直观的排序算法。它的工作原理是：第一次从待排序的数据元素中选出最小（或最大）的一个元素，存放在序列的起始位置，然后再从剩余的未排序元素中寻找到最小（大）元素，然后放到已排序的序列的末尾。
 
 ## 功能特性
 
@@ -17,17 +17,18 @@
 
 ## 复杂度分析
 
-| 指标 | 描述 |
-| --- | --- |
+| 指标          | 描述       |
+|-------------|----------|
 | **平均时间复杂度** | $O(n^2)$ |
 | **最坏时间复杂度** | $O(n^2)$ |
 | **最优时间复杂度** | $O(n^2)$ |
-| **空间复杂度** | $O(1)$ |
-| **稳定性** | 不稳定 |
+| **空间复杂度**   | $O(1)$   |
+| **稳定性**     | 不稳定      |
 
 ## 应用场景
 
-- **内存写入敏感系统**：由于选择排序的交换次数（写入操作）最少（$O(n)$），在写入存储器寿命有限（如某些嵌入式系统的 EEPROM）或写入操作昂贵的场景下，比冒泡排序或插入排序更具优势。
+- **内存写入敏感系统**：由于选择排序的交换次数（写入操作）最少（$O(n)$），在写入存储器寿命有限（如某些嵌入式系统的
+  EEPROM）或写入操作昂贵的场景下，比冒泡排序或插入排序更具优势。
 - **小规模数据且不要求稳定**：当数据量很少，且对原序列中相同元素的相对位置没有要求时，可以使用。
 - **教学示例**：用于展示“每次选择最好/最坏”这种贪心策略的简单应用。
 
@@ -39,7 +40,8 @@
 
 ## 练习题目
 
-- [215. 数组中的第K个最大元素](https://leetcode.cn/problems/kth-largest-element-in-an-array/) - 选择排序的变种（只选前 K 次）可以解决此问题（虽然时间复杂度较高）。
+- [215. 数组中的第K个最大元素](https://leetcode.cn/problems/kth-largest-element-in-an-array/) - 选择排序的变种（只选前 K
+  次）可以解决此问题（虽然时间复杂度较高）。
 - [912. 排序数组](https://leetcode.cn/problems/sort-an-array/) - 基础排序练习。
 
 ## 代码实现
@@ -122,20 +124,20 @@ def selection_sort(arr):
 
 ```typescript
 export const selectionSort = async (array: number[]) => {
-  const arr = [...array];
-  const n = arr.length;
+  const arr = [...array]
+  const n = arr.length
 
   for (let i = 0; i < n; i++) {
-    let minIdx = i;
+    let minIdx = i
     for (let j = i + 1; j < n; j++) {
       if (arr[j] < arr[minIdx]) {
-        minIdx = j;
+        minIdx = j
       }
     }
     if (minIdx !== i) {
-      [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
+      ;[arr[i], arr[minIdx]] = [arr[minIdx], arr[i]]
     }
   }
-  return arr;
-};
+  return arr
+}
 ```

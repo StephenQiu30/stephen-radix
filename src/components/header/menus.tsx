@@ -2,7 +2,6 @@
 
 import * as React from 'react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import { Activity, BookOpen, Home, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -69,9 +68,7 @@ export function Menus({ className, vertical = false }: { className?: string; ver
                   : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
               )}
             >
-              <span className={cn('relative z-10', active && 'text-primary')}>
-                {item.icon}
-              </span>
+              <span className={cn('relative z-10', active && 'text-primary')}>{item.icon}</span>
               <span className="relative z-10">{item.title}</span>
             </Link>
           )
@@ -82,7 +79,7 @@ export function Menus({ className, vertical = false }: { className?: string; ver
 
   return (
     <NavigationMenu className={className}>
-      <NavigationMenuList className="rounded-full border bg-background/50 px-2 py-1 backdrop-blur-md dark:bg-accent/10">
+      <NavigationMenuList className="bg-background/50 dark:bg-accent/10 rounded-full border px-2 py-1 backdrop-blur-md">
         {menuItems.map(item => {
           const active = isActive(item)
           return (
@@ -92,7 +89,7 @@ export function Menus({ className, vertical = false }: { className?: string; ver
                   active={active}
                   className={cn(
                     navigationMenuTriggerStyle(),
-                    'rounded-full bg-transparent px-4 py-2 hover:bg-accent/50 focus:bg-accent/50 data-[active]:bg-accent data-[active]:text-accent-foreground',
+                    'hover:bg-accent/50 focus:bg-accent/50 data-[active]:bg-accent data-[active]:text-accent-foreground rounded-full bg-transparent px-4 py-2',
                     active && 'bg-accent text-accent-foreground'
                   )}
                 >

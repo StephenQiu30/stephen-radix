@@ -11,9 +11,9 @@ import {
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { setLoginUser } from '@/store/modules'
 import {
-  userLoginByEmail,
-  sendEmailLoginCode,
   getGitHubAuthorizeUrl,
+  sendEmailLoginCode,
+  userLoginByEmail,
 } from '@/api/user/userController'
 import { User as UserIcon } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -76,7 +76,9 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
     setError('')
 
     try {
-      const res = (await sendEmailLoginCode({ email: emailForm.email })) as unknown as UserAPI.BaseResponseInteger
+      const res = (await sendEmailLoginCode({
+        email: emailForm.email,
+      })) as unknown as UserAPI.BaseResponseInteger
       if (res.code === 0) {
         setSuccess('验证码已发送')
         setCountdown(60)
@@ -175,14 +177,14 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
           <div className="flex flex-col items-center justify-center gap-5">
             <div className="relative">
               <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-[#0071e3]/20 to-[#0077ed]/0 blur-sm" />
-              <Avatar className="relative h-20 w-20 ring-4 ring-white shadow-lg dark:ring-[#1c1c1e]">
+              <Avatar className="relative h-20 w-20 shadow-lg ring-4 ring-white dark:ring-[#1c1c1e]">
                 <AvatarImage src={user?.userAvatar} alt={user?.userName || '用户头像'} />
                 <AvatarFallback className="bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-900">
                   <UserIcon className="h-10 w-10 text-gray-400 dark:text-gray-500" />
                 </AvatarFallback>
               </Avatar>
             </div>
-            <div className="text-center space-y-2">
+            <div className="space-y-2 text-center">
               <DialogTitle className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                 {getTitle()}
               </DialogTitle>
@@ -193,7 +195,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
           </div>
         </DialogHeader>
 
-        <div className="px-8 pb-10 pt-6">
+        <div className="px-8 pt-6 pb-10">
           <div className="min-h-[120px]">
             {view === 'choice' && (
               <MethodSelector
@@ -226,8 +228,8 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
           </div>
         </div>
 
-        <div className="bg-gray-50/80 backdrop-blur-sm px-8 py-5 text-center dark:bg-gray-800/50">
-          <p className="text-muted-foreground text-xs text-center leading-relaxed">
+        <div className="bg-gray-50/80 px-8 py-5 text-center backdrop-blur-sm dark:bg-gray-800/50">
+          <p className="text-muted-foreground text-center text-xs leading-relaxed">
             登录即代表您同意我们的
             <a
               href="#"

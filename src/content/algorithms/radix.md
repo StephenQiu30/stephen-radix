@@ -1,5 +1,5 @@
-
-基数排序（Radix Sort）属于"分配式排序"（Distribution Sort），又称"桶子法"（Bucket Sort或Bin Sort）。顾名思义，它是透过键值的部份资讯，将要排序的元素分配至某些"桶"中，以达到排序的作用，基数排序属于稳定排序。
+基数排序（Radix Sort）属于"分配式排序"（Distribution Sort），又称"桶子法"（Bucket Sort或Bin
+Sort）。顾名思义，它是透过键值的部份资讯，将要排序的元素分配至某些"桶"中，以达到排序的作用，基数排序属于稳定排序。
 
 ## 功能特性
 
@@ -17,13 +17,13 @@
 
 ## 复杂度分析
 
-| 指标 | 描述 |
-| --- | --- |
+| 指标          | 描述                  |
+|-------------|---------------------|
 | **平均时间复杂度** | $O(d \times (n+k))$ |
 | **最坏时间复杂度** | $O(d \times (n+k))$ |
 | **最优时间复杂度** | $O(d \times (n+k))$ |
-| **空间复杂度** | $O(n+k)$ |
-| **稳定性** | 稳定 |
+| **空间复杂度**   | $O(n+k)$            |
+| **稳定性**     | 稳定                  |
 
 其中，$d$ 为最大数的位数（或循环的轮数），$k$ 为桶的个数（通常为 10）。
 
@@ -42,7 +42,8 @@
     - 第二轮看十位...
     - 第三轮看百位...
     - 惊奇地发现排好序了！
-- **思考稳定性**：为什么必须从低位先开始排？（LSD, Least Significant Digit first）。如果先从高位排（MSD），对下一位排序时要在每一个桶内部单独排，那是另一种递归逻辑。LSD 必须依赖稳定性。
+- **思考稳定性**：为什么必须从低位先开始排？（LSD, Least Significant Digit
+  first）。如果先从高位排（MSD），对下一位排序时要在每一个桶内部单独排，那是另一种递归逻辑。LSD 必须依赖稳定性。
 
 ## 练习题目
 
@@ -206,40 +207,40 @@ def radix_sort(arr):
 
 ```typescript
 export const radixSort = async (array: number[]) => {
-  const arr = [...array];
+  const arr = [...array]
   const getMax = (arr: number[]) => {
-    let max = arr[0];
+    let max = arr[0]
     for (let i = 1; i < arr.length; i++) {
-      if (arr[i] > max) max = arr[i];
+      if (arr[i] > max) max = arr[i]
     }
-    return max;
-  };
+    return max
+  }
 
   const countSort = (exp: number) => {
-    const n = arr.length;
-    const output = new Array(n).fill(0);
-    const count = new Array(10).fill(0);
+    const n = arr.length
+    const output = new Array(n).fill(0)
+    const count = new Array(10).fill(0)
 
     for (let i = 0; i < n; i++) {
-      count[Math.floor(arr[i] / exp) % 10]++;
+      count[Math.floor(arr[i] / exp) % 10]++
     }
 
-    for (let i = 1; i < 10; i++) count[i] += count[i - 1];
+    for (let i = 1; i < 10; i++) count[i] += count[i - 1]
 
     for (let i = n - 1; i >= 0; i--) {
-      output[count[Math.floor(arr[i] / exp) % 10] - 1] = arr[i];
-      count[Math.floor(arr[i] / exp) % 10]--;
+      output[count[Math.floor(arr[i] / exp) % 10] - 1] = arr[i]
+      count[Math.floor(arr[i] / exp) % 10]--
     }
 
     for (let i = 0; i < n; i++) {
-      arr[i] = output[i];
+      arr[i] = output[i]
     }
-  };
-
-  const m = getMax(arr);
-  for (let exp = 1; Math.floor(m / exp) > 0; exp *= 10) {
-    countSort(exp);
   }
-  return arr;
-};
+
+  const m = getMax(arr)
+  for (let exp = 1; Math.floor(m / exp) > 0; exp *= 10) {
+    countSort(exp)
+  }
+  return arr
+}
 ```

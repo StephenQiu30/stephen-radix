@@ -1,22 +1,20 @@
 'use client'
 
 import * as React from 'react'
+import { useEffect, useState } from 'react'
 import { ThemeProvider } from '@/components/theme/theme-provider'
 import { Provider } from 'react-redux'
 import store from '@/store'
-import { Toaster } from 'sonner'
-import { useEffect, useState } from 'react'
+import { toast, Toaster } from 'sonner'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { clearLoginUser, setLoginUser } from '@/store/modules/user/userSlice'
 import { getLoginUser } from '@/api/user/userController'
-import { toast } from 'sonner'
 import { FullScreenLoader } from '@/components/common/full-screen-loader'
 
 function AuthLoader({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch()
-  const { user } = useAppSelector((state) => state.user)
+  const { user } = useAppSelector(state => state.user)
   const [isLoading, setIsLoading] = useState(true)
-
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -67,7 +65,7 @@ function AuthLoader({ children }: { children: React.ReactNode }) {
         // console.log('WebSocket Connected')
       }
 
-      ws.onmessage = (event) => {
+      ws.onmessage = event => {
         try {
           const message = JSON.parse(event.data)
           if (message.type === 'notification' || message.title) {
@@ -89,7 +87,7 @@ function AuthLoader({ children }: { children: React.ReactNode }) {
         }
       }
 
-      ws.onerror = (error) => {
+      ws.onerror = error => {
         // console.error('WebSocket Error:', error)
         ws.close()
       }
@@ -109,7 +107,6 @@ function AuthLoader({ children }: { children: React.ReactNode }) {
       }
     }
   }, [user])
-
 
   if (isLoading) {
     return <FullScreenLoader />

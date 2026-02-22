@@ -2,19 +2,7 @@
 
 import * as React from 'react' // turbo
 import { useRouter } from 'next/navigation'
-import {
-  Calculator,
-  Calendar,
-  CreditCard,
-  Settings,
-  Smile,
-  User,
-  Search,
-  FileText,
-  Home,
-  Monitor,
-  Activity,
-} from 'lucide-react'
+import { Activity, FileText, Home, Settings, User } from 'lucide-react'
 
 import {
   CommandDialog,
@@ -78,13 +66,15 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Algorithms">
-          {ALGORITHMS.map((algo) => (
+          {ALGORITHMS.map(algo => (
             <CommandItem
               key={algo.id}
               onSelect={() => runCommand(() => router.push(`/algorithms/${algo.id}`))}
             >
               <Activity className="mr-2 h-4 w-4" />
-              <span>{algo.name} ({algo.id})</span>
+              <span>
+                {algo.name} ({algo.id})
+              </span>
             </CommandItem>
           ))}
         </CommandGroup>

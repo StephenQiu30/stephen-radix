@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Link from 'next/link'
-import { Github, Search, UserCircle, Bell } from 'lucide-react'
+import { Bell, Github, Search, UserCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme/theme-toggle'
 import { AuthModal } from '@/components/auth/auth-modal'
@@ -17,7 +17,6 @@ interface HeaderActionsProps {
 export function HeaderActions({ onAuthModalOpenChange, authModalOpen }: HeaderActionsProps) {
   const { user } = useAppSelector((state: RootState) => state.user)
   const [open, setOpen] = React.useState(false)
-
 
   return (
     <>
@@ -46,7 +45,7 @@ export function HeaderActions({ onAuthModalOpenChange, authModalOpen }: HeaderAc
         {user ? (
           <>
             <Link href="/user/notifications">
-              <Button variant="ghost" size="icon" className="relative hover:text-primary">
+              <Button variant="ghost" size="icon" className="hover:text-primary relative">
                 <Bell className="h-5 w-5" />
                 <span className="sr-only">通知</span>
               </Button>

@@ -7,7 +7,7 @@ import { UserAvatar } from '@/components/header/user-avatar'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { motion } from 'framer-motion'
-import { AtSign, Award, Calendar, Edit, GitBranch, Github, Shield, User as UserIcon, Zap } from 'lucide-react'
+import { AtSign, Award, Calendar, Edit, Github, Shield, User as UserIcon, Zap } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { AuthModal } from '@/components/auth/auth-modal'
@@ -121,7 +121,7 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <CardContent className="relative px-8 pb-8 pt-0">
+            <CardContent className="relative px-8 pt-0 pb-8">
               {/* 头像 */}
               <div className="-mt-16 mb-6 flex justify-center">
                 <div className="relative">
@@ -150,7 +150,10 @@ export default function ProfilePage() {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Badge variant="secondary" className="bg-secondary/50 font-medium cursor-help">
+                        <Badge
+                          variant="secondary"
+                          className="bg-secondary/50 cursor-help font-medium"
+                        >
                           <RoleIcon className="mr-1.5 h-3.5 w-3.5 opacity-70" />
                           {roleInfo.label}
                         </Badge>
@@ -164,7 +167,10 @@ export default function ProfilePage() {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Badge variant="outline" className="border-primary/20 text-primary font-medium cursor-help">
+                        <Badge
+                          variant="outline"
+                          className="border-primary/20 text-primary cursor-help font-medium"
+                        >
                           <Award className="mr-1.5 h-3.5 w-3.5" />
                           Lv.1 成员
                         </Badge>
@@ -235,7 +241,12 @@ export default function ProfilePage() {
                       <div className="flex items-center gap-2">
                         <Github className="h-4 w-4" />
                         {user?.githubUrl ? (
-                          <a href={user.githubUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                          <a
+                            href={user.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:underline"
+                          >
                             {user.githubLogin}
                           </a>
                         ) : (
@@ -266,10 +277,10 @@ export default function ProfilePage() {
                   value={
                     user?.createTime
                       ? new Date(user.createTime).toLocaleDateString('zh-CN', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })
                       : '未知'
                   }
                 />

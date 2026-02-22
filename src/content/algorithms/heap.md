@@ -1,4 +1,3 @@
-
 堆排序（Heap Sort）是指利用堆这种数据结构所设计的一种排序算法。堆积是一个近似完全二叉树的结构，并同时满足堆积的性质：即子结点的键值或索引总是小于（或者大于）它的父节点。
 
 ## 功能特性
@@ -17,18 +16,20 @@
 
 ## 复杂度分析
 
-| 指标 | 描述 |
-| --- | --- |
+| 指标          | 描述            |
+|-------------|---------------|
 | **平均时间复杂度** | $O(n \log n)$ |
 | **最坏时间复杂度** | $O(n \log n)$ |
 | **最优时间复杂度** | $O(n \log n)$ |
-| **空间复杂度** | $O(1)$ |
-| **稳定性** | 不稳定 |
+| **空间复杂度**   | $O(1)$        |
+| **稳定性**     | 不稳定           |
 
 ## 应用场景
 
-- **系统级编程**：Linux 内核中在处理内存管理等任务时，由于堆排序提供最坏情况 $O(n \log n)$ 的保证，且不需要额外内存（原地排序），因此在对内存限制极严或要求不可出现 $O(N^2)$ 最坏情况的场景下非常有用。
-- **Top K 问题**：寻找数组中前 K 个最大（或最小）的元素时，不需要对整个数组排序，只需维护一个大小为 K 的堆，可以在 $O(n \log K)$ 时间内解决。
+- **系统级编程**：Linux 内核中在处理内存管理等任务时，由于堆排序提供最坏情况 $O(n \log n)$
+  的保证，且不需要额外内存（原地排序），因此在对内存限制极严或要求不可出现 $O(N^2)$ 最坏情况的场景下非常有用。
+- **Top K 问题**：寻找数组中前 K 个最大（或最小）的元素时，不需要对整个数组排序，只需维护一个大小为 K
+  的堆，可以在 $O(n \log K)$ 时间内解决。
 - **优先队列**：堆排序底层的二叉堆数据结构是实现优先队列的首选。
 
 ## 如何学习
@@ -39,7 +40,8 @@
 
 ## 练习题目
 
-- [215. 数组中的第K个最大元素](https://leetcode.cn/problems/kth-largest-element-in-an-array/) - 建立大小为 K 的堆是解决此类 Top K 问题的标准解法。
+- [215. 数组中的第K个最大元素](https://leetcode.cn/problems/kth-largest-element-in-an-array/) - 建立大小为 K 的堆是解决此类
+  Top K 问题的标准解法。
 - [347. 前 K 个高频元素](https://leetcode.cn/problems/top-k-frequent-elements/) - 优先级队列（堆）的典型应用。
 - [23. 合并 K 个升序链表](https://leetcode.cn/problems/merge-k-sorted-lists/) - 使用最小堆维护 K 个链表的头节点。
 
@@ -166,31 +168,31 @@ def heap_sort(arr):
 
 ```typescript
 export const heapSort = async (array: number[]) => {
-  const arr = [...array];
-  const n = arr.length;
+  const arr = [...array]
+  const n = arr.length
 
   const heapify = (n: number, i: number) => {
-    let largest = i;
-    const left = 2 * i + 1;
-    const right = 2 * i + 2;
+    let largest = i
+    const left = 2 * i + 1
+    const right = 2 * i + 2
 
-    if (left < n && arr[left] > arr[largest]) largest = left;
-    if (right < n && arr[right] > arr[largest]) largest = right;
+    if (left < n && arr[left] > arr[largest]) largest = left
+    if (right < n && arr[right] > arr[largest]) largest = right
 
     if (largest !== i) {
-      [arr[i], arr[largest]] = [arr[largest], arr[i]];
-      heapify(n, largest);
+      ;[arr[i], arr[largest]] = [arr[largest], arr[i]]
+      heapify(n, largest)
     }
-  };
+  }
 
   for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-    heapify(n, i);
+    heapify(n, i)
   }
 
   for (let i = n - 1; i > 0; i--) {
-    [arr[0], arr[i]] = [arr[i], arr[0]];
-    heapify(i, 0);
+    ;[arr[0], arr[i]] = [arr[i], arr[0]]
+    heapify(i, 0)
   }
-  return arr;
-};
+  return arr
+}
 ```

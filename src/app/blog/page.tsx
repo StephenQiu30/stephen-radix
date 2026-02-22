@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { PostCard } from '@/components/blog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -10,8 +10,6 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { searchPostByPage } from '@/api/search/searchController'
 import { BookOpen, FileWarning, Loader2, Plus, Search } from 'lucide-react'
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
-import { toast } from 'sonner'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -79,9 +77,7 @@ function BlogList() {
           setPosts(records)
         } else {
           setPosts(prev => {
-            const newRecords = records.filter(
-              record => !prev.some(p => p.id === record.id)
-            )
+            const newRecords = records.filter(record => !prev.some(p => p.id === record.id))
             return [...prev, ...newRecords]
           })
         }
@@ -163,17 +159,21 @@ function BlogList() {
         <motion.div variants={itemVariants} className="sticky top-20 z-30 mx-auto mb-12 max-w-4xl">
           <div className="bg-background/60 border-border/40 hover:border-border/60 flex flex-col gap-3 rounded-3xl border p-2 shadow-lg backdrop-blur-xl transition-all hover:shadow-xl sm:flex-row sm:gap-2 sm:rounded-full">
             {/* Tab Switcher */}
-            <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as 'latest' | 'popular')} className="shrink-0">
-              <TabsList className="bg-muted/50 rounded-full p-1 h-auto">
+            <Tabs
+              value={activeTab}
+              onValueChange={val => setActiveTab(val as 'latest' | 'popular')}
+              className="shrink-0"
+            >
+              <TabsList className="bg-muted/50 h-auto rounded-full p-1">
                 <TabsTrigger
                   value="latest"
-                  className="rounded-full px-6 py-2 text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                  className="data-[state=active]:bg-background data-[state=active]:text-foreground rounded-full px-6 py-2 text-sm font-medium transition-all data-[state=active]:shadow-sm"
                 >
                   最新发布
                 </TabsTrigger>
                 <TabsTrigger
                   value="popular"
-                  className="rounded-full px-6 py-2 text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                  className="data-[state=active]:bg-background data-[state=active]:text-foreground rounded-full px-6 py-2 text-sm font-medium transition-all data-[state=active]:shadow-sm"
                 >
                   热门精选
                 </TabsTrigger>

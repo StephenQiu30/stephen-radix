@@ -50,11 +50,11 @@ export function UserDropdown() {
           <Avatar className="h-10 w-10">
             <AvatarImage src={user?.userAvatar} alt={user?.userName || '用户头像'} />
             <AvatarFallback>
-              <UserCircle className="h-6 w-6 text-muted-foreground" />
+              <UserCircle className="text-muted-foreground h-6 w-6" />
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <span className="font-medium truncate max-w-[140px] block">
+            <span className="block max-w-[140px] truncate font-medium">
               {user?.userName || '未知用户'}
             </span>
             <span className="text-muted-foreground text-xs">

@@ -17,7 +17,7 @@ export default function AlgorithmsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/2 pb-20 font-sans selection:bg-primary/20">
+    <div className="from-background via-background to-primary/2 selection:bg-primary/20 min-h-screen bg-gradient-to-br pb-20 font-sans">
       <main className="container mx-auto max-w-7xl px-6 py-12">
         {/* Hero */}
         <div className="mx-auto mb-24 max-w-4xl space-y-6 text-center">

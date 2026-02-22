@@ -4,7 +4,6 @@ import * as React from 'react'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import type { RootState } from '@/store'
 import { UserAvatar } from '@/components/header/user-avatar'
-import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -385,10 +384,11 @@ export default function SettingsPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className={`mt-6 rounded-2xl border p-4 text-sm font-medium ${message.type === 'success'
-                    ? 'border-green-500/20 bg-green-500/10 text-green-600'
-                    : 'border-red-500/20 bg-red-500/10 text-red-600'
-                    }`}
+                  className={`mt-6 rounded-2xl border p-4 text-sm font-medium ${
+                    message.type === 'success'
+                      ? 'border-green-500/20 bg-green-500/10 text-green-600'
+                      : 'border-red-500/20 bg-red-500/10 text-red-600'
+                  }`}
                 >
                   <div className="flex items-center gap-3">
                     {message.type === 'success' ? (

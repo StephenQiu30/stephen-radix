@@ -1,5 +1,5 @@
-
-快速排序（Quick Sort）由Tony Hoare在1960年提出。它的基本思想是：通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据都比另外一部分的所有数据都要小，然后再按此方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，以此达到整个数据变成有序序列。
+快速排序（Quick Sort）由Tony
+Hoare在1960年提出。它的基本思想是：通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据都比另外一部分的所有数据都要小，然后再按此方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，以此达到整个数据变成有序序列。
 
 ## 功能特性
 
@@ -16,13 +16,13 @@
 
 ## 复杂度分析
 
-| 指标 | 描述 |
-| --- | --- |
+| 指标          | 描述            |
+|-------------|---------------|
 | **平均时间复杂度** | $O(n \log n)$ |
-| **最坏时间复杂度** | $O(n^2)$ |
+| **最坏时间复杂度** | $O(n^2)$      |
 | **最优时间复杂度** | $O(n \log n)$ |
-| **空间复杂度** | $O(\log n)$ |
-| **稳定性** | 不稳定 |
+| **空间复杂度**   | $O(\log n)$   |
+| **稳定性**     | 不稳定           |
 
 ## 应用场景
 
@@ -33,13 +33,16 @@
 ## 如何学习
 
 - **理解 Partition**：这是快排的灵魂。重点理解如何通过双指针（或单指针）将数组分为两部分，左边都比 pivot 小，右边都比 pivot 大。
-- **递归思维**：不要陷进去层层递归的细节，而是相信 fetch-and-conquer（分而治之）。假设子数组已经排好了，通过 partition 组合起来就是有序的。
-- **Pivot 的选择**：思考为什么如果每次都选第一个元素作为 pivot，在处理有序数组时会退化成 $O(n^2)$？了解随机选 pivot 或三数取中法（Median-of-Three）是如何避免这个问题的。
+- **递归思维**：不要陷进去层层递归的细节，而是相信 fetch-and-conquer（分而治之）。假设子数组已经排好了，通过 partition
+  组合起来就是有序的。
+- **Pivot 的选择**：思考为什么如果每次都选第一个元素作为 pivot，在处理有序数组时会退化成 $O(n^2)$？了解随机选 pivot
+  或三数取中法（Median-of-Three）是如何避免这个问题的。
 
 ## 练习题目
 
 - [912. 排序数组](https://leetcode.cn/problems/sort-an-array/) - 手写快排是面试高频题，注意处理随机化 Pivot 以避免超时。
-- [215. 数组中的第K个最大元素](https://leetcode.cn/problems/kth-largest-element-in-an-array/) - 快速选择算法（Quick Select）是快排思想的变种，时间复杂度 $O(N)$。
+- [215. 数组中的第K个最大元素](https://leetcode.cn/problems/kth-largest-element-in-an-array/) - 快速选择算法（Quick
+  Select）是快排思想的变种，时间复杂度 $O(N)$。
 - [75. 颜色分类](https://leetcode.cn/problems/sort-colors/) - 经典的“荷兰国旗问题”，考察三路快排（3-way Partition）思想。
 
 ## 代码实现
@@ -155,31 +158,31 @@ def quick_sort(arr, low, high):
 
 ```typescript
 export const quickSort = async (array: number[]) => {
-  const arr = [...array];
+  const arr = [...array]
 
   const partition = (low: number, high: number) => {
-    const pivot = arr[high];
-    let i = low - 1;
+    const pivot = arr[high]
+    let i = low - 1
 
     for (let j = low; j < high; j++) {
       if (arr[j] < pivot) {
-        i++;
-        [arr[i], arr[j]] = [arr[j], arr[i]];
+        i++
+        ;[arr[i], arr[j]] = [arr[j], arr[i]]
       }
     }
-    [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
-    return i + 1;
-  };
+    ;[arr[i + 1], arr[high]] = [arr[high], arr[i + 1]]
+    return i + 1
+  }
 
   const sort = (low: number, high: number) => {
     if (low < high) {
-      const pi = partition(low, high);
-      sort(low, pi - 1);
-      sort(pi + 1, high);
+      const pi = partition(low, high)
+      sort(low, pi - 1)
+      sort(pi + 1, high)
     }
-  };
+  }
 
-  sort(0, arr.length - 1);
-  return arr;
-};
+  sort(0, arr.length - 1)
+  return arr
+}
 ```

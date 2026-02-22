@@ -6,19 +6,18 @@ import { UserAvatar } from '@/components/header/user-avatar'
 import { Badge } from '@/components/ui/badge'
 import { motion } from 'framer-motion'
 import {
-  AtSign,
+  ArrowLeft,
   Award,
   Calendar,
   FileWarning,
+  Loader2,
   Shield,
   User as UserIcon,
   Zap,
-  ArrowLeft,
 } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { searchUserByPage } from '@/api/search/searchController'
-import { Loader2 } from 'lucide-react'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -247,10 +246,10 @@ export default function UserDetailPage() {
                   value={
                     user.createTime
                       ? new Date(user.createTime).toLocaleDateString('zh-CN', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })
                       : '未知'
                   }
                 />
