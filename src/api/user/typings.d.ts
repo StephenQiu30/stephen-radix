@@ -102,7 +102,7 @@ declare namespace UserAPI {
 
   type DeleteRequest = {
     /** id */
-    id?: number
+    id: number
   }
 
   type getUserByIdParams = {

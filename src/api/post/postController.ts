@@ -98,6 +98,21 @@ export async function listMyPostVoByPage(
   })
 }
 
+/** 审核帖子 人工审核帖子（通过或拒绝） POST /post/review */
+export async function reviewPost(
+  body: PostAPI.PostReviewRequest,
+  options?: { [key: string]: any }
+) {
+  return request<PostAPI.BaseResponseBoolean>('/post/review', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
 /** 更新帖子 更新帖子信息（仅管理员可用） POST /post/update */
 export async function updatePost(
   body: PostAPI.PostUpdateRequest,

@@ -327,6 +327,7 @@ declare namespace SearchAPI {
     thumbNum?: number
     favourNum?: number
     userId?: number
+    reviewStatus?: number
   }
 
   type PostQueryRequest = {
@@ -360,6 +361,8 @@ declare namespace SearchAPI {
     userId?: number
     /** 收藏用户ID */
     favourUserId?: number
+    /** 审核状态 */
+    reviewStatus?: number
   }
 
   type SearchRequest = {

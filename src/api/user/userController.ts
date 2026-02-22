@@ -117,7 +117,7 @@ export async function listUserVoByPage(
   })
 }
 
-/** 此处后端没有提供注释 POST /user/login/email */
+/** 用户邮箱登录 使用邮箱 and 验证码进行登录 POST /user/login/email */
 export async function userLoginByEmail(
   body: UserAPI.UserEmailLoginRequest,
   options?: { [key: string]: any }
