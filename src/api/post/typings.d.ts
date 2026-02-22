@@ -63,6 +63,11 @@ declare namespace PostAPI {
     id?: number
   }
 
+  type exportPostParams = {
+    id: number
+    type: string
+  }
+
   type getPostCommentVOByIdParams = {
     id: number
   }

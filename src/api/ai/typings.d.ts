@@ -1,7 +1,6 @@
 declare namespace AiAPI {
   type AiChatRequest = {
     message?: string
-    provider?: string
     sessionId?: number
   }
 
@@ -12,6 +11,11 @@ declare namespace AiAPI {
     data?: string
     /** 消息 */
     message?: string
+  }
+
+  type exportChatParams = {
+    sessionId: number
+    type: string
   }
 
   type SseEmitter = {
