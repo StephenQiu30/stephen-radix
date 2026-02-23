@@ -48,7 +48,7 @@ export function WeChatLogin({ onBack, onLoginSuccess, error, setError }: WeChatL
     const pollStatus = async () => {
       try {
         const res = (await checkWxLoginStatus({
-          arg0: sceneId,
+          sceneId: sceneId,
         })) as unknown as UserAPI.BaseResponseLoginUserVO
         if (res.code === 0 && res.data) {
           // Login successful

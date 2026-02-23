@@ -47,7 +47,7 @@ function GitHubCallbackContent() {
       setMessage('正在验证身份...')
 
       const res = (await gitHubLoginCallback({
-        arg0: { code, state: state || '' },
+        request: { code, state: state || '' },
       })) as unknown as UserAPI.BaseResponseLoginUserVO
 
       if (res.code === 0 && res.data) {

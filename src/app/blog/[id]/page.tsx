@@ -52,7 +52,7 @@ export default function PostDetailPage() {
       setError(null)
       try {
         const res = (await getPostVoById({
-          arg0: postId as any,
+          id: postId as any,
         })) as unknown as PostAPI.BaseResponsePostVO
         if (res && res.code === 0 && res.data) {
           setPost(res.data)
