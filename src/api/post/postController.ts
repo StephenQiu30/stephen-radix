@@ -2,7 +2,7 @@
 /* eslint-disable */
 import request from '@/lib/request'
 
-/** 创建帖子 创建新帖子 POST /post/add */
+/** 创建帖子 创建新帖子，初始状态为待审核 POST /post/add */
 export async function addPost(body: PostAPI.PostAddRequest, options?: { [key: string]: any }) {
   return request<PostAPI.BaseResponseLong>('/post/add', {
     method: 'POST',
@@ -53,7 +53,7 @@ export async function getPostVoById(
   })
 }
 
-/** 分页获取帖子列表（用于同步） POST /post/list/page */
+/** 分页获取帖子列表（用于同步） 获取完整字段的帖子列表，主要用于数据同步 POST /post/list/page */
 export async function listPostByPage(
   body: PostAPI.PostQueryRequest,
   options?: { [key: string]: any }
@@ -68,7 +68,7 @@ export async function listPostByPage(
   })
 }
 
-/** 分页获取帖子列表 分页获取帖子脱敏信息列表 POST /post/list/page/vo */
+/** 分页获取帖子列表 分页获取已审核通过的帖子脱敏信息列表 POST /post/list/page/vo */
 export async function listPostVoByPage(
   body: PostAPI.PostQueryRequest,
   options?: { [key: string]: any }

@@ -41,7 +41,7 @@ export async function getUserById(
   })
 }
 
-/** 此处后端没有提供注释 GET /user/get/login */
+/** 获取当前登录用户 获取系统当前登录的用户信息 GET /user/get/login */
 export async function getLoginUser(options?: { [key: string]: any }) {
   return request<UserAPI.BaseResponseLoginUserVO>('/user/get/login', {
     method: 'GET',
@@ -132,7 +132,7 @@ export async function userLoginByEmail(
   })
 }
 
-/** 此处后端没有提供注释 POST /user/login/email/code */
+/** 发送邮箱验证码 向指定邮箱发送登录或注册所需的验证码 POST /user/login/email/code */
 export async function sendEmailLoginCode(
   body: UserAPI.UserEmailCodeSendRequest,
   options?: { [key: string]: any }
@@ -147,7 +147,7 @@ export async function sendEmailLoginCode(
   })
 }
 
-/** 此处后端没有提供注释 GET /user/login/github */
+/** 获取 GitHub 授权 URL 获取跳转到 GitHub 授权页面的 URL GET /user/login/github */
 export async function getGitHubAuthorizeUrl(options?: { [key: string]: any }) {
   return request<UserAPI.BaseResponseString>('/user/login/github', {
     method: 'GET',
@@ -155,7 +155,7 @@ export async function getGitHubAuthorizeUrl(options?: { [key: string]: any }) {
   })
 }
 
-/** 此处后端没有提供注释 POST /user/login/github */
+/** GitHub 登录 通过 GitHub 授权码进行登录或注册 POST /user/login/github */
 export async function userLoginByGitHub(
   body: UserAPI.GitHubLoginRequest,
   options?: { [key: string]: any }
@@ -210,7 +210,7 @@ export async function checkWxLoginStatus(
   })
 }
 
-/** 此处后端没有提供注释 POST /user/logout */
+/** 用户注销 退出当前登录状态 POST /user/logout */
 export async function userLogout(options?: { [key: string]: any }) {
   return request<UserAPI.BaseResponseBoolean>('/user/logout', {
     method: 'POST',
