@@ -84,9 +84,9 @@ export function Menus({ className, vertical = false }: { className?: string; ver
           const active = isActive(item)
           return (
             <NavigationMenuItem key={item.title}>
-              <Link href={item.href || '#'} legacyBehavior passHref>
-                <NavigationMenuLink
-                  active={active}
+              <NavigationMenuLink asChild active={active}>
+                <Link
+                  href={item.href || '#'}
                   className={cn(
                     navigationMenuTriggerStyle(),
                     'hover:bg-accent/50 focus:bg-accent/50 data-[active]:bg-accent data-[active]:text-accent-foreground rounded-full bg-transparent px-4 py-2',
@@ -95,8 +95,8 @@ export function Menus({ className, vertical = false }: { className?: string; ver
                 >
                   <span className="mr-2 h-4 w-4">{item.icon}</span>
                   {item.title}
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
           )
         })}

@@ -46,33 +46,57 @@ function AuthLoader({ children }: { children: React.ReactNode }) {
   // WebSocket Connection Logic
   const socketRef = React.useRef<WebSocket | null>(null)
   const reconnectTimerRef = React.useRef<NodeJS.Timeout>(null)
+  const heartbeatTimerRef = React.useRef<NodeJS.Timeout>(null)
 
   useEffect(() => {
     const connectWebSocket = () => {
       if (!user) return
 
-      // Determine WebSocket URL based on current environment
+      // Determine WebSocket URL - Notifications are on port 9090 via Netty
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-      const host = process.env.NEXT_PUBLIC_API_BASE_URL
-        ? new URL(process.env.NEXT_PUBLIC_API_BASE_URL).host
-        : 'localhost:8080'
-      const wsUrl = `${protocol}//${host}/api/ws/notification/${user.id}`
+      const hostname = process.env.NEXT_PUBLIC_API_BASE_URL
+        ? new URL(process.env.NEXT_PUBLIC_API_BASE_URL).hostname
+        : 'localhost'
+      const wsUrl = `${protocol}//${hostname}:9090/websocket`
 
       const ws = new WebSocket(wsUrl)
       socketRef.current = ws
 
       ws.onopen = () => {
-        // console.log('WebSocket Connected')
+        // Send Auth message immediately after connection
+        const token = localStorage.getItem('token')
+        if (token && user.id) {
+          ws.send(
+            JSON.stringify({
+              type: 0, // AUTH
+              userId: user.id,
+              token: token,
+            })
+          )
+        }
+
+        // Start heartbeat - every 30 seconds
+        if (heartbeatTimerRef.current) clearInterval(heartbeatTimerRef.current)
+        heartbeatTimerRef.current = setInterval(() => {
+          if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ type: 1 })) // HEARTBEAT
+          }
+        }, 30000)
       }
 
       ws.onmessage = event => {
         try {
           const message = JSON.parse(event.data)
-          if (message.type === 'notification' || message.title) {
-            toast.info(message.title || '收到新通知', {
-              description: message.content,
+          // Handle notification messages from backend
+          // The backend might push SYSTEM_NOTICE(3), COMMENT_NOTICE(4), etc.
+          // Or a simplified structure. Based on current card logic, we emit update event.
+          if (message.type >= 3 && message.type <= 7) {
+            toast.info(message.title || '新通知', {
+              description: message.content || message.data,
             })
             window.dispatchEvent(new Event('notification-updated'))
+          } else if (message.type === 0 && message.data === '认证成功') {
+            // Auth success - can log if needed
           }
         } catch (e) {
           console.error('WebSocket message parse error', e)
@@ -81,14 +105,17 @@ function AuthLoader({ children }: { children: React.ReactNode }) {
 
       ws.onclose = () => {
         socketRef.current = null
+        if (heartbeatTimerRef.current) {
+          clearInterval(heartbeatTimerRef.current)
+          heartbeatTimerRef.current = null
+        }
         // Reconnect after 5 seconds
         if (user) {
           reconnectTimerRef.current = setTimeout(connectWebSocket, 5000)
         }
       }
 
-      ws.onerror = error => {
-        // console.error('WebSocket Error:', error)
+      ws.onerror = () => {
         ws.close()
       }
     }
@@ -104,6 +131,11 @@ function AuthLoader({ children }: { children: React.ReactNode }) {
       }
       if (reconnectTimerRef.current) {
         clearTimeout(reconnectTimerRef.current)
+        reconnectTimerRef.current = null
+      }
+      if (heartbeatTimerRef.current) {
+        clearInterval(heartbeatTimerRef.current)
+        heartbeatTimerRef.current = null
       }
     }
   }, [user])
