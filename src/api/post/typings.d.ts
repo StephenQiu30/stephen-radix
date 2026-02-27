@@ -175,7 +175,7 @@ declare namespace PostAPI {
     content?: string
     /** 帖子ID */
     postId?: number
-    /** 评论用户ID */
+    /** 用户ID */
     userId?: number
     /** 父评论ID */
     parentId?: number
@@ -190,7 +190,7 @@ declare namespace PostAPI {
 
   type PostEditRequest = {
     /** 帖子ID */
-    id: number
+    id?: number
     /** 标题 */
     title?: string
     /** 内容 */
@@ -257,6 +257,8 @@ declare namespace PostAPI {
     favourUserId?: number
     /** 审核状态 */
     reviewStatus?: number
+    /** 审核信息 */
+    reviewMessage?: string
   }
 
   type PostReviewRequest = {
@@ -274,8 +276,8 @@ declare namespace PostAPI {
   }
 
   type PostUpdateRequest = {
-    /** id */
-    id: number
+    /** 帖子ID */
+    id?: number
     /** 标题 */
     title?: string
     /** 内容 */
@@ -299,7 +301,7 @@ declare namespace PostAPI {
     thumbNum?: number
     /** 收藏数 */
     favourNum?: number
-    /** 创建用户ID */
+    /** 用户ID */
     userId?: number
     /** 创建时间 */
     createTime?: string
@@ -325,14 +327,14 @@ declare namespace PostAPI {
     userName?: string
     /** 用户头像 */
     userAvatar?: string
+    /** 用户简介 */
+    userProfile?: string
     /** 用户角色 */
     userRole?: string
     /** 用户邮箱 */
     userEmail?: string
     /** 用户电话 */
     userPhone?: string
-    /** 用户简介 */
-    userProfile?: string
     /** 创建时间 */
     createTime?: string
     /** 更新时间 */

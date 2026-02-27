@@ -17,6 +17,21 @@ export async function createRecord1(
   })
 }
 
+/** 创建邮件记录并返回 ID 记录邮件发送信息并返回记录 ID POST /email/record/create/id */
+export async function createRecordReturnId(
+  body: LogAPI.EmailRecordCreateRequest,
+  options?: { [key: string]: any }
+) {
+  return request<LogAPI.BaseResponseLong>('/email/record/create/id', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
 /** 删除邮件记录 删除指定邮件记录（仅管理员） POST /email/record/delete */
 export async function deleteRecord1(body: LogAPI.DeleteRequest, options?: { [key: string]: any }) {
   return request<LogAPI.BaseResponseBoolean>('/email/record/delete', {
@@ -35,6 +50,21 @@ export async function listRecordByPage1(
   options?: { [key: string]: any }
 ) {
   return request<LogAPI.BaseResponsePageEmailRecordVO>('/email/record/list/page', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
+/** 更新邮件记录状态 更新指定邮件记录的状态 POST /email/record/update/status */
+export async function updateRecordStatus(
+  body: LogAPI.EmailRecordCreateRequest,
+  options?: { [key: string]: any }
+) {
+  return request<LogAPI.BaseResponseBoolean>('/email/record/update/status', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

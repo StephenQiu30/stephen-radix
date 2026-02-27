@@ -1,24 +1,4 @@
 declare namespace SearchAPI {
-  type AiChatMessageEsDTO = {
-    id?: number
-    createTime?: string
-    updateTime?: string
-    isDelete?: number
-    sessionId?: number
-    userId?: number
-    role?: string
-    content?: string
-  }
-
-  type AiChatSessionEsDTO = {
-    id?: number
-    createTime?: string
-    updateTime?: string
-    isDelete?: number
-    userId?: number
-    title?: string
-  }
-
   type ApiAccessLogEsDTO = {
     id?: number
     createTime?: string
@@ -51,8 +31,10 @@ declare namespace SearchAPI {
     minUpdateTime?: string
     /** 最大更新时间 */
     maxUpdateTime?: string
-    /** ID */
+    /** 主键 */
     id?: number
+    /** 链路追踪ID */
+    traceId?: string
     /** 用户ID */
     userId?: number
     /** HTTP方法 */
@@ -63,8 +45,6 @@ declare namespace SearchAPI {
     status?: number
     /** 客户端IP */
     clientIp?: string
-    /** 追踪ID */
-    traceId?: string
     /** 搜索文本 */
     searchText?: string
   }
@@ -122,7 +102,7 @@ declare namespace SearchAPI {
     minUpdateTime?: string
     /** 最大更新时间 */
     maxUpdateTime?: string
-    /** ID */
+    /** 主键 */
     id?: number
     /** 消息ID */
     msgId?: string
@@ -153,7 +133,9 @@ declare namespace SearchAPI {
     objectKey?: string
     md5?: string
     clientIp?: string
-    status?: string
+    bucket?: string
+    url?: string
+    errorMessage?: string
   }
 
   type FileUploadRecordQueryRequest = {
@@ -169,9 +151,9 @@ declare namespace SearchAPI {
     minUpdateTime?: string
     /** 最大更新时间 */
     maxUpdateTime?: string
-    /** ID */
+    /** 主键 */
     id?: number
-    /** 上传用户ID */
+    /** 用户ID */
     userId?: number
     /** 业务类型 */
     bizType?: string
@@ -244,6 +226,7 @@ declare namespace SearchAPI {
     responseStatus?: number
     success?: number
     errorMessage?: string
+    responseData?: string
     clientIp?: string
   }
 
@@ -260,10 +243,12 @@ declare namespace SearchAPI {
     minUpdateTime?: string
     /** 最大更新时间 */
     maxUpdateTime?: string
-    /** ID */
+    /** 主键 */
     id?: number
     /** 操作人ID */
     operatorId?: number
+    /** 操作人名称 */
+    operatorName?: string
     /** 模块 */
     module?: string
     /** 操作类型 */
@@ -272,12 +257,6 @@ declare namespace SearchAPI {
     success?: number
     /** 客户端IP */
     clientIp?: string
-    /** 追踪ID */
-    traceId?: string
-    /** 操作描述 */
-    description?: string
-    /** 请求方法 */
-    method?: string
     /** 搜索文本 */
     searchText?: string
   }
@@ -328,6 +307,7 @@ declare namespace SearchAPI {
     favourNum?: number
     userId?: number
     reviewStatus?: number
+    reviewMessage?: string
   }
 
   type PostQueryRequest = {
@@ -363,6 +343,8 @@ declare namespace SearchAPI {
     favourUserId?: number
     /** 审核状态 */
     reviewStatus?: number
+    /** 审核信息 */
+    reviewMessage?: string
   }
 
   type SearchRequest = {
@@ -436,7 +418,7 @@ declare namespace SearchAPI {
     minUpdateTime?: string
     /** 最大更新时间 */
     maxUpdateTime?: string
-    /** ID */
+    /** 主键 */
     id?: number
     /** 用户ID */
     userId?: number

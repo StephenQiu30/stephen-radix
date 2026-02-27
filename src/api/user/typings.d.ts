@@ -200,12 +200,8 @@ declare namespace UserAPI {
   }
 
   type User = {
-    /** id */
+    /** 用户ID */
     id?: number
-    /** 公众号 openId */
-    mpOpenId?: string
-    /** 微信开放平台 UnionID */
-    wxUnionId?: string
     /** 用户昵称 */
     userName?: string
     /** 用户头像 */
@@ -218,16 +214,20 @@ declare namespace UserAPI {
     userEmail?: string
     /** 邮箱是否验证：0-未验证，1-已验证 */
     emailVerified?: number
-    /** GitHub 用户 ID */
+    /** 用户手机号 */
+    userPhone?: string
+    /** 微信公众号 OpenID */
+    mpOpenId?: string
+    /** 微信 UnionID */
+    wxUnionId?: string
+    /** 微信开放平台 OpenID */
+    wxOpenId?: string
+    /** GitHub ID */
     githubId?: string
-    /** GitHub 用户名 */
+    /** GitHub 账号 */
     githubLogin?: string
     /** GitHub 主页 */
     githubUrl?: string
-    /** 微信开放平台 OpenID */
-    wxOpenId?: string
-    /** 用户电话 */
-    userPhone?: string
     /** 最后登录时间 */
     lastLoginTime?: string
     /** 最后登录IP */
@@ -333,14 +333,14 @@ declare namespace UserAPI {
     userName?: string
     /** 用户头像 */
     userAvatar?: string
+    /** 用户简介 */
+    userProfile?: string
     /** 用户角色 */
     userRole?: string
     /** 用户邮箱 */
     userEmail?: string
     /** 用户电话 */
     userPhone?: string
-    /** 用户简介 */
-    userProfile?: string
     /** 创建时间 */
     createTime?: string
     /** 更新时间 */

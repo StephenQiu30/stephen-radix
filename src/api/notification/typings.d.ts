@@ -69,23 +69,23 @@ declare namespace NotificationAPI {
   }
 
   type Notification = {
-    /** ID */
+    /** 通知ID */
     id?: number
     /** 通知标题 */
     title?: string
     /** 通知内容 */
     content?: string
-    /** 通知类型（system-系统通知，user-用户通知，comment-评论通知，like-点赞通知） */
+    /** 通知类型（system-系统通知，user-用户通知，comment-评论通知，like-点赞通知，follow-关注通知，broadcast-全员广播） */
     type?: string
-    /** 业务幂等 ID */
+    /** 业务幂等ID */
     bizId?: string
-    /** 接收用户 ID */
+    /** 接收用户ID */
     userId?: number
-    /** 关联对象 ID（如帖子 ID、评论 ID） */
+    /** 关联对象ID */
     relatedId?: number
-    /** 关联对象类型（post-帖子，comment-评论） */
+    /** 关联对象类型 */
     relatedType?: string
-    /** 是否已读（0-未读，1-已读） */
+    /** 是否已读 */
     isRead?: number
     /** 状态（0-正常，1-停用） */
     status?: number
@@ -95,7 +95,7 @@ declare namespace NotificationAPI {
     createTime?: string
     /** 更新时间 */
     updateTime?: string
-    /** 是否删除（0-未删除，1-已删除） */
+    /** 是否删除 */
     isDelete?: number
   }
 
@@ -116,7 +116,8 @@ declare namespace NotificationAPI {
   }
 
   type NotificationBatchReadRequest = {
-    ids?: number[]
+    /** 通知ID列表 */
+    ids: number[]
   }
 
   type NotificationQueryRequest = {

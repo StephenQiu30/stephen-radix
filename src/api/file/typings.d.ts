@@ -1,14 +1,25 @@
 declare namespace FileAPI {
-  type BaseResponseString = {
+  type BaseResponseFileUploadVO = {
     /** 状态码 */
     code?: number
-    /** 数据 */
-    data?: string
+    data?: FileUploadVO
     /** 消息 */
     message?: string
   }
 
+  type FileUploadRequest = {
+    /** 业务类型 */
+    biz?: string
+  }
+
+  type FileUploadVO = {
+    /** 文件访问地址 */
+    url?: string
+    /** 文件名 */
+    fileName?: string
+  }
+
   type uploadFileParams = {
-    biz: string
+    fileUploadRequest: FileUploadRequest
   }
 }

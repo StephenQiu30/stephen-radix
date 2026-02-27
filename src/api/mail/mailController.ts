@@ -2,7 +2,7 @@
 /* eslint-disable */
 import request from '@/lib/request'
 
-/** 删除邮箱验证码 删除指定邮箱的验证码 POST /mail/email/code/delete */
+/** 删除邮箱验证码 删除指定邮箱的验证码，通常用于重置或安全清理 POST /mail/email/code/delete */
 export async function deleteEmailCode(
   body: MailAPI.EmailCodeRequest,
   options?: { [key: string]: any }
@@ -17,12 +17,12 @@ export async function deleteEmailCode(
   })
 }
 
-/** 发送邮箱验证码 发送登录用邮箱验证码 POST /mail/email/code/send */
+/** 发送邮箱验证码 生成验证码并通过邮件发送给用户，包含防刷频率限制 POST /mail/email/code/send */
 export async function sendEmailCode(
   body: MailAPI.EmailCodeRequest,
   options?: { [key: string]: any }
 ) {
-  return request<MailAPI.BaseResponseInteger>('/mail/email/code/send', {
+  return request<MailAPI.BaseResponseEmailCodeVO>('/mail/email/code/send', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export async function verifyEmailCode(
   })
 }
 
-/** 发送邮件（异步） 异步发送邮件消息 POST /mail/send/async */
+/** 发送邮件（异步） 将邮件发送任务投递至消息队列，由消费者异步处理，适用于高并发或对响应时间敏感的场景 POST /mail/send/async */
 export async function sendMailAsync(
   body: MailAPI.MailSendRequest,
   options?: { [key: string]: any }
@@ -62,7 +62,7 @@ export async function sendMailAsync(
   })
 }
 
-/** 发送邮件（同步） 同步发送邮件消息 POST /mail/send/sync */
+/** 发送邮件（同步） 立即发送邮件并阻塞等待结果，适用于对发送结果有即时性要求的场景 POST /mail/send/sync */
 export async function sendMailSync(
   body: MailAPI.MailSendRequest,
   options?: { [key: string]: any }

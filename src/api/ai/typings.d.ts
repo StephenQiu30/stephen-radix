@@ -21,7 +21,7 @@ declare namespace AiAPI {
   }
 
   type AiChatRecordVO = {
-    /** 主键 id */
+    /** 主键 */
     id?: number
     /** 用户 id */
     userId?: number
