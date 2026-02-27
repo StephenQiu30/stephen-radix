@@ -4,11 +4,8 @@ import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Card,
-  CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from '@/components/ui/card'
 import { ArrowRight, Lock, Sparkles } from 'lucide-react'
 import Link from 'next/link'
@@ -23,89 +20,62 @@ interface LoginPromptCardProps {
 
 export function LoginPromptCard({
   onLoginClick,
-  title = '开启您的专属空间',
-  description = '登录解锁更多精彩内容',
+  title = '需要登录',
+  description = '请登录以查看系统通知',
   icon,
 }: LoginPromptCardProps) {
   return (
-    <div className="absolute inset-0 z-40 flex items-center justify-center overflow-hidden">
-      {/* 全屏模糊背景 */}
+    <div className="flex w-full items-center justify-center py-12">
+      {/* Card Content */}
       <motion.div
-        initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-        animate={{ opacity: 1, backdropFilter: 'blur(12px)' }}
-        transition={{ duration: 0.8 }}
-        className="bg-background/60 dark:bg-background/80 absolute inset-0"
-      />
-
-      {/* 中心内容 */}
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        initial={{ scale: 0.95, opacity: 0, y: 10 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.6, type: 'spring' }}
-        className="relative z-50 flex w-full max-w-lg flex-col items-center p-8 text-center"
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        className="w-full max-w-md"
       >
-        <Card className="from-background via-secondary to-background border-border/50 relative w-full overflow-hidden bg-gradient-to-br shadow-xl transition-transform duration-500 group-hover:scale-105">
-          <CardHeader className="flex flex-col items-center space-y-6 pt-10 pb-2">
-            {/* 图标区域 */}
-            <div className="group relative">
-              <motion.div
-                className="bg-primary/20 absolute inset-0 rounded-full blur-2xl"
-                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
-                transition={{ repeat: Infinity, duration: 4 }}
-              />
-              <div className="ring-border/50 bg-background/50 relative rounded-3xl p-6 ring-1 backdrop-blur-sm">
-                {icon || <Lock className="text-primary h-10 w-10" />}
+        <Card className="border-white/40 bg-white/60 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] backdrop-blur-3xl dark:border-white/10 dark:bg-zinc-900/60">
+          <CardHeader className="flex flex-col items-center space-y-10 pt-16 pb-8">
+            {/* Icon Container - Squircle with superellipse-like feel */}
+            <div className="relative">
+              <div className="flex h-24 w-24 items-center justify-center rounded-[24px] bg-white text-[#007AFF] shadow-[0_10px_20px_rgba(0,0,0,0.04)] ring-1 ring-black/[0.03] dark:bg-zinc-800 dark:text-blue-400 dark:ring-white/[0.05]">
+                {icon || <Lock className="h-10 w-10 stroke-[1.5]" />}
               </div>
               <motion.div
-                className="absolute -top-3 -right-3 rounded-full bg-yellow-400/90 p-2 text-yellow-900 shadow-lg"
+                className="absolute -top-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-[#FFBC00] text-[#1D1D1F] shadow-sm"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ delay: 0.5, type: 'spring' }}
+                transition={{ delay: 0.4, type: 'spring' }}
               >
-                <Sparkles className="h-4 w-4" />
+                <Sparkles className="h-3.5 w-3.5" />
               </motion.div>
             </div>
 
-            {/* 标题与描述 */}
-            <div className="space-y-2 text-center">
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                <CardTitle className="from-foreground to-foreground/50 bg-gradient-to-b bg-clip-text text-4xl font-bold tracking-tight text-transparent">
-                  {title}
-                </CardTitle>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                <CardDescription className="text-muted-foreground max-w-sm text-lg leading-relaxed font-medium">
-                  {description}
-                </CardDescription>
-              </motion.div>
+            {/* Typography Section */}
+            <div className="space-y-4 text-center">
+              <h2 className="text-[#1D1D1F] text-[34px] leading-tight font-bold tracking-[-0.03em] dark:text-[#F5F5F7]">
+                {title}
+              </h2>
+              <p className="text-[#86868B] mx-auto max-w-[260px] text-[17px] font-medium leading-relaxed tracking-tight">
+                {description}
+              </p>
             </div>
           </CardHeader>
 
-          <CardContent className="pb-2">{/* Potential slot for extra content */}</CardContent>
-
-          <CardFooter className="flex w-full flex-col gap-4 p-8 pt-4 sm:flex-row">
+          <CardFooter className="flex flex-col gap-4 p-10 pt-4">
             <Button
               onClick={onLoginClick}
               size="lg"
-              className="shadow-primary/20 hover:shadow-primary/40 h-12 w-full rounded-full border-none bg-gradient-to-r from-blue-600 to-indigo-600 text-base font-semibold shadow-xl transition-all duration-300 hover:scale-105"
+              className="h-14 w-full rounded-2xl bg-[#007AFF] text-[17px] font-semibold tracking-tight text-white shadow-[0_15px_30px_rgba(0,122,255,0.25)] transition-all hover:scale-[1.01] hover:bg-[#007AFF]/90 active:scale-[0.99]"
             >
               立即登录
-              <ArrowRight className="ml-2 h-4 w-4" />
+              <ArrowRight className="ml-2 h-5 w-5 stroke-[2.5]" />
             </Button>
 
             <Link href="/" className="w-full">
               <Button
-                variant="outline"
+                variant="ghost"
                 size="lg"
-                className="border-border/50 bg-background/50 hover:bg-secondary/80 h-12 w-full rounded-full backdrop-blur-sm transition-all hover:scale-105"
+                className="h-14 w-full rounded-2xl text-[17px] font-semibold tracking-tight text-[#007AFF] transition-all hover:bg-[#007AFF]/5 active:scale-[0.99]"
               >
                 返回首页
               </Button>

@@ -17,9 +17,15 @@ export interface NotificationCardProps {
   notification: NotificationAPI.NotificationVO
   onMarkRead: (notification: NotificationAPI.NotificationVO) => void
   onDelete: (id: number, e: React.MouseEvent) => void
+  onView?: (notification: NotificationAPI.NotificationVO) => void
 }
 
-export function NotificationCard({ notification, onMarkRead, onDelete }: NotificationCardProps) {
+export function NotificationCard({
+  notification,
+  onMarkRead,
+  onDelete,
+  onView,
+}: NotificationCardProps) {
   // Determine icon and color based on type
   const { icon, colorClass, gradientClass } = React.useMemo(() => {
     const type = notification.type || 'default'
@@ -82,11 +88,15 @@ export function NotificationCard({ notification, onMarkRead, onDelete }: Notific
       <Card
         role="button"
         tabIndex={0}
-        onClick={() => onMarkRead(notification)}
+        onClick={() => {
+          onMarkRead(notification)
+          onView?.(notification)
+        }}
         onKeyDown={e => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault()
             onMarkRead(notification)
+            onView?.(notification)
           }
         }}
         className={cn(
@@ -144,8 +154,8 @@ export function NotificationCard({ notification, onMarkRead, onDelete }: Notific
           </p>
         </div>
 
-        {/* Hover Actions (Delete) */}
-        <div className="absolute right-2 bottom-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+        {/* Hover Actions */}
+        <div className="absolute right-2 bottom-2 flex items-center gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
           <Button
             variant="ghost"
             size="icon"

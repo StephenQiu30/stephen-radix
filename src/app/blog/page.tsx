@@ -1,42 +1,22 @@
 'use client'
 
 import * as React from 'react'
-import { motion } from 'framer-motion'
 import { PostCard } from '@/components/blog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { LoadingSkeleton } from '@/components/common/loading-skeleton'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { listPostVoByPage } from '@/api/post/postController'
 import { searchPostByPage } from '@/api/search/searchController'
+import { getUserVoByIds } from '@/api/user/userController'
 import { BookOpen, FileWarning, Loader2, Plus, Search } from 'lucide-react'
 import Link from 'next/link'
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-}
-
-const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: { duration: 0.6 },
-  },
-}
 
 function BlogList() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const currentSearchText = searchParams.get('q') || ''
   const [currentPage, setCurrentPage] = React.useState(1)
-  const [activeTab, setActiveTab] = React.useState<'latest' | 'popular'>('latest')
   const pageSize = 12
 
   const [posts, setPosts] = React.useState<PostAPI.PostVO[]>([])
@@ -59,7 +39,7 @@ function BlogList() {
         current: currentPage,
         pageSize,
         searchText: currentSearchText || undefined,
-        sortField: activeTab === 'latest' ? 'create_time' : 'thumbNum',
+        sortField: 'createTime',
         sortOrder: 'descend',
       })
 
@@ -67,7 +47,28 @@ function BlogList() {
         let records = (res.data.records || []) as PostAPI.PostVO[]
         const totalCount = Number(res.data.total) || 0
 
-        // Handle possible backend mapping issue (user -> userVO)
+        // 1. Collect all unique userIDs that need hydration
+        const userIdsToFetch = Array.from(
+          new Set(records.map(r => r.userId).filter(id => !!id))
+        ) as number[]
+
+        // 2. Hydrate user info if we have IDs
+        if (userIdsToFetch.length > 0) {
+          try {
+            const userRes = await getUserVoByIds({ ids: userIdsToFetch })
+            if (userRes && userRes.code === 0 && userRes.data) {
+              const userMap = new Map(userRes.data.map(u => [u.id, u]))
+              records = records.map(record => ({
+                ...record,
+                userVO: record.userVO || userMap.get(record.userId),
+              }))
+            }
+          } catch (userErr) {
+            console.error('Hydration failed:', userErr)
+          }
+        }
+
+        // Just in case some are still missing (e.g. user deleted or fetch failed)
         records = records.map(record => ({
           ...record,
           userVO: record.userVO || (record as any).user,
@@ -92,7 +93,7 @@ function BlogList() {
       setLoading(false)
       setLoadingMore(false)
     }
-  }, [currentPage, currentSearchText, activeTab])
+  }, [currentPage, currentSearchText])
 
   React.useEffect(() => {
     fetchPosts()
@@ -114,72 +115,25 @@ function BlogList() {
 
   return (
     <div className="bg-background text-foreground relative min-h-screen overflow-hidden">
-      {/* Background Gradients - Matches Homepage */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute top-[-20%] left-[20%] h-[60vw] w-[60vw] rounded-full bg-blue-400/10 opacity-50 blur-[120px]" />
-        <div className="absolute top-[-10%] right-[20%] h-[50vw] w-[50vw] rounded-full bg-indigo-400/10 opacity-50 blur-[120px]" />
-      </div>
-
-      {/* Subtle Grid Pattern */}
-      <div className="bg-grid-black/[0.02] dark:bg-grid-white/[0.02] pointer-events-none absolute inset-0" />
-
-      <motion.div
-        className="relative z-10 mx-auto w-full max-w-[1400px] px-6 pt-32 pb-20 md:pt-40 lg:px-8"
-        initial="hidden"
-        animate="visible"
-        variants={containerVariants}
-      >
+      <div className="mx-auto w-full max-w-[1400px] px-6 pt-32 pb-20 md:pt-40 lg:px-8">
         {/* 页面标题区 */}
-        <div className="relative z-10 mb-24 flex flex-col items-center text-center">
-          <motion.div
-            variants={itemVariants}
-            className="mb-6 inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-600 backdrop-blur-md dark:text-blue-400"
-          >
+        <div className="mb-16 flex flex-col items-center text-center">
+          <div className="mb-4 inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-600 dark:text-blue-400">
             BLOG & INSIGHTS
-          </motion.div>
+          </div>
 
-          <motion.h1
-            variants={itemVariants}
-            className="mb-8 max-w-4xl text-5xl font-bold tracking-tight sm:text-7xl md:text-8xl"
-          >
-            <span className="from-foreground to-foreground/70 bg-gradient-to-b bg-clip-text text-transparent">
-              文章与见解
-            </span>
-          </motion.h1>
+          <h1 className="mb-6 max-w-4xl text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl">
+            文章与见解
+          </h1>
 
-          <motion.p
-            variants={itemVariants}
-            className="text-muted-foreground max-w-2xl text-lg leading-relaxed font-normal text-balance md:text-xl"
-          >
+          <p className="text-muted-foreground max-w-2xl text-lg leading-relaxed font-normal text-balance">
             探索来自我们团队和社区的最新更新、深度技术文章和开发教程。
-          </motion.p>
+          </p>
         </div>
 
         {/* 控制栏：搜索与筛选 */}
-        <motion.div variants={itemVariants} className="sticky top-20 z-30 mx-auto mb-12 max-w-4xl">
-          <div className="bg-background/60 border-border/40 hover:border-border/60 flex flex-col gap-3 rounded-3xl border p-2 shadow-lg backdrop-blur-xl transition-all hover:shadow-xl sm:flex-row sm:gap-2 sm:rounded-full">
-            {/* Tab Switcher */}
-            <Tabs
-              value={activeTab}
-              onValueChange={val => setActiveTab(val as 'latest' | 'popular')}
-              className="shrink-0"
-            >
-              <TabsList className="bg-muted/50 h-auto rounded-full p-1">
-                <TabsTrigger
-                  value="latest"
-                  className="data-[state=active]:bg-background data-[state=active]:text-foreground rounded-full px-6 py-2 text-sm font-medium transition-all data-[state=active]:shadow-sm"
-                >
-                  最新发布
-                </TabsTrigger>
-                <TabsTrigger
-                  value="popular"
-                  className="data-[state=active]:bg-background data-[state=active]:text-foreground rounded-full px-6 py-2 text-sm font-medium transition-all data-[state=active]:shadow-sm"
-                >
-                  热门精选
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-
+        <div className="sticky top-20 z-30 mx-auto mb-16 max-w-4xl">
+          <div className="bg-white/60 border-white/40 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.05)] hover:border-white/60 flex flex-col gap-3 rounded-2xl border p-2 backdrop-blur-3xl transition-all sm:flex-row sm:gap-2 sm:rounded-full dark:border-white/10 dark:bg-zinc-900/60">
             <div className="relative flex-1">
               <Search className="text-muted-foreground absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2" />
               <form onSubmit={handleSearch} className="h-full">
@@ -201,14 +155,12 @@ function BlogList() {
               </Button>
             </Link>
           </div>
-        </motion.div>
+        </div>
 
-        {/* 文章列表 - Simplified Animation */}
+        {/* 文章列表 */}
         <div className="min-h-[200px]">
           {loading && currentPage === 1 ? (
-            <div className="flex min-h-[400px] items-center justify-center">
-              <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
-            </div>
+            <LoadingSkeleton type="grid" count={8} />
           ) : error ? (
             <div className="flex min-h-[400px] flex-col items-center justify-center text-center">
               <FileWarning className="text-destructive/50 mb-4 h-12 w-12" />
@@ -226,24 +178,11 @@ function BlogList() {
               </p>
             </div>
           ) : (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-            >
-              {posts.map((post, i) => (
-                <motion.div
-                  key={post.id || i}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: (i % pageSize) * 0.05 }}
-                  layout
-                >
-                  <PostCard post={post} />
-                </motion.div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {posts.map(post => (
+                <PostCard key={post.id} post={post} />
               ))}
-            </motion.div>
+            </div>
           )}
         </div>
 
@@ -255,7 +194,7 @@ function BlogList() {
               size="lg"
               onClick={() => setCurrentPage(p => p + 1)}
               disabled={loadingMore}
-              className="h-12 min-w-[160px] rounded-full px-8 font-medium shadow-sm transition-all hover:scale-105 hover:shadow-md"
+              className="border-white/40 bg-white/40 h-12 min-w-[160px] rounded-full px-8 text-[15px] font-semibold tracking-tight shadow-sm backdrop-blur-md transition-all hover:scale-105 hover:bg-white/60 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
             >
               {loadingMore ? (
                 <>
@@ -270,7 +209,7 @@ function BlogList() {
             <p className="text-muted-foreground text-sm">没有更多文章了</p>
           ) : null}
         </div>
-      </motion.div>
+      </div>
     </div>
   )
 }
