@@ -318,6 +318,8 @@ declare namespace PostAPI {
     reviewStatus?: number
     /** 审核信息 */
     reviewMessage?: string
+    /** AI 总结内容 */
+    aiSummary?: string
   }
 
   type UserVO = {

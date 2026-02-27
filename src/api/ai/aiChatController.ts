@@ -33,3 +33,15 @@ export async function listModels(options?: { [key: string]: any }) {
     ...(options || {}),
   })
 }
+
+/** AI 内容总结 提供文本内容，返回 AI 提炼的摘要 POST /ai/summarize */
+export async function summarize(body: AiAPI.AiChatRequest, options?: { [key: string]: any }) {
+  return request<AiAPI.BaseResponseAiChatResponse>('/ai/summarize', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}

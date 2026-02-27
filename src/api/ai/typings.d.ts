@@ -46,11 +46,21 @@ declare namespace AiAPI {
     modelType?: string
     /** 会话 id */
     sessionId?: string
+    /** 帖子 ID (用于异步同步总结) */
+    postId?: number
+    /** 系统提示词 (用于定义 AI 角色) */
+    systemMessage?: string
   }
 
   type AiChatResponse = {
     /** AI 回答的结果文本 */
     content?: string
+    /** 总消耗 token */
+    totalTokens?: number
+    /** 提示消耗 token */
+    promptTokens?: number
+    /** 生成消耗 token */
+    completionTokens?: number
   }
 
   type AiModelVO = {
