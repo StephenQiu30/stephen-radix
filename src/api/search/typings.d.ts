@@ -83,10 +83,6 @@ declare namespace SearchAPI {
     sortField?: string
     /** 排序顺序（默认升序） */
     sortOrder?: string
-    /** 最小更新时间 */
-    minUpdateTime?: string
-    /** 最大更新时间 */
-    maxUpdateTime?: string
     /** 帖子ID */
     id?: number
     /** 排除的帖子ID */
@@ -120,10 +116,6 @@ declare namespace SearchAPI {
     sortField?: string
     /** 排序顺序（默认升序） */
     sortOrder?: string
-    /** 最小更新时间 */
-    minUpdateTime?: string
-    /** 最大更新时间 */
-    maxUpdateTime?: string
     /** 搜索词 */
     searchText?: string
     /** 分类 */
@@ -164,10 +156,6 @@ declare namespace SearchAPI {
     sortField?: string
     /** 排序方式 */
     sortOrder?: string
-    /** 最小更新时间 */
-    minUpdateTime?: string
-    /** 最大更新时间 */
-    maxUpdateTime?: string
     /** 用户ID */
     id?: number
     /** 排除的用户ID */

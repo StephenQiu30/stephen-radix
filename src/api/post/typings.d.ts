@@ -145,10 +145,6 @@ declare namespace PostAPI {
     sortField?: string
     /** 排序顺序（默认升序） */
     sortOrder?: string
-    /** 最小更新时间 */
-    minUpdateTime?: string
-    /** 最大更新时间 */
-    maxUpdateTime?: string
     /** 评论ID */
     id?: number
     /** 帖子ID */
@@ -210,10 +206,6 @@ declare namespace PostAPI {
     sortField?: string
     /** 排序顺序（默认升序） */
     sortOrder?: string
-    /** 最小更新时间 */
-    minUpdateTime?: string
-    /** 最大更新时间 */
-    maxUpdateTime?: string
     /** 用户ID */
     userId?: number
     postQueryRequest?: PostQueryRequest
@@ -233,10 +225,6 @@ declare namespace PostAPI {
     sortField?: string
     /** 排序顺序（默认升序） */
     sortOrder?: string
-    /** 最小更新时间 */
-    minUpdateTime?: string
-    /** 最大更新时间 */
-    maxUpdateTime?: string
     /** 帖子ID */
     id?: number
     /** 排除的帖子ID */

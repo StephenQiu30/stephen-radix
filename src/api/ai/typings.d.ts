@@ -8,10 +8,6 @@ declare namespace AiAPI {
     sortField?: string
     /** 排序顺序（默认升序） */
     sortOrder?: string
-    /** 最小更新时间 */
-    minUpdateTime?: string
-    /** 最大更新时间 */
-    maxUpdateTime?: string
     /** 会话 id */
     sessionId?: string
     /** 模型类型 */

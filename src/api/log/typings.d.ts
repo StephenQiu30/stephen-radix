@@ -35,10 +35,6 @@ declare namespace LogAPI {
     sortField?: string
     /** 排序顺序（默认升序） */
     sortOrder?: string
-    /** 最小更新时间 */
-    minUpdateTime?: string
-    /** 最大更新时间 */
-    maxUpdateTime?: string
     /** 主键 */
     id?: number
     /** 链路追踪ID */
@@ -193,10 +189,6 @@ declare namespace LogAPI {
     sortField?: string
     /** 排序顺序（默认升序） */
     sortOrder?: string
-    /** 最小更新时间 */
-    minUpdateTime?: string
-    /** 最大更新时间 */
-    maxUpdateTime?: string
     /** 主键 */
     id?: number
     /** 消息ID */
@@ -286,10 +278,6 @@ declare namespace LogAPI {
     sortField?: string
     /** 排序顺序（默认升序） */
     sortOrder?: string
-    /** 最小更新时间 */
-    minUpdateTime?: string
-    /** 最大更新时间 */
-    maxUpdateTime?: string
     /** 主键 */
     id?: number
     /** 用户ID */
@@ -375,10 +363,6 @@ declare namespace LogAPI {
     sortField?: string
     /** 排序顺序（默认升序） */
     sortOrder?: string
-    /** 最小更新时间 */
-    minUpdateTime?: string
-    /** 最大更新时间 */
-    maxUpdateTime?: string
     /** 主键 */
     id?: number
     /** 操作人ID */
@@ -527,10 +511,6 @@ declare namespace LogAPI {
     sortField?: string
     /** 排序顺序（默认升序） */
     sortOrder?: string
-    /** 最小更新时间 */
-    minUpdateTime?: string
-    /** 最大更新时间 */
-    maxUpdateTime?: string
     /** 主键 */
     id?: number
     /** 用户ID */

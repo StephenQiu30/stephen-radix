@@ -2,12 +2,12 @@
 /* eslint-disable */
 import request from '@/lib/request'
 
-/** 删除邮箱验证码 删除指定邮箱的验证码，通常用于重置或安全清理 POST /mail/email/code/delete */
-export async function deleteEmailCode(
+/** 发送邮箱验证码 生成验证码并通过邮件发送给用户，包含防刷频率限制 POST /mail/email/code/add */
+export async function sendEmailCode(
   body: MailAPI.EmailCodeRequest,
   options?: { [key: string]: any }
 ) {
-  return request<MailAPI.BaseResponseBoolean>('/mail/email/code/delete', {
+  return request<MailAPI.BaseResponseEmailCodeVO>('/mail/email/code/add', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -17,12 +17,12 @@ export async function deleteEmailCode(
   })
 }
 
-/** 发送邮箱验证码 生成验证码并通过邮件发送给用户，包含防刷频率限制 POST /mail/email/code/send */
-export async function sendEmailCode(
+/** 删除邮箱验证码 删除指定邮箱的验证码，通常用于重置或安全清理 POST /mail/email/code/delete */
+export async function deleteEmailCode(
   body: MailAPI.EmailCodeRequest,
   options?: { [key: string]: any }
 ) {
-  return request<MailAPI.BaseResponseEmailCodeVO>('/mail/email/code/send', {
+  return request<MailAPI.BaseResponseBoolean>('/mail/email/code/delete', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
