@@ -6,20 +6,22 @@ import request from '@/lib/request'
 export async function uploadFile(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: FileAPI.uploadFileParams,
-  body: {},
+  body: File | any,
   options?: { [key: string]: any }
 ) {
+  const formData = new FormData()
+  if (body) {
+    formData.append('file', body)
+  }
+
   return request<FileAPI.BaseResponseFileUploadVO>('/file/upload', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     params: {
       ...params,
       fileUploadRequest: undefined,
       ...params['fileUploadRequest'],
     },
-    data: body,
+    data: formData,
     ...(options || {}),
   })
 }

@@ -46,9 +46,9 @@ export function ImageUploader({
 
     setLoading(true)
     try {
-      const res = await uploadFile({ biz }, file)
-      if (res.code === 0 && res.data) {
-        onChange?.(res.data)
+      const res = await uploadFile({ fileUploadRequest: { biz } }, file)
+      if (res.code === 0 && res.data?.url) {
+        onChange?.(res.data.url)
         toast.success('图片上传成功')
       } else {
         toast.error(res.message || '上传失败')

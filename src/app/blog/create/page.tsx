@@ -39,9 +39,9 @@ export default function CreatePostPage() {
 
     const toastId = toast.loading('正在上传封面...')
     try {
-      const res = await uploadFile({ biz: FileUploadBizEnum.POST_COVER }, file)
-      if (res.code === 0 && res.data) {
-        setCover(res.data)
+      const res = await uploadFile({ fileUploadRequest: { biz: FileUploadBizEnum.POST_COVER } }, file)
+      if (res.code === 0 && res.data?.url) {
+        setCover(res.data.url)
         toast.success('封面上传成功', { id: toastId })
       } else {
         toast.error(res.message || '上传失败', { id: toastId })

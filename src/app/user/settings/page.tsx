@@ -113,12 +113,12 @@ export default function SettingsPage() {
 
     setUploading(true)
     try {
-      const res = (await uploadFile(
-        { biz: 'user_avatar' },
+      const res = await uploadFile(
+        { fileUploadRequest: { biz: 'user_avatar' } },
         file
-      )) as unknown as FileAPI.BaseResponseString
-      if (res.code === 0 && res.data) {
-        setFormData(prev => ({ ...prev, userAvatar: res.data! }))
+      )
+      if (res.code === 0 && res.data?.url) {
+        setFormData(prev => ({ ...prev, userAvatar: res.data!.url! }))
         setChanges(prev => new Set(prev).add('userAvatar'))
         setMessage({ type: 'success', text: '头像上传成功，保存后生效' })
       } else {
@@ -384,11 +384,10 @@ export default function SettingsPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className={`mt-6 rounded-2xl border p-4 text-sm font-medium ${
-                    message.type === 'success'
-                      ? 'border-green-500/20 bg-green-500/10 text-green-600'
-                      : 'border-red-500/20 bg-red-500/10 text-red-600'
-                  }`}
+                  className={`mt-6 rounded-2xl border p-4 text-sm font-medium ${message.type === 'success'
+                    ? 'border-green-500/20 bg-green-500/10 text-green-600'
+                    : 'border-red-500/20 bg-red-500/10 text-red-600'
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     {message.type === 'success' ? (

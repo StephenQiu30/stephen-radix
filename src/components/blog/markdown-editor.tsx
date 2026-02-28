@@ -69,14 +69,14 @@ export function MarkdownEditor({
   const handleImageUpload = async (file: File) => {
     const toastId = toast.loading('正在上传图片...')
     try {
-      const res = (await uploadFile(
+      const res = await uploadFile(
         {
-          biz: FileUploadBizEnum.POST_IMAGE_COVER,
+          fileUploadRequest: { biz: FileUploadBizEnum.POST_IMAGE_COVER },
         },
         file
-      )) as unknown as FileAPI.BaseResponseString
-      if (res.code === 0 && res.data) {
-        insertText(`![图片](${res.data})`)
+      )
+      if (res.code === 0 && res.data?.url) {
+        insertText(`![图片](${res.data.url})`)
         toast.success('图片上传成功', { id: toastId })
       } else {
         toast.error('图片上传失败: ' + res.message, { id: toastId })
@@ -127,7 +127,7 @@ export function MarkdownEditor({
       className={cn(
         'border-border/40 bg-card/30 flex flex-1 flex-col overflow-hidden rounded-xl border shadow-sm transition-all duration-300',
         isFullscreen &&
-          'bg-background fixed inset-0 z-50 h-screen w-screen rounded-none border-none',
+        'bg-background fixed inset-0 z-50 h-screen w-screen rounded-none border-none',
         className
       )}
     >
