@@ -71,7 +71,6 @@ declare namespace SearchAPI {
     userId?: number
     reviewStatus?: number
     reviewMessage?: string
-    aiSummary?: string
     userVO?: UserVO
   }
 
@@ -139,7 +138,6 @@ declare namespace SearchAPI {
     createTime?: string
     updateTime?: string
     isDelete?: number
-    userAccount?: string
     userName?: string
     userAvatar?: string
     userProfile?: string
@@ -192,6 +190,10 @@ declare namespace SearchAPI {
     userEmail?: string
     /** 用户电话 */
     userPhone?: string
+    /** GitHub 登录账号 */
+    githubLogin?: string
+    /** GitHub 主页 */
+    githubUrl?: string
     /** 创建时间 */
     createTime?: string
     /** 更新时间 */
