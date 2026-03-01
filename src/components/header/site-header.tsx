@@ -15,7 +15,7 @@ export function SiteHeader() {
   const [authModalOpen, setAuthModalOpen] = useState(false)
 
   return (
-    <header className="bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
+    <header className="bg-background/70 supports-backdrop-filter:bg-background/50 sticky top-0 z-50 w-full border-b border-border/40 backdrop-blur-xl transition-all duration-300">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-4">
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>

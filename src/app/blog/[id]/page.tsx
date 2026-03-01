@@ -143,15 +143,11 @@ export default function PostDetailPage() {
 
   return (
     <div className="bg-background relative min-h-screen pb-32">
-      {/* Background Gradients - Matches Homepage */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute top-[-10%] left-[10%] h-[50vw] w-[50vw] rounded-full bg-blue-400/5 opacity-40 blur-[100px]" />
-        <div className="absolute top-[10%] right-[10%] h-[40vw] w-[40vw] rounded-full bg-indigo-400/5 opacity-40 blur-[100px]" />
-      </div>
+      {/* Background Gradients - Removed for a clean, plain typography-focused aesthetic */}
 
-      {/* Reading Progress Bar */}
+      {/* Reading Progress Bar (Subtle/Thinner) */}
       <motion.div
-        className="bg-primary fixed top-0 right-0 left-0 z-50 h-1 origin-left"
+        className="bg-primary/50 fixed top-0 right-0 left-0 z-50 h-[2px] origin-left"
         style={{ scaleX }}
       />
 
@@ -159,73 +155,73 @@ export default function PostDetailPage() {
       <div className="relative z-10 flex h-16 items-center px-6">
         <Link
           href="/blog"
-          className="text-muted-foreground hover:text-foreground transition-colors"
+          className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 text-sm font-medium"
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowLeft className="h-4 w-4" />
+          返回博客
         </Link>
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_250px] xl:gap-24">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-4">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_300px] xl:gap-24">
           <article className="mx-auto w-full max-w-3xl">
             <PostHeader post={post} />
 
             <MarkdownRender content={post.content || ''} />
 
-            {/* Author Bio Footer */}
-            <div className="border-border/40 mt-16 border-t pt-10">
-              <div className="flex flex-col gap-8">
-                {/* User Profile Card */}
-                <div className="bg-secondary/30 flex items-center justify-between gap-6 rounded-[2rem] border border-white/10 p-6 shadow-sm backdrop-blur-xl transition-all hover:shadow-2xl sm:p-8">
-                  <Link href={`/user/${post.userVO?.id}`} className="block flex-1">
-                    <div className="flex items-center gap-6">
-                      <div className="border-background relative h-20 w-20 overflow-hidden rounded-full border-2 shadow-sm">
-                        {post.userVO?.userAvatar ? (
-                          <img
-                            src={post.userVO.userAvatar}
-                            alt={post.userVO.userName}
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <div className="bg-muted text-muted-foreground flex h-full w-full items-center justify-center text-2xl font-bold">
-                            {post.userVO?.userName?.charAt(0) || '?'}
-                          </div>
-                        )}
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-muted-foreground/80 text-sm font-medium tracking-wider uppercase">
-                          作者
-                        </p>
-                        <h3 className="text-foreground group-hover:text-primary text-2xl font-bold transition-colors">
-                          {post.userVO?.userName || '匿名用户'}
-                        </h3>
-                        <p className="text-muted-foreground pt-1 text-sm">
-                          感谢阅读！希望这篇文章对你有所帮助。
-                        </p>
-                      </div>
+            {/* Author Bio Footer (Clean & Elegant) */}
+            <div className="mx-auto max-w-2xl mt-24">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-6 rounded-3xl border border-border/30 bg-muted/30 p-8 py-6 backdrop-blur-xl">
+                <div className="flex items-center gap-5">
+                  <Link href={`/user/${post.userVO?.id}`} className="shrink-0">
+                    <div className="bg-background relative h-16 w-16 overflow-hidden rounded-full shadow-sm ring-1 ring-border/50">
+                      {post.userVO?.userAvatar ? (
+                        <img
+                          src={post.userVO.userAvatar}
+                          alt={post.userVO.userName}
+                          className="h-full w-full object-cover transition-transform hover:scale-105"
+                        />
+                      ) : (
+                        <div className="text-muted-foreground flex h-full w-full items-center justify-center text-xl font-medium">
+                          {post.userVO?.userName?.charAt(0) || '?'}
+                        </div>
+                      )}
                     </div>
                   </Link>
-                  <Link href={`/user/${post.userVO?.id}`}>
-                    <Button
-                      variant="outline"
-                      className="hover:bg-primary hover:text-primary-foreground border-primary/20 h-10 rounded-full px-8 font-medium"
-                    >
-                      主页
-                    </Button>
-                  </Link>
+                  <div className="space-y-1">
+                    <p className="text-muted-foreground text-[11px] font-semibold tracking-widest uppercase">
+                      Written By
+                    </p>
+                    <Link href={`/user/${post.userVO?.id}`}>
+                      <h3 className="text-foreground hover:text-primary text-lg font-bold tracking-tight transition-colors">
+                        {post.userVO?.userName || '匿名用户'}
+                      </h3>
+                    </Link>
+                    <p className="text-muted-foreground text-sm max-w-[280px] leading-relaxed line-clamp-1">
+                      {post.userVO?.userProfile || '感谢阅读！希望这篇文章对你有所帮助。'}
+                    </p>
+                  </div>
                 </div>
+                <Link href={`/user/${post.userVO?.id}`} className="self-stretch sm:self-auto flex items-center">
+                  <Button
+                    variant="outline"
+                    className="w-full sm:w-auto rounded-xl px-5 font-medium shadow-none border-border/40 hover:bg-background/80 transition-colors"
+                  >
+                    主页
+                  </Button>
+                </Link>
+              </div>
 
-                {/* Comment Section */}
-                <div id="comments" className="scroll-mt-24">
-                  <CommentSection postId={postId} onTotalChange={setCommentNum} />
-                </div>
+              {/* Comment Section */}
+              <div id="comments" className="scroll-mt-32 mt-16">
+                <CommentSection postId={postId} onTotalChange={setCommentNum} />
               </div>
             </div>
           </article>
 
           {/* Desktop MarkdownToc */}
-          <aside className="hidden lg:block">
-            <div className="sticky top-24">
+          <aside className="hidden lg:block relative">
+            <div className="sticky top-24 pl-4">
               <MarkdownToc content={post.content || ''} />
             </div>
           </aside>

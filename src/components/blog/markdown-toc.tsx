@@ -99,7 +99,7 @@ export function MarkdownToc({ content }: TOCProps) {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="border-muted relative ml-1 border-l-2 pl-0">
+            <div className="relative ml-1 border-l border-border/20 pl-0 transition-colors duration-300">
               {headings.map(heading => (
                 <a
                   key={heading.id}
@@ -123,7 +123,7 @@ export function MarkdownToc({ content }: TOCProps) {
                   {activeId === heading.id && (
                     <motion.div
                       layoutId="active-toc"
-                      className="bg-primary absolute left-[-2px] h-6 w-0.5 shadow-[0_0_8px_rgba(245,158,11,0.5)]"
+                      className="bg-primary absolute left-[-1px] h-6 w-0.5 rounded-full shadow-sm opacity-80"
                       transition={{ duration: 0.2 }}
                     />
                   )}

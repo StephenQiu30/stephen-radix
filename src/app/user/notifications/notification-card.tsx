@@ -104,8 +104,8 @@ export function NotificationCard({
           'rounded-[18px] border',
           // Apple Glassmorphism Style & Read/Unread distinction
           notification.isRead === 0
-            ? 'border-white/50 bg-white/80 shadow-[0_8px_24px_rgba(0,0,0,0.04)] backdrop-blur-xl dark:border-white/10 dark:bg-zinc-800/80'
-            : 'border-transparent bg-white/40 opacity-75 grayscale-[0.3] backdrop-blur-sm hover:bg-white/60 dark:border-white/5 dark:bg-zinc-900/20 dark:hover:bg-zinc-800/40'
+            ? 'border-white/20 bg-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-zinc-800/80 dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]'
+            : 'border-transparent bg-white/40 opacity-80 grayscale-[0.2] backdrop-blur-xl hover:bg-white/60 dark:border-white/5 dark:bg-zinc-900/40 dark:hover:bg-zinc-800/60'
         )}
       >
         {/* Unread Indicator - Blue Dot */}

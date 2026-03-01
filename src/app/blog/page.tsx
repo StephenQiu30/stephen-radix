@@ -6,9 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { LoadingSkeleton } from '@/components/common/loading-skeleton'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { listPostVoByPage } from '@/api/post/postController'
 import { searchPostByPage } from '@/api/search/searchController'
-import { getUserVoByIds } from '@/api/user/userController'
 import { BookOpen, FileWarning, Loader2, Plus, Search } from 'lucide-react'
 import Link from 'next/link'
 
@@ -26,7 +24,7 @@ function BlogList() {
   const [error, setError] = React.useState<string | null>(null)
   const [searchText, setSearchText] = React.useState(currentSearchText)
 
-  // 获取文章列表
+  // 获取文章列表 (From ES directly, userVO is included in the DTO)
   const fetchPosts = React.useCallback(async () => {
     if (currentPage === 1) {
       setLoading(true)
@@ -47,28 +45,7 @@ function BlogList() {
         let records = (res.data.records || []) as PostAPI.PostVO[]
         const totalCount = Number(res.data.total) || 0
 
-        // 1. Collect all unique userIDs that need hydration
-        const userIdsToFetch = Array.from(
-          new Set(records.map(r => r.userId).filter(id => !!id))
-        ) as number[]
-
-        // 2. Hydrate user info if we have IDs
-        if (userIdsToFetch.length > 0) {
-          try {
-            const userRes = await getUserVoByIds({ ids: userIdsToFetch })
-            if (userRes && userRes.code === 0 && userRes.data) {
-              const userMap = new Map(userRes.data.map(u => [u.id, u]))
-              records = records.map(record => ({
-                ...record,
-                userVO: record.userVO || userMap.get(record.userId),
-              }))
-            }
-          } catch (userErr) {
-            console.error('Hydration failed:', userErr)
-          }
-        }
-
-        // Just in case some are still missing (e.g. user deleted or fetch failed)
+        // Map ES response to state. The nested userObj from ES is often named 'user' or 'userVO'
         records = records.map(record => ({
           ...record,
           userVO: record.userVO || (record as any).user,
@@ -115,18 +92,24 @@ function BlogList() {
 
   return (
     <div className="bg-background text-foreground relative min-h-screen overflow-hidden">
-      <div className="mx-auto w-full max-w-[1400px] px-6 pt-32 pb-20 md:pt-40 lg:px-8">
+      {/* Background Decorative Gradients - Simplified for an elegant, non-colorful look */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden flex justify-center">
+        <div className="absolute -top-[20%] w-[100%] max-w-[1200px] h-[600px] bg-foreground/5 blur-[120px] rounded-[100%] pointer-events-none" />
+      </div>
+
+      <div className="mx-auto w-full max-w-[1400px] px-6 pt-32 pb-20 md:pt-40 lg:px-8 relative z-10">
         {/* 页面标题区 */}
-        <div className="mb-16 flex flex-col items-center text-center">
-          <div className="mb-4 inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-600 dark:text-blue-400">
+        <div className="mb-20 flex flex-col items-center text-center">
+          <div className="mb-6 inline-flex items-center rounded-full border border-border bg-muted/50 px-4 py-1.5 text-xs font-semibold tracking-widest text-muted-foreground backdrop-blur-sm shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-primary/80 mr-2"></span>
             BLOG & INSIGHTS
           </div>
 
-          <h1 className="mb-6 max-w-4xl text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl">
+          <h1 className="mb-6 max-w-4xl text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl text-foreground">
             文章与见解
           </h1>
 
-          <p className="text-muted-foreground max-w-2xl text-lg leading-relaxed font-normal text-balance">
+          <p className="text-muted-foreground/90 max-w-2xl text-lg leading-relaxed font-normal text-balance">
             探索来自我们团队和社区的最新更新、深度技术文章和开发教程。
           </p>
         </div>

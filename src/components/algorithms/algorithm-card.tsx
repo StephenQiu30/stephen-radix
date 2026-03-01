@@ -24,10 +24,10 @@ export function AlgorithmCard({ algorithm, onVisualize, index = 0 }: AlgorithmCa
       transition={{ duration: 0.4, delay: index * 0.05 }}
       className="group h-full"
     >
-      <Card className="border-border/40 bg-card/50 hover:border-border/80 dark:hover:border-primary/50 dark:hover:shadow-primary/5 flex h-full flex-col overflow-hidden rounded-[2rem] backdrop-blur-xl transition-all hover:shadow-md">
-        <CardHeader className="border-border/40 border-b p-6">
+      <Card className="border-border/20 bg-card/40 hover:bg-card/50 flex h-full flex-col overflow-hidden rounded-[2rem] backdrop-blur-2xl transition-all duration-300">
+        <CardHeader className="border-border/20 border-b p-6">
           <div className="flex items-center gap-4">
-            <div className="bg-primary/10 text-primary ring-primary/20 group-hover:bg-primary group-hover:text-primary-foreground flex h-12 w-12 items-center justify-center rounded-2xl ring-1 transition-all group-hover:scale-110">
+            <div className="bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 flex h-12 w-12 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:scale-[1.02]">
               <Activity className="h-6 w-6" />
             </div>
             <div>
@@ -87,7 +87,7 @@ export function AlgorithmCard({ algorithm, onVisualize, index = 0 }: AlgorithmCa
               <Link href={`/algorithms/${algorithm.id}`}>详细介绍</Link>
             </Button>
             <Button
-              className="group/btn bg-primary text-primary-foreground shadow-primary/20 hover:bg-primary/90 w-full rounded-xl shadow-lg transition-all hover:scale-105"
+              className="group/btn bg-zinc-900 text-zinc-50 hover:bg-zinc-900/90 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-50/90 w-full rounded-xl shadow-none transition-all duration-300 active:scale-95"
               onClick={() => onVisualize(algorithm)}
             >
               演示
