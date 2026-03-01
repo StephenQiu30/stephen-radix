@@ -1,13 +1,14 @@
 'use client'
 
 import * as React from 'react'
+import { motion } from 'framer-motion'
 import { PostCard } from '@/components/blog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { LoadingSkeleton } from '@/components/common/loading-skeleton'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { searchPostByPage } from '@/api/search/searchController'
-import { BookOpen, FileWarning, Loader2, Plus, Search } from 'lucide-react'
+import { BookOpen, FileWarning, Loader2, Plus, Search, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 
 function BlogList() {
@@ -91,48 +92,67 @@ function BlogList() {
   const hasMore = posts.length < total
 
   return (
-    <div className="bg-background text-foreground relative min-h-screen overflow-hidden">
-      {/* Background Decorative Gradients - Simplified for an elegant, non-colorful look */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden flex justify-center">
-        <div className="absolute -top-[20%] w-[100%] max-w-[1200px] h-[600px] bg-foreground/5 blur-[120px] rounded-[100%] pointer-events-none" />
-      </div>
+    <div className="from-background via-background to-primary/2 selection:bg-primary/20 min-h-screen bg-gradient-to-br pb-20 font-sans text-foreground">
+      {/* 极简网格背景 */}
+      <div className="bg-grid-black/[0.02] dark:bg-grid-white/[0.02] absolute inset-0 pointer-events-none z-0" />
 
-      <div className="mx-auto w-full max-w-[1400px] px-6 pt-32 pb-20 md:pt-40 lg:px-8 relative z-10">
+      <div className="mx-auto w-full max-w-7xl px-6 pt-12 md:pt-16 lg:px-8 relative z-10">
+
         {/* 页面标题区 */}
-        <div className="mb-20 flex flex-col items-center text-center">
-          <div className="mb-6 inline-flex items-center rounded-full border border-border bg-muted/50 px-4 py-1.5 text-xs font-semibold tracking-widest text-muted-foreground backdrop-blur-sm shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-primary/80 mr-2"></span>
+        <div className="mx-auto mb-20 max-w-4xl space-y-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center justify-center rounded-full border border-black/5 bg-black/5 px-4 py-1.5 text-sm font-medium backdrop-blur-xl dark:border-white/5 dark:bg-zinc-900/20"
+          >
+            <Sparkles className="mr-2 h-4 w-4 text-primary" />
             BLOG & INSIGHTS
-          </div>
+          </motion.div>
 
-          <h1 className="mb-6 max-w-4xl text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl text-foreground">
-            文章与见解
-          </h1>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-foreground text-6xl font-semibold tracking-tighter md:text-7xl lg:text-8xl dark:text-zinc-200"
+          >
+            文章与 <br />
+            <span className="from-primary to-primary/60 bg-gradient-to-b bg-clip-text text-transparent">
+              深度见解
+            </span>
+          </motion.h1>
 
-          <p className="text-muted-foreground/90 max-w-2xl text-lg leading-relaxed font-normal text-balance">
-            探索来自我们团队和社区的最新更新、深度技术文章和开发教程。
-          </p>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="text-muted-foreground mx-auto max-w-2xl text-xl leading-relaxed font-light md:text-2xl dark:text-zinc-500"
+          >
+            探索来自我们团队和社区的最新更新、<br className="hidden sm:block" />深度技术文章和开发教程。
+          </motion.p>
         </div>
 
         {/* 控制栏：搜索与筛选 */}
-        <div className="sticky top-20 z-30 mx-auto mb-16 max-w-4xl">
-          <div className="bg-white/60 border-white/40 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.05)] hover:border-white/60 flex flex-col gap-3 rounded-2xl border p-2 backdrop-blur-3xl transition-all sm:flex-row sm:gap-2 sm:rounded-full dark:border-white/10 dark:bg-zinc-900/60">
-            <div className="relative flex-1">
-              <Search className="text-muted-foreground absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2" />
-              <form onSubmit={handleSearch} className="h-full">
+        <div className="sticky top-20 z-30 mx-auto mb-16 max-w-2xl transform-gpu">
+          <div className="bg-background/70 border-border/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-within:shadow-[0_8px_30px_rgb(var(--primary),0.08)] focus-within:border-primary/30 flex flex-col gap-3 rounded-3xl border p-2 backdrop-blur-2xl transition-all duration-300 sm:flex-row sm:gap-2 sm:rounded-full">
+            <div className="relative flex flex-1 items-center group/search">
+              <div className="bg-primary/5 text-primary flex h-10 w-10 shrink-0 items-center justify-center rounded-full sm:ml-1">
+                <Search className="h-4 w-4" />
+              </div>
+              <form onSubmit={handleSearch} className="h-full w-full">
                 <Input
                   type="text"
                   placeholder="搜索文章..."
                   value={searchText}
                   onChange={e => setSearchText(e.target.value)}
-                  className="hover:bg-muted/30 focus:bg-muted/50 h-10 w-full rounded-2xl border-none bg-transparent pr-4 pl-10 transition-colors sm:h-full sm:rounded-full"
+                  className="text-foreground placeholder:text-muted-foreground/50 h-10 w-full border-none bg-transparent px-3 text-[15px] font-medium transition-colors focus-visible:ring-0 sm:h-12"
                 />
               </form>
             </div>
 
             {/* Create Button */}
-            <Link href="/blog/create" className="shrink-0">
-              <Button className="bg-primary text-primary-foreground h-10 w-full rounded-2xl px-6 shadow-none transition-opacity hover:opacity-90 sm:h-full sm:w-auto sm:rounded-full">
+            <Link href="/blog/create" className="shrink-0 sm:pr-1 sm:py-1">
+              <Button className="bg-primary text-primary-foreground h-10 w-full rounded-2xl px-6 font-semibold tracking-wide shadow-sm transition-transform hover:scale-105 sm:h-10 sm:w-auto sm:rounded-full">
                 <Plus className="mr-2 h-4 w-4" />
                 写文章
               </Button>

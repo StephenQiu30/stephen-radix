@@ -74,7 +74,7 @@
         background-color: hsl(var(--background));
         color: hsl(var(--foreground));
         font-feature-settings: 'rlig' 1,
-        'calt' 1;
+            'calt' 1;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
@@ -110,5 +110,15 @@
 
     .dark .katex .katex-html {
         color: hsl(var(--foreground)) !important;
+    }
+}
+
+@keyframes shimmer {
+    from {
+        background-position: 200% center;
+    }
+
+    to {
+        background-position: -200% center;
     }
 }

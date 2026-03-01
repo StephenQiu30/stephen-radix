@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Badge } from '@/components/ui/badge'
 import { UserAvatar } from '@/components/header/user-avatar'
-import { ArrowUpRight, Bookmark, Heart, FileText } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, Bookmark, Heart, FileText } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface PostCardProps {
@@ -35,109 +35,98 @@ export function PostCard({ post, className }: PostCardProps) {
     : ''
 
   return (
-    <motion.div initial="initial" whileHover="hover" className={cn('group h-full block relative', className)}>
-      <div className="bg-card hover:bg-card/90 relative flex h-full flex-col overflow-hidden rounded-[32px] border border-border shadow-sm hover:shadow-md transition-all duration-300">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.5 }}
+      whileHover={{ y: -4 }}
+      className={cn('group h-full block relative will-change-transform', className)}
+    >
+      <div className="bg-card/40 border-border/20 flex h-full flex-col overflow-hidden rounded-[2rem] border backdrop-blur-2xl shadow-sm hover:bg-card/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-500">
 
-        {/* 封面图 */}
-        <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted/40 dark:bg-muted/20">
-          {cover ? (
+        {/* 内容区首部 - Meta */}
+        <div className="border-border/10 border-b p-6 pb-5 flex items-start gap-4">
+          <Link
+            href={`/user/${userVO?.id}`}
+            className="shrink-0 transition-transform duration-300 group-hover:scale-105"
+            onClick={e => e.stopPropagation()}
+          >
+            <UserAvatar user={userVO} size="sm" className="h-10 w-10 ring-1 ring-border/50 shadow-sm" />
+          </Link>
+          <div className="space-y-1 pt-0.5">
+            <Link href={`/user/${userVO?.id}`} onClick={e => e.stopPropagation()}>
+              <h4 className="text-foreground hover:text-primary text-[15px] font-bold tracking-tight transition-colors leading-none">
+                {userVO?.userName || '匿名作者'}
+              </h4>
+            </Link>
+            <div className="text-muted-foreground/80 flex items-center gap-2 text-[11px] font-medium tracking-wider uppercase">
+              <span>{formattedDate}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* 封面区 (内嵌在中间, 更像内容图) */}
+        {cover && (
+          <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted/20 border-b border-border/10">
             <img
               src={cover}
               alt={title || ''}
               className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
             />
-          ) : (
-            <div
-              className={cn(
-                'absolute inset-0 flex flex-col items-center justify-center overflow-hidden transition-transform duration-700 ease-out group-hover:scale-105',
-                'bg-muted/50 dark:bg-muted/10'
-              )}
-            >
-              {/* Subtle Grid Pattern */}
-              <div className="bg-grid-black/[0.03] dark:bg-grid-white/[0.03] absolute inset-0 z-0" />
+          </div>
+        )}
 
-              {/* Title Display */}
-              <div className="relative z-10 flex w-full flex-col items-center justify-center p-6 text-center">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-background/60 border border-border/50 shadow-sm backdrop-blur-md">
-                  <FileText className="text-muted-foreground/80 h-6 w-6" />
-                </div>
-                <h3 className="text-foreground/90 line-clamp-3 text-xl leading-snug font-bold tracking-tight md:text-2xl">
-                  {title || '无标题'}
-                </h3>
-              </div>
-            </div>
-          )}
+        {/* 内容区主体 */}
+        <div className="flex flex-1 flex-col p-6 relative z-10 space-y-4">
 
-          {/* Overlay Gradient for readability of tags/overlay interactions */}
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 z-[15]" />
-
-          {/* Tags overlay */}
+          {/* 标签 */}
           {tags && tags.length > 0 && (
-            <div className="pointer-events-none absolute top-4 left-4 flex flex-wrap gap-2 z-20">
-              {tags.slice(0, 2).map((tag, index) => (
+            <div className="flex flex-wrap gap-2">
+              {tags.slice(0, 3).map((tag, index) => (
                 <Badge
                   key={index}
-                  variant="secondary"
-                  className="bg-background/80 text-foreground/90 border border-border shadow-sm backdrop-blur-md"
+                  variant="outline"
+                  className="rounded-full border-primary/20 bg-primary/5 text-primary/80 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider transition-colors group-hover:border-primary/40 group-hover:text-primary"
                 >
                   {tag}
                 </Badge>
               ))}
             </div>
           )}
-        </div>
-
-        {/* 内容区 */}
-        <div className="flex flex-1 flex-col p-5 sm:p-6 bg-card relative z-10 pointer-events-none">
-          {/* 作者和日期 */}
-          <div className="text-muted-foreground/80 mb-4 flex items-center justify-between text-xs font-medium tracking-wider uppercase">
-            {/* Author Link (Z-Index > 0 to sit above overlay, pointer events auto) */}
-            <div className="relative z-30 flex items-center gap-2 pointer-events-auto">
-              <Link
-                href={`/user/${userVO?.id}`}
-                className="group/author flex items-center gap-2 rounded-full py-1 pr-3 hover:bg-secondary/50 transition-colors"
-                onClick={e => e.stopPropagation()}
-              >
-                <UserAvatar user={userVO} size="sm" className="h-6 w-6 border border-border" />
-                <span className="group-hover/author:text-primary transition-colors text-foreground font-semibold">
-                  {userVO?.userName || '匿名'}
-                </span>
-              </Link>
-            </div>
-            <span className="px-1">{formattedDate}</span>
-          </div>
 
           {/* 标题 */}
-          <h3 className="text-foreground group-hover:text-primary mb-3 line-clamp-2 text-xl font-bold tracking-tight transition-colors duration-300">
+          <h3 className="text-foreground group-hover:text-primary line-clamp-2 text-xl leading-snug font-bold tracking-tight transition-colors duration-300">
             {title || '无标题'}
           </h3>
 
           {/* 摘要 */}
-          <p className="text-muted-foreground mb-6 line-clamp-3 text-sm leading-relaxed">
+          <p className="text-muted-foreground line-clamp-3 text-sm leading-relaxed">
             {excerpt}
           </p>
 
-          {/* 底部互动 */}
-          <div className="border-border/60 mt-auto flex items-center justify-between border-t pt-4">
-            <div className="text-muted-foreground/70 flex items-center gap-4">
-              <span className="hover:text-foreground flex items-center gap-1.5 text-xs font-medium transition-colors">
-                <Heart className="h-3.5 w-3.5" />
-                {thumbNum}
-              </span>
-              <span className="hover:text-foreground flex items-center gap-1.5 text-xs font-medium transition-colors">
-                <Bookmark className="h-3.5 w-3.5" />
-                {favourNum}
-              </span>
-            </div>
+        </div>
 
-            <div className="text-primary flex translate-x-2 transform items-center gap-1 text-xs font-semibold opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
-              阅读全文
-              <ArrowUpRight className="h-3.5 w-3.5" />
-            </div>
+        {/* 底部互动 */}
+        <div className="border-border/10 flex items-center justify-between border-t p-5 px-6">
+          <div className="text-muted-foreground/70 flex items-center gap-4">
+            <span className="hover:text-foreground flex items-center gap-1.5 text-xs font-semibold tracking-wide transition-colors">
+              <Heart className="h-4 w-4" />
+              {thumbNum}
+            </span>
+            <span className="hover:text-foreground flex items-center gap-1.5 text-xs font-semibold tracking-wide transition-colors">
+              <Bookmark className="h-4 w-4" />
+              {favourNum}
+            </span>
+          </div>
+
+          <div className="bg-zinc-900/5 text-zinc-900 hover:bg-zinc-900/10 dark:bg-zinc-50/5 dark:text-zinc-50 dark:hover:bg-zinc-50/10 flex items-center px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 active:scale-95 group/btn">
+            阅读
+            <ArrowRight className="ml-1.5 h-3.5 w-3.5 transition-transform group-hover/btn:translate-x-0.5" />
           </div>
         </div>
 
-        {/* Main Card Link (Overlay) - Placed at the end with absolute positioning to cover everything except explicitly raised interactive elements */}
+        {/* Main Card Link (Overlay) */}
         <Link href={`/blog/${id}`} className="absolute inset-0 z-20">
           <span className="sr-only">View Post</span>
         </Link>

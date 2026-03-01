@@ -147,12 +147,25 @@ export default function PostDetailPage() {
 
       {/* Reading Progress Bar (Subtle/Thinner) */}
       <motion.div
-        className="bg-primary/50 fixed top-0 right-0 left-0 z-50 h-[2px] origin-left"
+        className="bg-gradient-to-r from-primary to-indigo-500 fixed top-0 right-0 left-0 z-50 h-[3px] origin-left shadow-[0_0_10px_rgba(var(--primary),0.5)]"
         style={{ scaleX }}
       />
 
-      {/* Navbar Placeholder (Simplified) */}
-      <div className="relative z-10 flex h-16 items-center px-6">
+      {/* Floating Glass Back Button */}
+      <div className="fixed top-6 left-6 z-40 hidden md:block">
+        <Link href="/blog">
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full bg-background/50 backdrop-blur-xl border-border/40 shadow-sm hover:shadow-md transition-all h-10 w-10 text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+        </Link>
+      </div>
+
+      {/* Mobile Navbar Placeholder (Simplified) */}
+      <div className="relative z-10 flex h-[72px] items-center px-6 md:hidden">
         <Link
           href="/blog"
           className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 text-sm font-medium"
@@ -162,7 +175,7 @@ export default function PostDetailPage() {
         </Link>
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-4">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4 md:pt-12">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_300px] xl:gap-24">
           <article className="mx-auto w-full max-w-3xl">
             <PostHeader post={post} />
@@ -170,50 +183,54 @@ export default function PostDetailPage() {
             <MarkdownRender content={post.content || ''} />
 
             {/* Author Bio Footer (Clean & Elegant) */}
-            <div className="mx-auto max-w-2xl mt-24">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-6 rounded-3xl border border-border/30 bg-muted/30 p-8 py-6 backdrop-blur-xl">
-                <div className="flex items-center gap-5">
-                  <Link href={`/user/${post.userVO?.id}`} className="shrink-0">
-                    <div className="bg-background relative h-16 w-16 overflow-hidden rounded-full shadow-sm ring-1 ring-border/50">
+            <hr className="my-16 border-border/30" />
+            <div className="mx-auto max-w-3xl">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-6 rounded-[2rem] border border-border/20 bg-muted/10 p-8 sm:p-10 backdrop-blur-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
+                  <Link href={`/user/${post.userVO?.id}`} className="shrink-0 relative group">
+                    <div className="absolute -inset-1 rounded-full bg-primary/20 blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                    <div className="relative bg-background h-20 w-20 overflow-hidden rounded-full shadow-sm ring-2 ring-background">
                       {post.userVO?.userAvatar ? (
                         <img
                           src={post.userVO.userAvatar}
                           alt={post.userVO.userName}
-                          className="h-full w-full object-cover transition-transform hover:scale-105"
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                       ) : (
-                        <div className="text-muted-foreground flex h-full w-full items-center justify-center text-xl font-medium">
+                        <div className="text-muted-foreground flex h-full w-full items-center justify-center text-2xl font-medium bg-secondary/50">
                           {post.userVO?.userName?.charAt(0) || '?'}
                         </div>
                       )}
                     </div>
                   </Link>
-                  <div className="space-y-1">
-                    <p className="text-muted-foreground text-[11px] font-semibold tracking-widest uppercase">
-                      Written By
-                    </p>
-                    <Link href={`/user/${post.userVO?.id}`}>
-                      <h3 className="text-foreground hover:text-primary text-lg font-bold tracking-tight transition-colors">
-                        {post.userVO?.userName || '匿名用户'}
-                      </h3>
-                    </Link>
-                    <p className="text-muted-foreground text-sm max-w-[280px] leading-relaxed line-clamp-1">
-                      {post.userVO?.userProfile || '感谢阅读！希望这篇文章对你有所帮助。'}
+                  <div className="space-y-3 flex-1 pt-1">
+                    <div>
+                      <p className="text-primary/80 text-[10px] uppercase tracking-[0.2em] font-bold mb-1">
+                        Author
+                      </p>
+                      <Link href={`/user/${post.userVO?.id}`}>
+                        <h3 className="text-foreground hover:text-primary text-xl font-bold tracking-tight transition-colors">
+                          {post.userVO?.userName || '匿名用户'}
+                        </h3>
+                      </Link>
+                    </div>
+                    <p className="text-muted-foreground text-sm leading-relaxed max-w-[400px]">
+                      {post.userVO?.userProfile || '感谢阅读！希望这篇文章对你有所帮助。如果不介意的话，点个赞支持一下吧！'}
                     </p>
                   </div>
                 </div>
-                <Link href={`/user/${post.userVO?.id}`} className="self-stretch sm:self-auto flex items-center">
+                <Link href={`/user/${post.userVO?.id}`} className="self-stretch sm:self-auto flex items-center mt-4 sm:mt-0">
                   <Button
-                    variant="outline"
-                    className="w-full sm:w-auto rounded-xl px-5 font-medium shadow-none border-border/40 hover:bg-background/80 transition-colors"
+                    variant="default"
+                    className="w-full sm:w-auto rounded-full px-6 shadow-md hover:shadow-lg transition-all"
                   >
-                    主页
+                    查看主页
                   </Button>
                 </Link>
               </div>
 
               {/* Comment Section */}
-              <div id="comments" className="scroll-mt-32 mt-16">
+              <div id="comments" className="scroll-mt-32 mt-16 pb-16">
                 <CommentSection postId={postId} onTotalChange={setCommentNum} />
               </div>
             </div>

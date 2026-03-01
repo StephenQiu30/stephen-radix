@@ -22,7 +22,7 @@ interface MarkdownRendererProps {
 export function MarkdownRender({ content, className }: MarkdownRendererProps) {
   return (
     <article
-      className={cn('prose prose-neutral dark:prose-invert max-w-none break-words', className)}
+      className={cn('prose prose-lg md:prose-xl prose-neutral dark:prose-invert max-w-none break-words tracking-tight', className)}
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMath]}
@@ -32,7 +32,7 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
           h1: ({ id, children }) => (
             <h1
               id={id}
-              className="text-foreground mt-16 mb-8 scroll-m-20 text-4xl font-bold tracking-tight first:mt-0 lg:text-5xl"
+              className="text-foreground mt-20 mb-8 scroll-m-20 text-4xl leading-[1.2] font-extrabold tracking-tighter lg:text-5xl"
             >
               {children}
             </h1>
@@ -40,7 +40,7 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
           h2: ({ id, children }) => (
             <h2
               id={id}
-              className="text-foreground mt-12 mb-6 scroll-m-20 text-3xl font-semibold tracking-tight first:mt-0"
+              className="text-foreground mt-16 mb-6 scroll-m-20 border-b border-border/40 pb-4 text-3xl font-bold tracking-tight first:mt-0"
             >
               {children}
             </h2>
@@ -64,7 +64,7 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
 
           // 段落
           p: ({ children }) => (
-            <p className="text-foreground/90 text-lg leading-relaxed dark:text-zinc-200 [&:not(:first-child)]:mt-8">
+            <p className="text-foreground/90 text-[1.125rem] md:text-[1.25rem] leading-[1.8] font-medium dark:text-zinc-200 [&:not(:first-child)]:mt-8">
               {children}
             </p>
           ),
@@ -179,8 +179,9 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
 
           // 引用块
           blockquote: ({ children }) => (
-            <blockquote className="border-primary/40 text-muted-foreground/90 my-8 border-l-2 pl-6 text-lg leading-relaxed italic dark:text-zinc-400">
-              {children}
+            <blockquote className="border-primary/50 bg-primary/5 text-muted-foreground my-10 rounded-r-2xl border-l-[4px] p-6 text-xl leading-relaxed italic relative">
+              <span className="absolute top-2 right-4 text-6xl text-primary/10 font-serif leading-none">"</span>
+              <div className="relative z-10">{children}</div>
             </blockquote>
           ),
 

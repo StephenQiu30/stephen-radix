@@ -138,10 +138,6 @@ export default function SettingsPage() {
     setLoading(true)
     setMessage(null)
 
-    // TODO: Verify if update functionality is moved or renamed in new API
-    // import { updateMyUser } from '@/api/user/userController'
-
-    // ... in handleSubmit ...
     try {
       const res = (await updateMyUser({
         ...formData,

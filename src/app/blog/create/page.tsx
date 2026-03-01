@@ -20,6 +20,23 @@ export default function CreatePostPage() {
   const [cover, setCover] = React.useState('')
   const [loading, setLoading] = React.useState(false)
 
+  React.useEffect(() => {
+    // Load draft from local storage on mount
+    const draftStr = localStorage.getItem('blog_draft')
+    if (draftStr) {
+      try {
+        const draft = JSON.parse(draftStr)
+        if (draft.title) setTitle(draft.title)
+        if (draft.content) setContent(draft.content)
+        if (draft.tags) setTags(draft.tags)
+        if (draft.cover) setCover(draft.cover)
+        toast.info('已恢复草稿内容')
+      } catch (err) {
+        console.error('Failed to parse blog draft', err)
+      }
+    }
+  }, [])
+
   const handleSave = () => {
     localStorage.setItem('blog_draft', JSON.stringify({ title, content, tags, cover }))
     toast.success('已保存到草稿箱')
@@ -75,6 +92,7 @@ export default function CreatePostPage() {
 
       if (res.code === 0) {
         toast.success('发布成功！', { id: toastId })
+        localStorage.removeItem('blog_draft')
         router.push('/blog')
       } else {
         toast.error(`发布失败: ${res.message || '未知错误'}`, { id: toastId })
