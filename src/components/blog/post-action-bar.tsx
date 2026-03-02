@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import { Bookmark, Heart, MessageSquare, Share2 } from 'lucide-react'
+import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { QRCodeSVG } from 'qrcode.react'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -43,74 +44,74 @@ export function PostActionBar({
 
   return (
     <div className={cn('fixed bottom-8 left-1/2 z-40 -translate-x-1/2', className)}>
-      <div className="bg-secondary/30 flex items-center gap-2 rounded-full border border-white/20 p-2 shadow-2xl ring-1 ring-black/5 backdrop-blur-2xl dark:border-white/10 dark:ring-white/10">
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn(
-            'rounded-full transition-all duration-300 hover:bg-black/5 dark:hover:bg-white/10',
-            hasThumb && 'bg-red-50 text-red-500 hover:text-red-600 dark:bg-red-950/30'
-          )}
-          onClick={onThumb}
-        >
-          <Heart className={cn('h-5 w-5', hasThumb && 'fill-current')} />
-          <span className="sr-only">Like</span>
-        </Button>
+      <motion.div
+        initial={{ y: 20, opacity: 0, scale: 0.9 }}
+        animate={{ y: 0, opacity: 1, scale: 1 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 30, delay: 0.2 }}
+        className="flex items-center gap-1.5 rounded-full bg-white/70 dark:bg-zinc-900/90 px-2.5 py-2 shadow-2xl backdrop-blur-xl ring-1 ring-black/5 dark:ring-white/10 relative overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent dark:from-white/[0.05] pointer-events-none" />
+        <div className="relative flex items-center gap-0.5 text-foreground/80">
+          <Button
+            variant="ghost"
+            size="sm"
+            className={cn(
+              'h-9 rounded-full px-3.5 transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/5',
+              hasThumb && 'text-red-500 dark:text-red-400 bg-red-500/10 dark:bg-red-500/10 hover:bg-red-500/20 dark:hover:bg-red-500/20'
+            )}
+            onClick={onThumb}
+          >
+            <Heart className={cn('h-[18px] w-[18px] mr-1.5', hasThumb && 'fill-current')} />
+            {thumbNum > 0 && <span className="text-[13px] font-semibold tracking-tight">{thumbNum}</span>}
+          </Button>
 
-        <Separator />
+          <Button
+            variant="ghost"
+            size="sm"
+            className={cn(
+              'h-9 rounded-full px-3.5 transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/5',
+              hasFavour && 'text-amber-500 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-500/10 hover:bg-amber-500/20 dark:hover:bg-amber-500/20'
+            )}
+            onClick={onFavour}
+          >
+            <Bookmark className={cn('h-[18px] w-[18px] mr-1.5', hasFavour && 'fill-current')} />
+            {favourNum > 0 && <span className="text-[13px] font-semibold tracking-tight">{favourNum}</span>}
+          </Button>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn(
-            'rounded-full transition-all duration-300 hover:bg-black/5 dark:hover:bg-white/10',
-            hasFavour && 'bg-yellow-50 text-yellow-500 hover:text-yellow-600 dark:bg-yellow-950/30'
-          )}
-          onClick={onFavour}
-        >
-          <Bookmark className={cn('h-5 w-5', hasFavour && 'fill-current')} />
-          <span className="sr-only">Bookmark</span>
-        </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-9 rounded-full px-3.5 transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/5"
+            onClick={onComment}
+          >
+            <MessageSquare className="h-[18px] w-[18px] mr-1.5" />
+            {commentNum > 0 && <span className="text-[13px] font-semibold tracking-tight">{commentNum}</span>}
+          </Button>
+        </div>
 
-        <Separator />
-
-        <Button
-          variant="ghost"
-          size="icon"
-          className="rounded-full transition-all duration-300 hover:bg-black/5 dark:hover:bg-white/10"
-          onClick={onComment}
-        >
-          <MessageSquare className="h-5 w-5" />
-          <span className="sr-only">Comment</span>
-        </Button>
-
-        <Separator />
+        <div className="relative mx-1.5 h-4 w-[1px] bg-black/10 dark:bg-white/20" />
 
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className="rounded-full transition-all duration-300 hover:bg-black/5 dark:hover:bg-white/10"
+              className="relative h-9 w-9 rounded-full text-foreground/80 hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-200"
             >
-              <Share2 className="h-5 w-5" />
-              <span className="sr-only">Share</span>
+              <Share2 className="h-[18px] w-[18px]" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-4" align="center" side="top" sideOffset={16}>
+          <PopoverContent className="w-auto p-4 rounded-3xl border border-black/5 dark:border-white/10 bg-white/80 dark:bg-zinc-900/95 shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-none backdrop-blur-xl" align="center" side="top" sideOffset={20}>
             <div className="flex flex-col items-center gap-3">
-              <div className="rounded-lg border bg-white p-2 shadow-sm">
-                <QRCodeSVG value={currentUrl} size={128} level="M" className="h-32 w-32" />
+              <div className="rounded-2xl bg-white p-2.5 shadow-sm ring-1 ring-black/5">
+                <QRCodeSVG value={currentUrl} size={140} level="M" />
               </div>
-              <p className="text-muted-foreground text-xs font-medium">Scan to Share</p>
+              <p className="text-foreground/70 text-[11px] font-semibold tracking-wider uppercase">Share</p>
             </div>
           </PopoverContent>
         </Popover>
-      </div>
+      </motion.div>
     </div>
   )
 }
 
-function Separator() {
-  return <div className="mx-1 h-6 w-px bg-black/10 dark:bg-white/10" />
-}

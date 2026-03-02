@@ -33,7 +33,7 @@ export function CommentItem({ comment, postId, onReplySuccess }: CommentItemProp
     <div className="group animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex gap-4">
         {/* Avatar */}
-        <div className="bg-muted border-border/40 mt-1 flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border shadow-sm">
+        <div className="bg-muted/50 mt-1 flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full">
           {comment.userVO?.userAvatar ? (
             <img
               src={comment.userVO.userAvatar}
@@ -71,7 +71,7 @@ export function CommentItem({ comment, postId, onReplySuccess }: CommentItemProp
           <div className="text-muted-foreground flex items-center gap-4 text-xs">
             <button
               onClick={() => setIsReplying(!isReplying)}
-              className="hover:text-primary flex items-center gap-1 transition-colors"
+              className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition-colors font-medium"
             >
               <MessageSquare className="h-3 w-3" />
               回复
@@ -80,7 +80,7 @@ export function CommentItem({ comment, postId, onReplySuccess }: CommentItemProp
             {user && user.id === comment.userId && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="hover:text-primary flex items-center gap-1 transition-colors focus:outline-none">
+                  <button className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition-colors focus:outline-none font-medium">
                     <MoreHorizontal className="h-3 w-3" />
                     更多
                   </button>
@@ -111,7 +111,7 @@ export function CommentItem({ comment, postId, onReplySuccess }: CommentItemProp
 
           {/* Reply Input */}
           {isReplying && (
-            <div className="border-border/40 mt-4 border-l-2 pl-4">
+            <div className="border-border/50 mt-4 border-l pl-4">
               <CommentInput
                 postId={postId}
                 parentId={comment.id}
@@ -130,7 +130,7 @@ export function CommentItem({ comment, postId, onReplySuccess }: CommentItemProp
 
       {/* Nested Replies */}
       {comment.children && comment.children.length > 0 && (
-        <div className="border-border/20 mt-4 ml-5 space-y-6 border-l pl-8">
+        <div className="border-border/50 mt-4 ml-5 space-y-6 border-l pl-6">
           {comment.children.map(reply => (
             <CommentItem
               key={reply.id}

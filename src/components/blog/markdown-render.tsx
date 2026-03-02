@@ -26,13 +26,13 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMath]}
-        rehypePlugins={[rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }], rehypeKatex]}
+        rehypePlugins={[rehypeSlug, rehypeKatex]}
         components={{
           // 自定义标题样式
           h1: ({ id, children }) => (
             <h1
               id={id}
-              className="text-foreground mt-20 mb-8 scroll-m-20 text-4xl leading-[1.2] font-extrabold tracking-tighter lg:text-5xl"
+              className="mt-12 mb-6 scroll-m-24 text-3xl leading-tight font-extrabold tracking-tighter text-foreground md:text-4xl first:mt-0"
             >
               {children}
             </h1>
@@ -40,7 +40,7 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
           h2: ({ id, children }) => (
             <h2
               id={id}
-              className="text-foreground mt-16 mb-6 scroll-m-20 border-b border-border/40 pb-4 text-3xl font-bold tracking-tight first:mt-0"
+              className="mt-12 mb-6 scroll-m-24 text-2xl font-bold tracking-tight text-foreground first:mt-0"
             >
               {children}
             </h2>
@@ -48,7 +48,7 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
           h3: ({ id, children }) => (
             <h3
               id={id}
-              className="text-foreground mt-10 mb-4 scroll-m-20 text-2xl font-semibold tracking-tight"
+              className="mt-8 mb-4 scroll-m-24 text-xl font-semibold tracking-tight text-foreground"
             >
               {children}
             </h3>
@@ -56,42 +56,46 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
           h4: ({ id, children }) => (
             <h4
               id={id}
-              className="text-foreground mt-8 mb-4 scroll-m-20 text-xl font-semibold tracking-tight"
+              className="mt-6 mb-4 scroll-m-24 text-[17px] font-medium tracking-tight text-foreground"
             >
               {children}
             </h4>
           ),
 
+
           // 段落
           p: ({ children }) => (
-            <p className="text-foreground/90 text-[1.125rem] md:text-[1.25rem] leading-[1.8] font-medium dark:text-zinc-200 [&:not(:first-child)]:mt-8">
+            <p className="!text-foreground/90 text-[15px] sm:text-base leading-relaxed [&:not(:first-child)]:mt-6">
               {children}
             </p>
           ),
 
           // 链接
-          a: ({ href, children }) => (
-            <a
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary decoration-primary/30 hover:decoration-primary hover:text-primary/80 font-medium break-all underline underline-offset-4 transition-all"
-            >
-              {children}
-            </a>
-          ),
+          a: ({ href, children }) => {
+            const isRef = href && href.startsWith('#')
+            return (
+              <a
+                href={href}
+                target={isRef ? undefined : "_blank"}
+                rel={isRef ? undefined : "noopener noreferrer"}
+                className="font-medium text-blue-600 dark:text-blue-400 underline underline-offset-[5px] decoration-blue-500/30 hover:decoration-blue-500 transition-all"
+              >
+                {children}
+              </a>
+            )
+          },
 
           // 图片
           img: ({ src, alt }) => (
-            <span className="my-10 block w-full">
+            <span className="my-8 block first:mt-0 last:mb-0">
               <img
-                src={src}
+                src={src || ''}
                 alt={alt || ''}
-                className="border-border/50 bg-muted/20 dark:bg-muted/10 block w-full rounded-2xl border shadow-sm transition-all hover:shadow-md"
+                className="bg-muted max-h-[600px] rounded-lg object-contain w-full"
                 loading="lazy"
               />
               {alt && (
-                <span className="text-muted-foreground/80 mt-4 block text-center text-sm font-medium">
+                <span className="text-muted-foreground mt-3 block text-center text-sm">
                   {alt}
                 </span>
               )}
@@ -100,137 +104,116 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
 
           // 代码块
           pre: ({ children }) => <>{children}</>,
-          code: ({ node, className, children, ...props }: any) => {
+          code: ({ node, inline, className, children, ...props }: any) => {
             const match = /language-(\w+)/.exec(className || '')
-            const isInline = !className
+            const language = match ? match[1] : 'text'
             const [copied, setCopied] = React.useState(false)
 
             const onCopy = () => {
-              navigator.clipboard.writeText(String(children))
+              navigator.clipboard.writeText(String(children).replace(/\n$/, ''))
               setCopied(true)
               setTimeout(() => setCopied(false), 2000)
             }
 
-            if (isInline) {
+            if (!inline && match) {
+              const { ref, ...rest } = props
               return (
-                <code
-                  className="bg-muted/50 text-foreground border-border/50 rounded-md border px-1.5 py-0.5 font-mono text-sm font-medium dark:text-zinc-200"
-                  {...props}
-                >
-                  {children}
-                </code>
+                <div className="group relative my-6 overflow-hidden rounded-xl border border-zinc-800 bg-[#0a0a0a] first:mt-0 last:mb-0">
+                  <div className="flex h-11 items-center justify-between border-b border-zinc-800 bg-[#0a0a0a] px-4">
+                    <span className="text-[13px] font-medium text-zinc-400 font-mono tracking-tight">{language}</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7 rounded-md text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300 transition-colors"
+                      onClick={onCopy}
+                    >
+                      {copied ? (
+                        <Check className="h-3.5 w-3.5 text-emerald-400" />
+                      ) : (
+                        <Copy className="h-3.5 w-3.5" />
+                      )}
+                    </Button>
+                  </div>
+                  <div className="relative overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-zinc-800 [&_code]:!bg-transparent [&_pre]:!bg-transparent [&_code::before]:!content-none [&_code::after]:!content-none">
+                    <SyntaxHighlighter
+                      {...rest}
+                      style={oneDark as any}
+                      language={language}
+                      PreTag="div"
+                      customStyle={{
+                        margin: 0,
+                        padding: '1.25rem 1rem',
+                        background: 'transparent',
+                        fontSize: '13.5px',
+                        lineHeight: '1.5',
+                        fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                      }}
+                    >
+                      {String(children).replace(/\n$/, '')}
+                    </SyntaxHighlighter>
+                  </div>
+                </div>
               )
             }
-
-            const { ref, ...rest } = props
-
             return (
-              <div className="group/code ring-border/10 relative my-10 overflow-hidden rounded-2xl bg-[#1e1e1e] shadow-xl ring-1">
-                {/* 顶部栏 */}
-                <div className="flex items-center justify-between bg-white/[0.05] px-4 py-3 backdrop-blur-md">
-                  <div className="flex items-center gap-2">
-                    <div className="flex gap-1.5">
-                      <div className="h-2.5 w-2.5 rounded-full bg-[#ff5f56]" />
-                      <div className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" />
-                      <div className="h-2.5 w-2.5 rounded-full bg-[#27c93f]" />
-                    </div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6 rounded-md text-white/40 transition-all hover:bg-white/10 hover:text-white"
-                    onClick={onCopy}
-                  >
-                    {copied ? (
-                      <Check className="h-3.5 w-3.5 text-emerald-400" />
-                    ) : (
-                      <Copy className="h-3.5 w-3.5" />
-                    )}
-                  </Button>
-                </div>
-                <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 overflow-x-auto p-1">
-                  <SyntaxHighlighter
-                    language={match ? match[1] : ''}
-                    style={oneDark as any}
-                    PreTag="div"
-                    customStyle={{
-                      margin: 0,
-                      padding: '1.5rem',
-                      fontSize: '14px',
-                      lineHeight: '1.6',
-                      background: 'transparent',
-                      minWidth: '100%',
-                    }}
-                    codeTagProps={{
-                      style: {
-                        fontFamily: 'var(--font-mono, monospace)',
-                        background: 'transparent',
-                        color: 'inherit',
-                      },
-                    }}
-                    {...rest}
-                  >
-                    {String(children).replace(/\n$/, '')}
-                  </SyntaxHighlighter>
-                </div>
-              </div>
+              <code
+                className="rounded-md bg-zinc-100 px-[0.35rem] py-[0.15rem] font-mono text-[13px] font-medium text-zinc-900 border border-zinc-200 dark:border-transparent dark:bg-zinc-800/60 dark:text-zinc-200 [&::before]:!content-none [&::after]:!content-none"
+                {...props}
+              >
+                {children}
+              </code>
             )
           },
 
           // 引用块
           blockquote: ({ children }) => (
-            <blockquote className="border-primary/50 bg-primary/5 text-muted-foreground my-10 rounded-r-2xl border-l-[4px] p-6 text-xl leading-relaxed italic relative">
-              <span className="absolute top-2 right-4 text-6xl text-primary/10 font-serif leading-none">"</span>
-              <div className="relative z-10">{children}</div>
+            <blockquote className="my-6 border-l-[3px] !border-border pl-5 text-[15px] italic !text-muted-foreground">
+              {children}
             </blockquote>
           ),
 
+
           // 列表
           ul: ({ children }) => (
-            <ul className="text-foreground/90 my-8 ml-6 list-disc dark:text-zinc-200 [&>li]:mt-3">
+            <ul className="my-6 ml-6 list-disc space-y-2 marker:text-muted-foreground">
               {children}
             </ul>
           ),
           ol: ({ children }) => (
-            <ol className="text-foreground/90 my-8 ml-6 list-decimal dark:text-zinc-200 [&>li]:mt-3">
+            <ol className="my-6 ml-6 list-decimal space-y-2 marker:text-muted-foreground">
               {children}
             </ol>
           ),
-          li: ({ children }) => (
-            <li className="text-foreground/90 pl-2 dark:text-zinc-200">{children}</li>
-          ),
+          li: ({ children }) => {
+            return (
+              <li className="!text-foreground/90 text-[15px] sm:text-base leading-relaxed pl-1">
+                {children}
+              </li>
+            )
+          },
 
-          // 强调
           strong: ({ children }) => (
-            <strong className="text-foreground font-bold dark:text-white">{children}</strong>
+            <strong className="font-semibold !text-foreground">{children}</strong>
           ),
 
           // 表格
           table: ({ children }) => (
-            <div className="not-prose border-border my-8 w-full overflow-hidden rounded-lg border shadow-sm dark:border-white/10">
-              <table className="w-full text-left text-sm">{children}</table>
+            <div className="my-8 w-full overflow-y-auto">
+              <table className="w-full min-w-[600px] border-collapse text-sm">
+                {children}
+              </table>
             </div>
           ),
-          thead: ({ children }) => (
-            <thead className="bg-muted/50 text-foreground font-semibold uppercase dark:bg-white/5 dark:text-white">
-              {children}
-            </thead>
-          ),
-          tbody: ({ children }) => (
-            <tbody className="divide-border divide-y dark:divide-white/10">{children}</tbody>
-          ),
-          tr: ({ children }) => (
-            <tr className="hover:bg-muted/50 transition-colors dark:hover:bg-white/5">
-              {children}
-            </tr>
-          ),
+          thead: ({ children }) => <thead className="border-b border-border bg-muted/50">{children}</thead>,
+          tbody: ({ children }) => <tbody className="divide-y divide-border">{children}</tbody>,
+          tr: ({ children }) => <tr className="transition-colors hover:bg-muted/50">{children}</tr>,
           th: ({ children }) => (
-            <th className="text-foreground px-6 py-4 text-left font-medium tracking-wider dark:text-white">
+            <th className="px-4 py-3 text-left font-semibold !text-foreground">
               {children}
             </th>
           ),
           td: ({ children }) => (
-            <td className="text-foreground/90 px-6 py-4 align-top dark:text-zinc-200">
+            <td className="px-4 py-3 align-top !text-foreground/90">
               {children}
             </td>
           ),
@@ -241,6 +224,6 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
       >
         {content}
       </ReactMarkdown>
-    </article>
+    </article >
   )
 }

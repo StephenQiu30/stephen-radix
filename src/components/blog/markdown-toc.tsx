@@ -74,62 +74,57 @@ export function MarkdownToc({ content }: TOCProps) {
   if (headings.length === 0) return null
 
   return (
-    <div className="sticky top-24 max-h-[calc(100vh-120px)] w-full transition-all duration-300">
-      <div className="bg-card/50 hover:bg-card group-hover:border-border mb-4 flex items-center justify-between rounded-xl border border-transparent p-2 transition-all">
-        <div className="text-muted-foreground/80 flex items-center gap-2 text-xs font-bold tracking-wider uppercase">
-          <List className="text-primary h-4 w-4" />
-          <span>文章目录</span>
+    <div className="sticky top-24 max-h-[calc(100vh-120px)] w-full transition-all duration-300 pr-2">
+      <div className="mb-4 flex items-center justify-between px-1">
+        <div className="text-muted-foreground flex items-center gap-2 text-[11px] font-[600] tracking-widest uppercase">
+          <span>目录</span>
         </div>
         <Button
           variant="ghost"
           size="icon"
-          className="h-7 w-7 rounded-lg"
+          className="h-6 w-6 rounded-md hover:bg-muted"
           onClick={() => setIsOpen(!isOpen)}
         >
-          {isOpen ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+          {isOpen ? <EyeOff className="h-3.5 w-3.5 opacity-70" /> : <Eye className="h-3.5 w-3.5 opacity-70" />}
         </Button>
       </div>
 
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.nav
-            initial={{ opacity: 0, height: 0, y: -10 }}
-            animate={{ opacity: 1, height: 'auto', y: 0 }}
-            exit={{ opacity: 0, height: 0, y: -10 }}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="relative ml-1 border-l border-border/20 pl-0 transition-colors duration-300">
-              {headings.map(heading => (
-                <a
-                  key={heading.id}
-                  href={`#${heading.id}`}
-                  onClick={e => {
-                    e.preventDefault()
-                    document.getElementById(heading.id)?.scrollIntoView({
-                      behavior: 'smooth',
-                      block: 'start',
-                    })
-                  }}
-                  className={cn(
-                    'hover:text-primary relative block py-2 text-sm transition-all duration-200',
-                    heading.level === 1 && 'pl-4 font-semibold',
-                    heading.level === 2 && 'pl-4',
-                    heading.level === 3 && 'pl-8',
-                    heading.level === 4 && 'pl-12',
-                    activeId === heading.id ? 'text-primary' : 'text-muted-foreground'
-                  )}
-                >
-                  {activeId === heading.id && (
-                    <motion.div
-                      layoutId="active-toc"
-                      className="bg-primary absolute left-[-1px] h-6 w-0.5 rounded-full shadow-sm opacity-80"
-                      transition={{ duration: 0.2 }}
-                    />
-                  )}
-                  <span className="line-clamp-1">{heading.text}</span>
-                </a>
-              ))}
+            <div className="relative border-l border-border/40 pl-0">
+              {headings.map(heading => {
+                const isActive = activeId === heading.id
+                return (
+                  <a
+                    key={heading.id}
+                    href={`#${heading.id}`}
+                    onClick={e => {
+                      e.preventDefault()
+                      document.getElementById(heading.id)?.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start',
+                      })
+                    }}
+                    className={cn(
+                      'block relative py-1.5 transition-colors -ml-[1px] pr-3 border-l-2',
+                      isActive ? 'border-primary text-foreground font-medium' : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground',
+                      heading.level === 1 && 'pl-4 font-semibold mt-1 tracking-tight',
+                      heading.level === 2 && 'pl-4',
+                      heading.level === 3 && 'pl-7 text-[13px]',
+                      heading.level === 4 && 'pl-10 text-[12px]'
+                    )}
+                  >
+                    <span className="line-clamp-2 leading-snug">{heading.text}</span>
+                  </a>
+                )
+              })}
             </div>
           </motion.nav>
         )}
@@ -137,11 +132,11 @@ export function MarkdownToc({ content }: TOCProps) {
 
       {!isOpen && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="pt-2 text-center"
         >
-          <p className="text-muted-foreground/50 text-[10px] italic">目录已隐藏</p>
+          <p className="text-muted-foreground/50 text-xs italic">已折叠</p>
         </motion.div>
       )}
     </div>

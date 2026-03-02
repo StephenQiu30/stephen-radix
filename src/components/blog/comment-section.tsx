@@ -78,11 +78,9 @@ export function CommentSection({ postId, onTotalChange }: CommentSectionProps) {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-8 space-y-8 duration-700">
-      <div className="mb-6 flex items-center gap-2">
-        <div className="bg-primary/10 rounded-lg p-2">
-          <MessageSquare className="text-primary h-5 w-5" />
-        </div>
-        <h3 className="from-foreground to-foreground/70 bg-gradient-to-r bg-clip-text text-xl font-bold text-transparent">
+      <div className="mb-8 flex items-center gap-2">
+        <MessageSquare className="text-muted-foreground h-5 w-5" />
+        <h3 className="text-xl font-bold tracking-tight text-foreground">
           评论 ({total})
         </h3>
       </div>
@@ -106,11 +104,9 @@ export function CommentSection({ postId, onTotalChange }: CommentSectionProps) {
             />
           ))
         ) : (
-          <div className="text-muted-foreground/50 bg-muted/20 border-border/20 flex flex-col items-center justify-center rounded-3xl border border-dashed py-12 text-center">
-            <div className="bg-secondary/30 mb-3 rounded-full p-4">
-              <MessageSquare className="h-6 w-6 opacity-50" />
-            </div>
-            <p className="text-sm">暂无评论，快来抢沙发吧</p>
+          <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
+            <MessageSquare className="h-6 w-6 opacity-30 mb-3" />
+            <p className="text-sm">暂无评论，成为第一个留言的人吧。</p>
           </div>
         )}
       </div>

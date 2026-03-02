@@ -62,7 +62,7 @@ export function CommentInput({
   return (
     <div className="space-y-4">
       <div className="flex gap-4">
-        <div className="bg-muted border-border/40 flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full border shadow-sm">
+        <div className="bg-muted/50 flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full">
           {user?.userAvatar ? (
             <img src={user.userAvatar} alt={user.userName} className="h-full w-full object-cover" />
           ) : (
@@ -77,7 +77,7 @@ export function CommentInput({
               value={content}
               onChange={e => setContent(e.target.value)}
               placeholder={placeholder}
-              className="bg-background/50 border-border/40 focus:border-primary/50 focus:ring-primary/20 min-h-25 resize-none rounded-2xl p-4 pr-12 text-sm shadow-sm backdrop-blur-sm transition-all"
+              className="bg-muted/40 border-transparent focus:border-border focus:bg-background/50 min-h-24 resize-none rounded-xl p-4 pr-12 text-[15px] shadow-none transition-all placeholder:text-muted-foreground/60"
               autoFocus={autoFocus}
             />
           </div>
@@ -88,7 +88,7 @@ export function CommentInput({
                 size="sm"
                 onClick={onCancel}
                 disabled={submitting}
-                className="text-muted-foreground hover:text-foreground rounded-full px-4"
+                className="text-muted-foreground hover:text-foreground rounded-md px-4"
               >
                 取消
               </Button>
@@ -97,7 +97,7 @@ export function CommentInput({
               size="sm"
               onClick={handleSubmit}
               disabled={!content.trim() || submitting}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6 shadow-sm transition-all"
+              className="bg-foreground text-background hover:bg-foreground/90 rounded-md px-6 shadow-none transition-all font-medium"
             >
               {submitting ? (
                 <>
