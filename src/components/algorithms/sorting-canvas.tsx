@@ -31,7 +31,8 @@ export function SortingCanvas({
   completedColor = 'bg-green-500', // Apple-ish Green
   variant = 'bar',
 }: SortingCanvasProps) {
-  // Common color logic
+  // Common physics for Apple-like spring animations
+  const springConfig = { type: 'spring' as const, stiffness: 280, damping: 22, mass: 0.8 }
 
   return (
     <div className={cn('relative h-full w-full', className)}>
@@ -69,13 +70,15 @@ export function SortingCanvas({
                     )}
                     animate={{
                       backgroundColor:
-                        highlightIndices.includes(idx) || (swapIndices && swapIndices.includes(idx))
-                          ? '#f97316'
-                          : completedIndices.includes(idx)
-                            ? '#22c55e'
-                            : '#3b82f6',
+                        highlightIndices.includes(idx)
+                          ? '#f59e0b' // amber-500
+                          : swapIndices && swapIndices.includes(idx)
+                            ? 'hsl(var(--destructive))'
+                            : completedIndices.includes(idx)
+                              ? '#10b981' // emerald-500
+                              : 'hsl(var(--primary))',
                     }}
-                    transition={{ duration: 0.15 }}
+                    transition={springConfig}
                   />
                 </motion.div>
               )
@@ -104,13 +107,15 @@ export function SortingCanvas({
                     )}
                     animate={{
                       backgroundColor:
-                        highlightIndices.includes(idx) || (swapIndices && swapIndices.includes(idx))
-                          ? '#f97316' // Orange
-                          : completedIndices.includes(idx)
-                            ? '#22c55e' // Green
-                            : '#3b82f6', // Blue
+                        highlightIndices.includes(idx)
+                          ? '#f59e0b' // amber-500
+                          : swapIndices && swapIndices.includes(idx)
+                            ? 'hsl(var(--destructive))'
+                            : completedIndices.includes(idx)
+                              ? '#10b981' // emerald-500
+                              : 'hsl(var(--primary))',
                     }}
-                    transition={{ duration: 0.15 }}
+                    transition={springConfig}
                   />
                 </motion.div>
               )
@@ -124,17 +129,19 @@ export function SortingCanvas({
                   animate={{
                     height: `${value}%`,
                     backgroundColor:
-                      highlightIndices.includes(idx) || (swapIndices && swapIndices.includes(idx))
-                        ? '#f97316' // Orange
-                        : completedIndices.includes(idx)
-                          ? '#22c55e' // Green
-                          : '#3b82f6', // Blue
+                      highlightIndices.includes(idx)
+                        ? '#f59e0b' // amber-500
+                        : swapIndices && swapIndices.includes(idx)
+                          ? 'hsl(var(--destructive))'
+                          : completedIndices.includes(idx)
+                            ? '#10b981' // emerald-500
+                            : 'hsl(var(--primary))',
                   }}
                   className={cn(
                     'w-full rounded-t-sm transition-none',
                     isHighlighted && 'shadow-[0_0_10px_rgba(255,255,255,0.3)] brightness-110'
                   )}
-                  transition={{ type: 'tween', duration: 0.15 }}
+                  transition={springConfig}
                 />
               )
             }
@@ -147,22 +154,24 @@ export function SortingCanvas({
                 animate={{
                   height: `${value}%`,
                   backgroundColor:
-                    highlightIndices.includes(idx) || (swapIndices && swapIndices.includes(idx))
-                      ? '#f97316' // Orange
-                      : completedIndices.includes(idx)
-                        ? '#22c55e' // Green
-                        : variant === 'rainbow'
-                          ? `hsl(${Math.round((value / 100) * 360)}, 85%, 65%)` // Rainbow
-                          : '#3b82f6', // Blue default
+                    highlightIndices.includes(idx)
+                      ? '#f59e0b' // amber-500
+                      : swapIndices && swapIndices.includes(idx)
+                        ? 'hsl(var(--destructive))'
+                        : completedIndices.includes(idx)
+                          ? '#10b981' // emerald-500
+                          : variant === 'rainbow'
+                            ? `hsl(${Math.round((value / 100) * 360)}, 85%, 65%)` // Rainbow
+                            : 'hsl(var(--primary))', // Theme primary
                 }}
                 className={cn(
-                  'group relative flex w-full flex-col items-center justify-end rounded-t-[2px] transition-none sm:rounded-t-md',
+                  'group relative flex w-full flex-col items-center justify-end rounded-t-md transition-none sm:rounded-t-lg',
                   // colorClass, // We handle color in animate for better perf
                   isHighlighted &&
-                    'z-50 scale-105 shadow-[0_4px_12px_rgba(0,0,0,0.1)] ring-2 ring-white/40'
+                  'z-50 scale-[1.03] shadow-[0_4px_16px_rgba(0,0,0,0.15)] ring-2 ring-white/30 brightness-110'
                 )}
                 // style={rainbowStyle} // Handled in animate
-                transition={{ type: 'tween', duration: 0.15 }}
+                transition={springConfig}
               >
                 {data.length <= 40 && (
                   <span

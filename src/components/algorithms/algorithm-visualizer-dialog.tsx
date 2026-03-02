@@ -118,7 +118,7 @@ export function AlgorithmVisualizerDialog({
     stepResolveRef.current = null
   }
 
-  const handleSort = async () => {
+  const handleSort = async (startPaused: boolean = false) => {
     if (!algorithm) return
 
     if (isSorting) {
@@ -127,7 +127,8 @@ export function AlgorithmVisualizerDialog({
     }
 
     setIsSorting(true)
-    setIsPaused(false)
+    setIsPaused(startPaused)
+    isPausedRef.current = startPaused
     setCompletedIndices([])
     const controller = new AbortController()
     abortControllerRef.current = controller
@@ -185,9 +186,9 @@ export function AlgorithmVisualizerDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="hover:shadow-primary/10 bg-secondary/80 flex h-[90vh] w-[95vw] max-w-6xl flex-col gap-0 overflow-hidden border-white/10 p-0 shadow-2xl backdrop-blur-3xl transition-all duration-500 hover:border-white/30 sm:rounded-[32px]">
+      <DialogContent className="bg-background/95 backdrop-blur-xl flex h-[90vh] w-[95vw] max-w-6xl flex-col gap-0 overflow-hidden border-border p-0 shadow-2xl transition-all duration-500 sm:rounded-[24px]">
         {/* MacOS Style Header */}
-        <div className="flex items-start justify-between border-b border-white/10 bg-white/5 px-8 py-6 backdrop-blur-xl">
+        <div className="flex items-start justify-between border-b border-border/60 bg-transparent px-8 py-6">
           <div className="space-y-1.5">
             <DialogTitle className="text-foreground flex items-center gap-3 text-3xl font-semibold tracking-tight">
               {algorithm.name}
@@ -205,15 +206,15 @@ export function AlgorithmVisualizerDialog({
         {/* Main Content Area */}
         <div className="relative flex flex-1 flex-col overflow-hidden md:flex-row">
           {/* Canvas Area */}
-          <div className="bg-secondary/5 relative flex flex-1 flex-col items-center justify-center p-4 sm:p-10">
+          <div className="bg-secondary/20 relative flex flex-1 flex-col items-center justify-center p-4 sm:p-10">
             {/* Step Description - Moved to prevent overlap */}
             <div className="z-50 mb-6 w-full px-4 text-center">
-              <span className="bg-background/60 text-foreground/90 inline-block rounded-full border border-black/5 px-6 py-2.5 text-sm font-medium shadow-lg backdrop-blur-xl transition-all duration-300 dark:border-white/10">
+              <span className="bg-background/80 text-foreground inline-block rounded-full border border-border/50 px-5 py-2 text-sm font-medium shadow-sm backdrop-blur-md transition-all duration-300">
                 {stepDescription || '准备就绪'}
               </span>
             </div>
 
-            <div className="aspect-video h-full max-h-[60vh] w-full rounded-3xl border border-black/5 bg-gradient-to-br from-black/5 to-transparent p-6 shadow-inner ring-1 ring-black/5 backdrop-blur-sm sm:p-8 md:aspect-auto md:max-h-full dark:border-white/5 dark:from-white/5 dark:to-white/0 dark:ring-white/5">
+            <div className="aspect-video h-full max-h-[60vh] w-full rounded-2xl border border-border/50 bg-gradient-to-br from-muted/30 to-muted/10 p-6 shadow-sm ring-1 ring-border/20 sm:p-8 md:aspect-auto md:max-h-full">
               <SortingCanvas
                 data={data}
                 highlightIndices={highlightIndices}
@@ -225,7 +226,7 @@ export function AlgorithmVisualizerDialog({
           </div>
 
           {/* Sidebar Controls */}
-          <div className="z-10 flex w-full flex-col gap-10 overflow-y-auto border-l border-white/10 bg-white/5 p-8 backdrop-blur-xl md:w-80">
+          <div className="z-10 flex w-full flex-col gap-10 overflow-y-auto border-l border-border/60 bg-background/50 p-8 md:w-80">
             <div className="space-y-6">
               <h3 className="text-muted-foreground/80 flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
                 <Settings2 className="h-3.5 w-3.5" /> 控制台
@@ -239,8 +240,8 @@ export function AlgorithmVisualizerDialog({
                       onClick={handlePauseToggle}
                       className={
                         isPaused
-                          ? 'rounded-2xl bg-green-500 shadow-lg shadow-green-500/20 hover:bg-green-600'
-                          : 'rounded-2xl bg-amber-500 shadow-lg shadow-amber-500/20 hover:bg-amber-600'
+                          ? 'rounded-xl bg-green-500 hover:bg-green-600 text-white shadow-sm transition-colors'
+                          : 'rounded-xl bg-orange-500 hover:bg-orange-600 text-white shadow-sm transition-colors'
                       }
                     >
                       {isPaused ? (
@@ -254,45 +255,55 @@ export function AlgorithmVisualizerDialog({
                       )}
                     </Button>
 
-                    {isPaused ? (
-                      <Button
-                        size="lg"
-                        onClick={handleStepForward}
-                        variant="outline"
-                        className="rounded-2xl border-white/10"
-                      >
-                        <StepForward className="mr-2 h-4 w-4" /> 单步
-                      </Button>
-                    ) : (
-                      <Button
-                        size="lg"
-                        variant="destructive"
-                        onClick={handleStop}
-                        className="rounded-2xl shadow-lg shadow-red-500/20"
-                      >
-                        <X className="mr-2 h-4 w-4" /> 停止
-                      </Button>
-                    )}
+                    <Button
+                      size="lg"
+                      onClick={() => {
+                        if (!isPaused) handlePauseToggle()
+                        else handleStepForward()
+                      }}
+                      variant="outline"
+                      className="rounded-xl border-border/60"
+                    >
+                      <StepForward className="mr-2 h-4 w-4" /> 单步
+                    </Button>
+
+                    <Button
+                      size="lg"
+                      variant="destructive"
+                      onClick={handleStop}
+                      className="col-span-2 rounded-xl shadow-sm"
+                    >
+                      <X className="mr-2 h-4 w-4" /> 停止
+                    </Button>
                   </>
                 ) : (
-                  <Button
-                    size="lg"
-                    onClick={handleSort}
-                    className="bg-primary hover:bg-primary/90 shadow-primary/25 col-span-2 h-12 rounded-2xl text-base shadow-lg"
-                  >
-                    <Play className="mr-2 h-5 w-5" /> 开始演示
-                  </Button>
-                )}
+                  <>
+                    <Button
+                      size="lg"
+                      onClick={() => handleSort(false)}
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground col-span-2 h-11 rounded-xl text-base shadow-sm transition-all font-medium"
+                    >
+                      <Play className="mr-2 h-5 w-5" /> 开始演示
+                    </Button>
 
-                {!isSorting && (
-                  <Button
-                    size="lg"
-                    variant="secondary"
-                    onClick={handleReset}
-                    className="bg-secondary/50 hover:bg-secondary/70 col-span-2 h-12 rounded-2xl"
-                  >
-                    <RotateCcw className="mr-2 h-4 w-4" /> 重置数据
-                  </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      onClick={() => handleSort(true)}
+                      className="h-11 rounded-xl border-border/60 shadow-sm bg-background/50 hover:bg-accent"
+                    >
+                      <StepForward className="mr-2 h-4 w-4" /> 单步调试
+                    </Button>
+
+                    <Button
+                      size="lg"
+                      variant="secondary"
+                      onClick={handleReset}
+                      className="h-11 rounded-xl bg-muted/80 hover:bg-muted text-foreground transition-colors shadow-sm"
+                    >
+                      <RotateCcw className="mr-2 h-4 w-4" /> 重置数据
+                    </Button>
+                  </>
                 )}
               </div>
             </div>
@@ -301,7 +312,7 @@ export function AlgorithmVisualizerDialog({
               <div className="space-y-4">
                 <div className="flex items-baseline justify-between text-sm">
                   <span className="text-muted-foreground font-medium">速度</span>
-                  <span className="bg-secondary/50 rounded-md px-2 py-0.5 font-mono text-xs">
+                  <span className="bg-secondary/60 px-2 py-0.5 rounded-md text-xs font-mono text-foreground text-opacity-80">
                     {speed}%
                   </span>
                 </div>
@@ -318,7 +329,7 @@ export function AlgorithmVisualizerDialog({
               <div className="space-y-4">
                 <div className="flex items-baseline justify-between text-sm">
                   <span className="text-muted-foreground font-medium">数量</span>
-                  <span className="bg-secondary/50 rounded-md px-2 py-0.5 font-mono text-xs">
+                  <span className="bg-muted px-2 py-0.5 rounded text-xs font-mono text-foreground text-opacity-80">
                     {size}
                   </span>
                 </div>
@@ -340,7 +351,7 @@ export function AlgorithmVisualizerDialog({
                   value={customDataInput}
                   onChange={handleCustomDataChange}
                   disabled={isSorting}
-                  className="bg-secondary/30 focus:ring-primary/50 rounded-xl border-white/5 focus:ring-1"
+                  className="bg-background/80 border flex h-10 w-full rounded-lg border-input px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
                 />
               </div>
             </div>
@@ -351,26 +362,26 @@ export function AlgorithmVisualizerDialog({
               </h3>
               <div className="space-y-3 text-sm font-light">
                 <div className="flex justify-between py-1">
-                  <span className="text-muted-foreground">最优时间</span>
-                  <span className="rounded bg-green-500/10 px-2 py-0.5 font-mono text-xs text-green-500">
+                  <span className="text-muted-foreground font-medium">最优时间</span>
+                  <span className="font-mono text-xs text-foreground/80 font-medium">
                     {algorithm.bestCase}
                   </span>
                 </div>
                 <div className="flex justify-between py-1">
-                  <span className="text-muted-foreground">平均时间</span>
-                  <span className="rounded bg-blue-500/10 px-2 py-0.5 font-mono text-xs text-blue-500">
+                  <span className="text-muted-foreground font-medium">平均时间</span>
+                  <span className="font-mono text-xs text-foreground/80 font-medium">
                     {algorithm.averageCase}
                   </span>
                 </div>
                 <div className="flex justify-between py-1">
-                  <span className="text-muted-foreground">最坏时间</span>
-                  <span className="rounded bg-red-500/10 px-2 py-0.5 font-mono text-xs text-red-500">
+                  <span className="text-muted-foreground font-medium">最坏时间</span>
+                  <span className="font-mono text-xs text-foreground/80 font-medium">
                     {algorithm.worstCase}
                   </span>
                 </div>
-                <div className="flex justify-between border-t border-dashed border-white/5 py-1 pt-2">
-                  <span className="text-muted-foreground">空间复杂度</span>
-                  <span className="font-mono text-xs">{algorithm.spaceComplexity}</span>
+                <div className="flex justify-between border-t border-dashed border-border py-1 pt-2">
+                  <span className="text-muted-foreground font-medium">空间复杂度</span>
+                  <span className="font-mono text-xs text-foreground/80 font-medium">{algorithm.spaceComplexity}</span>
                 </div>
               </div>
             </div>

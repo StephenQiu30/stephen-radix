@@ -24,11 +24,11 @@ export function AlgorithmCard({ algorithm, onVisualize, index = 0 }: AlgorithmCa
       transition={{ duration: 0.4, delay: index * 0.05 }}
       className="group h-full"
     >
-      <Card className="border-border/20 bg-card/40 hover:bg-card/50 flex h-full flex-col overflow-hidden rounded-[2rem] backdrop-blur-2xl transition-all duration-300">
-        <CardHeader className="border-border/20 border-b p-6">
+      <Card className="border-black/5 dark:border-white/5 bg-background hover:-translate-y-1 hover:shadow-xl dark:bg-[#0a0a0a] flex h-full flex-col overflow-hidden rounded-[24px] shadow-sm transition-all duration-500">
+        <CardHeader className="p-6 pb-2">
           <div className="flex items-center gap-4">
-            <div className="bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 flex h-12 w-12 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:scale-[1.02]">
-              <Activity className="h-6 w-6" />
+            <div className="bg-primary/10 text-primary flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110">
+              <Activity className="h-5 w-5" />
             </div>
             <div>
               <CardTitle className="text-foreground group-hover:text-primary text-xl font-bold tracking-tight transition-colors">
@@ -38,10 +38,10 @@ export function AlgorithmCard({ algorithm, onVisualize, index = 0 }: AlgorithmCa
                 <Badge
                   variant="outline"
                   className={cn(
-                    'rounded-full border-0 px-2 py-0.5 text-[10px] font-semibold',
+                    'rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider border-none',
                     algorithm.stable
-                      ? 'bg-emerald-500/10 text-emerald-500'
-                      : 'bg-amber-500/10 text-amber-500'
+                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                      : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
                   )}
                 >
                   {algorithm.stable ? '稳定' : '不稳定'}
@@ -51,23 +51,22 @@ export function AlgorithmCard({ algorithm, onVisualize, index = 0 }: AlgorithmCa
           </div>
         </CardHeader>
 
-        <CardContent className="flex-1 space-y-6 p-6">
+        <CardContent className="flex-1 space-y-6 p-6 pt-4">
           <p className="text-muted-foreground line-clamp-2 text-sm leading-relaxed">
             {algorithm.description}
           </p>
 
-          <div className="flex items-center gap-4 py-2">
-            <div className="flex-1 space-y-1.5">
-              <div className="text-muted-foreground/60 flex items-center gap-1.5 text-[10px] font-medium tracking-wider uppercase">
+          <div className="grid grid-cols-2 gap-3 py-1">
+            <div className="bg-secondary/40 flex flex-col justify-center rounded-2xl space-y-1 p-3">
+              <div className="text-muted-foreground/70 flex items-center gap-1.5 text-[10px] font-medium tracking-wider uppercase">
                 <Clock className="h-3 w-3" /> 时间复杂度
               </div>
               <div className="text-foreground font-mono text-sm font-bold">
                 {algorithm.averageCase}
               </div>
             </div>
-            <div className="bg-border/40 h-8 w-px" />
-            <div className="flex-1 space-y-1.5 pl-4">
-              <div className="text-muted-foreground/60 flex items-center gap-1.5 text-[10px] font-medium tracking-wider uppercase">
+            <div className="bg-secondary/40 flex flex-col justify-center rounded-2xl space-y-1 p-3">
+              <div className="text-muted-foreground/70 flex items-center gap-1.5 text-[10px] font-medium tracking-wider uppercase">
                 <HardDrive className="h-3 w-3" /> 空间复杂度
               </div>
               <div className="text-foreground font-mono text-sm font-bold">
@@ -80,14 +79,14 @@ export function AlgorithmCard({ algorithm, onVisualize, index = 0 }: AlgorithmCa
         <CardFooter className="p-6 pt-0">
           <div className="grid w-full grid-cols-2 gap-3">
             <Button
-              variant="ghost"
-              className="hover:bg-secondary/80 text-muted-foreground hover:text-foreground w-full rounded-xl"
+              variant="secondary"
+              className="hover:bg-secondary/80 text-foreground w-full rounded-[16px] shadow-sm font-medium h-11"
               asChild
             >
               <Link href={`/algorithms/${algorithm.id}`}>详细介绍</Link>
             </Button>
             <Button
-              className="group/btn bg-zinc-900 text-zinc-50 hover:bg-zinc-900/90 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-50/90 w-full rounded-xl shadow-none transition-all duration-300 active:scale-95"
+              className="group/btn bg-primary text-primary-foreground hover:bg-primary/90 w-full rounded-[16px] shadow-sm transition-all duration-300 active:scale-95 font-medium h-11"
               onClick={() => onVisualize(algorithm)}
             >
               演示
