@@ -15,8 +15,8 @@ import { ArrowLeft, Camera, CheckCircle2, Loader2, Shield, X } from 'lucide-reac
 import Link from 'next/link'
 import { AuthModal } from '@/components/auth/auth-modal'
 import { LoginPromptCard } from '@/components/auth/login-prompt-card'
-import { getLoginUser, updateMyUser } from '@/api/user/userController'
-import { uploadFile } from '@/api/file/fileController'
+import { getLoginUser, editUser } from '@/api/user/userController'
+import { addFile } from '@/api/file/fileController'
 import { setLoginUser } from '@/store/modules/user/userSlice'
 
 const containerVariants = {
@@ -113,7 +113,7 @@ export default function SettingsPage() {
 
     setUploading(true)
     try {
-      const res = await uploadFile(
+      const res = await addFile(
         { fileUploadRequest: { biz: 'user_avatar' } },
         file
       )
@@ -139,7 +139,7 @@ export default function SettingsPage() {
     setMessage(null)
 
     try {
-      const res = (await updateMyUser({
+      const res = (await editUser({
         ...formData,
       } as UserAPI.UserEditRequest)) as unknown as UserAPI.BaseResponseBoolean
 

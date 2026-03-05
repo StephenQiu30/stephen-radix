@@ -12,27 +12,30 @@ interface CommentSectionProps {
 }
 
 export function CommentSection({ postId, onTotalChange }: CommentSectionProps) {
-  const [comments, setComments] = React.useState<PostAPI.PostCommentVO[]>([])
+  const [flatComments, setFlatComments] = React.useState<PostAPI.PostCommentVO[]>([])
   const [loading, setLoading] = React.useState(true)
   const [total, setTotal] = React.useState(0)
   const [page, setPage] = React.useState(1)
 
-  // Helper to build comment tree
-  const buildCommentTree = (comments: PostAPI.PostCommentVO[]) => {
+  // Memoized comment tree
+  const treeComments = React.useMemo(() => {
+    if (!flatComments.length) return []
+
     const commentMap = new Map<any, PostAPI.PostCommentVO>()
     const roots: PostAPI.PostCommentVO[] = []
 
     // First pass: create a map of all comments
-    comments.forEach(comment => {
-      // Ensure children array exists
-      const commentWithChildren = { ...comment, children: [] }
-      commentMap.set(comment.id, commentWithChildren)
+    flatComments.forEach(comment => {
+      if (comment.id) {
+        commentMap.set(String(comment.id), { ...comment, children: [] })
+      }
     })
 
     // Second pass: link children to parents
     commentMap.forEach(comment => {
-      if (comment.parentId && Number(comment.parentId) !== 0 && commentMap.has(comment.parentId)) {
-        const parent = commentMap.get(comment.parentId)
+      const parentIdStr = comment.parentId ? String(comment.parentId) : null
+      if (parentIdStr && parentIdStr !== '0' && commentMap.has(parentIdStr)) {
+        const parent = commentMap.get(parentIdStr)
         if (parent) {
           if (!parent.children) parent.children = []
           parent.children.push(comment)
@@ -46,20 +49,18 @@ export function CommentSection({ postId, onTotalChange }: CommentSectionProps) {
     return roots.sort((a, b) => {
       return new Date(b.createTime || '').getTime() - new Date(a.createTime || '').getTime()
     })
-  }
+  }, [flatComments])
 
   const fetchComments = React.useCallback(async () => {
     try {
       // Sort by createTime descending to show newest first
-      const res = (await listPostCommentVoByPage({
+      const res = await listPostCommentVoByPage({
         postId: postId as any,
         current: 1,
         pageSize: 20,
-      })) as unknown as PostAPI.BaseResponsePagePostCommentVO
+      })
       if (res.code === 0 && res.data) {
-        const flatComments = res.data.records || []
-        const treeComments = buildCommentTree(flatComments)
-        setComments(treeComments)
+        setFlatComments(res.data.records || [])
         setTotal(res.data.total || 0)
         onTotalChange?.(res.data.total || 0)
       }
@@ -68,7 +69,7 @@ export function CommentSection({ postId, onTotalChange }: CommentSectionProps) {
     } finally {
       setLoading(false)
     }
-  }, [postId])
+  }, [postId, onTotalChange])
 
   React.useEffect(() => {
     if (postId) {
@@ -94,8 +95,8 @@ export function CommentSection({ postId, onTotalChange }: CommentSectionProps) {
           <div className="flex justify-center py-12">
             <Loader2 className="text-muted-foreground/50 h-8 w-8 animate-spin" />
           </div>
-        ) : comments.length > 0 ? (
-          comments.map(comment => (
+        ) : treeComments.length > 0 ? (
+          treeComments.map(comment => (
             <CommentItem
               key={comment.id}
               comment={comment}

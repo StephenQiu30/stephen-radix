@@ -1,5 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios'
 import { toast } from 'sonner'
+import JSONBig from 'json-bigint'
+
+const JSONBigStr = JSONBig({ storeAsString: true })
 
 /**
  * 创建 Axios 实例
@@ -8,6 +11,15 @@ const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   timeout: 10000,
   withCredentials: true,
+  transformResponse: [
+    data => {
+      try {
+        return JSONBigStr.parse(data)
+      } catch (err) {
+        return data
+      }
+    },
+  ],
 })
 
 /**

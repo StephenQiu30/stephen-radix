@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { clearLoginUser, setLoginUser } from '@/store/modules/user/userSlice'
 import { getLoginUser } from '@/api/user/userController'
 import { FullScreenLoader } from '@/components/common/full-screen-loader'
+import { WebSocketMessageTypeEnum } from '@/enums/WebSocketMessageTypeEnum'
 
 function AuthLoader({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch()
@@ -19,10 +20,10 @@ function AuthLoader({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const res = (await getLoginUser({
+        const res = await getLoginUser({
           validateStatus: (status: number) =>
             (status >= 200 && status < 300) || status === 401 || status === 403,
-        })) as unknown as UserAPI.BaseResponseUserVO
+        })
         if (res.code === 0 && res.data) {
           dispatch(setLoginUser(res.data))
         } else {
@@ -68,7 +69,7 @@ function AuthLoader({ children }: { children: React.ReactNode }) {
         if (token && user.id) {
           ws.send(
             JSON.stringify({
-              type: 0, // AUTH
+              type: WebSocketMessageTypeEnum.AUTH,
               userId: user.id,
               token: token,
             })
@@ -79,7 +80,7 @@ function AuthLoader({ children }: { children: React.ReactNode }) {
         if (heartbeatTimerRef.current) clearInterval(heartbeatTimerRef.current)
         heartbeatTimerRef.current = setInterval(() => {
           if (ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify({ type: 1 })) // HEARTBEAT
+            ws.send(JSON.stringify({ type: WebSocketMessageTypeEnum.HEARTBEAT }))
           }
         }, 30000)
       }
@@ -87,15 +88,25 @@ function AuthLoader({ children }: { children: React.ReactNode }) {
       ws.onmessage = event => {
         try {
           const message = JSON.parse(event.data)
-          // Handle notification messages from backend
-          // The backend might push SYSTEM_NOTICE(3), COMMENT_NOTICE(4), etc.
-          // Or a simplified structure. Based on current card logic, we emit update event.
-          if (message.type >= 3 && message.type <= 7) {
-            toast.info(message.title || '新通知', {
-              description: message.content || message.data,
-            })
+          const type = message.type as WebSocketMessageTypeEnum
+
+          // Handle notification messages from backend (SYSTEM_NOTICE to FOLLOW_NOTICE)
+          if (type >= WebSocketMessageTypeEnum.SYSTEM_NOTICE && type <= WebSocketMessageTypeEnum.FOLLOW_NOTICE) {
+            const title = typeof message.title === 'string' ? message.title : '新通知'
+            const description =
+              typeof message.content === 'string'
+                ? message.content
+                : typeof message.data === 'string'
+                  ? message.data
+                  : ''
+
+            if (title || description) {
+              toast.info(title, {
+                description: description,
+              })
+            }
             window.dispatchEvent(new Event('notification-updated'))
-          } else if (message.type === 0 && message.data === '认证成功') {
+          } else if (type === WebSocketMessageTypeEnum.AUTH && message.data === '认证成功') {
             // Auth success - can log if needed
           }
         } catch (e) {

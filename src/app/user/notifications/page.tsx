@@ -10,9 +10,9 @@ import { BellOff, Check, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   deleteNotification,
-  listNotificationVoByPage,
-  markAllRead,
-  markRead,
+  listMyNotificationVoByPage,
+  markAllNotificationRead,
+  markNotificationRead,
 } from '@/api/notification/notificationController'
 import { LoadingSkeleton } from '@/components/common/loading-skeleton'
 import type { RootState } from '@/store'
@@ -41,7 +41,7 @@ export default function NotificationsPage() {
   const fetchNotifications = React.useCallback(async () => {
     setLoading(true)
     try {
-      const res = await listNotificationVoByPage({
+      const res = await listMyNotificationVoByPage({
         current,
         pageSize: 15,
         sortField: 'createTime',
@@ -97,7 +97,7 @@ export default function NotificationsPage() {
   const handleMarkRead = async (notification: NotificationAPI.NotificationVO) => {
     if (notification.isRead === 1) return
     try {
-      const res = await markRead({ id: notification.id })
+      const res = await markNotificationRead({ id: notification.id })
       if (res.code === 0) {
         // If we are in 'unread' tab, removing it from view might be abrupt, but standard behavior.
         // However, user might misclick.
@@ -115,7 +115,7 @@ export default function NotificationsPage() {
 
   const handleMarkAllRead = async () => {
     try {
-      const res = await markAllRead()
+      const res = await markAllNotificationRead()
       if (res.code === 0) {
         toast.success('全部已读')
         fetchNotifications()
@@ -179,13 +179,8 @@ export default function NotificationsPage() {
 
   if (!user) {
     return (
-      <div className="bg-background relative min-h-screen w-full selection:bg-blue-500/30">
-        <div className="pointer-events-none fixed inset-0 overflow-hidden">
-          <div className="absolute -top-[20%] -left-[10%] h-[80vw] w-[80vw] animate-pulse rounded-full bg-blue-400/10 opacity-70 mix-blend-multiply blur-[130px] dark:bg-blue-900/10 dark:mix-blend-screen" />
-          <div className="absolute top-[10%] -right-[10%] h-[60vw] w-[60vw] rounded-full bg-indigo-400/10 opacity-70 mix-blend-multiply blur-[130px] dark:bg-indigo-900/10 dark:mix-blend-screen" />
-        </div>
-
-        <div className="relative z-10 flex min-h-[80vh] w-full items-center justify-center px-6 pt-24 pb-20 sm:px-10 lg:pl-12">
+      <div className="bg-background relative min-h-screen w-full">
+        <div className="relative z-10 flex min-h-[80vh] w-full items-center justify-center px-6">
           <LoginPromptCard
             onLoginClick={() => setAuthModalOpen(true)}
             title="需要登录"
@@ -198,45 +193,38 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="bg-background relative min-h-screen w-full selection:bg-blue-500/30">
-      {/* 
-        Apple-style Mesh Gradient Background 
-        - Subtle, moving, deeply blurred.
-      */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -top-[20%] -left-[10%] h-[80vw] w-[80vw] animate-pulse rounded-full bg-blue-400/10 opacity-70 mix-blend-multiply blur-[130px] dark:bg-blue-900/10 dark:mix-blend-screen" />
-        <div className="absolute top-[10%] -right-[10%] h-[60vw] w-[60vw] rounded-full bg-indigo-400/10 opacity-70 mix-blend-multiply blur-[130px] dark:bg-indigo-900/10 dark:mix-blend-screen" />
-      </div>
-
-      <div className="relative z-10 w-full px-6 pt-24 pb-20 sm:px-10 lg:pl-12">
+    <div className="bg-white dark:bg-[#000000] relative min-h-screen w-full selection:bg-blue-500/30">
+      <div className="relative z-10 mx-auto w-full max-w-[1200px] px-4 pt-16 pb-20 sm:px-8 xl:px-12">
         {/* Header - iOS style Large Title - Left Aligned */}
         <div className="mb-10 flex flex-col gap-6">
           <div className="flex flex-col gap-2">
-            <h1 className="text-[34px] leading-tight font-bold tracking-tight text-[#1D1D1F] dark:text-[#F5F5F7]">
+            <h1 className="text-3xl md:text-4xl leading-tight font-extrabold tracking-tight text-[#1D1D1F] dark:text-[#F5F5F7]">
               通知中心
             </h1>
-            <p className="text-[#86868B] text-sm font-medium tracking-tight">
-              查看你的全部互动与系统提醒
+            <p className="max-w-xl text-[#86868B] text-sm md:text-base font-medium tracking-tight">
+              您的全部动态、互动与系统提醒。随时掌握最新进展。
             </p>
           </div>
 
-          <div className="flex items-center justify-between">
-            <Tabs value={activeTab} onValueChange={handleTabChange} className="w-fit">
-              <TabsList className="bg-[#1D1D1F]/5 rounded-full p-1 dark:bg-white/5">
-                <TabsTrigger
-                  value="all"
-                  className="data-[state=active]:bg-white rounded-full px-6 text-[14px] font-semibold tracking-tight transition-all data-[state=active]:shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:data-[state=active]:bg-zinc-800"
-                >
-                  全部
-                </TabsTrigger>
-                <TabsTrigger
-                  value="unread"
-                  className="data-[state=active]:bg-white rounded-full px-6 text-[14px] font-semibold tracking-tight transition-all data-[state=active]:shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:data-[state=active]:bg-zinc-800"
-                >
-                  未读
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-black/5 pb-6 dark:border-white/5">
+            <div className="flex items-center gap-4">
+              <Tabs value={activeTab} onValueChange={handleTabChange} className="w-fit">
+                <TabsList className="bg-muted/30 rounded-full p-1 backdrop-blur-2xl">
+                  <TabsTrigger
+                    value="all"
+                    className="data-[state=active]:bg-background rounded-full px-8 text-xs font-bold transition-all data-[state=active]:shadow-sm"
+                  >
+                    全部
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="unread"
+                    className="data-[state=active]:bg-background rounded-full px-8 text-xs font-bold transition-all data-[state=active]:shadow-sm"
+                  >
+                    未读
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
 
             {activeTab === 'unread' && notifications.some(n => n.isRead === 0) && (
               <Button
@@ -255,38 +243,40 @@ export default function NotificationsPage() {
             {loading ? (
               <LoadingSkeleton type="list" count={5} />
             ) : notifications.length === 0 ? (
-              <div className="flex flex-col items-center justify-center space-y-6 py-32 text-center">
-                <div className="flex h-24 w-24 items-center justify-center rounded-[28px] bg-gradient-to-br from-white/80 to-white/40 shadow-lg backdrop-blur-xl dark:from-zinc-800/80 dark:to-zinc-800/40">
-                  <BellOff className="text-muted-foreground/40 h-10 w-10" />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex flex-col items-center justify-center space-y-8 py-40 text-center"
+              >
+                <div className="flex h-32 w-32 items-center justify-center rounded-[38px] bg-gray-50 shadow-sm dark:bg-zinc-900 border border-gray-100 dark:border-white/5">
+                  <BellOff className="text-muted-foreground/20 h-14 w-14" />
                 </div>
-                <div className="space-y-2">
-                  <h3 className="text-foreground/80 text-xl font-semibold">
-                    {activeTab === 'unread' ? '没有未读通知' : '暂无通知'}
+                <div className="max-w-md space-y-3 px-6">
+                  <h3 className="text-foreground/80 text-2xl font-bold tracking-tight">
+                    {activeTab === 'unread' ? '已读完所有通知' : '空空如也'}
                   </h3>
-                  <p className="text-muted-foreground/60 text-sm">
-                    {activeTab === 'unread' ? '你已读完所有通知' : '当有新的互动时，它们会出现在这里'}
+                  <p className="text-muted-foreground/60 text-sm leading-relaxed">
+                    {activeTab === 'unread' ? '现在您可以享受专注时光了。' : '当有新的社群互动或系统更新时，我们将第一时间告知您。'}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             ) : (
-              <div className="space-y-8">
-                <AnimatePresence mode="popLayout">
-                  {groupedNotifications.map(([group, items], groupIndex) => (
+              <div className="space-y-12">
+                <AnimatePresence mode="popLayout" initial={false}>
+                  {groupedNotifications.map(([group, items], index) => (
                     <motion.div
                       key={group}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: groupIndex * 0.08, duration: 0.4 }}
-                      className="space-y-2"
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className="space-y-4"
                     >
-                      {/* Sticky Section Header - iOS Style */}
-                      <div className="sticky top-[72px] z-20 -mx-4 bg-[#F5F5F7]/80 px-4 py-2 backdrop-blur-xl supports-[backdrop-filter]:bg-transparent dark:bg-black/80">
-                        <h2 className="text-[#86868B] text-[13px] font-bold tracking-[0.05em] uppercase">
+                      <div className="sticky top-[72px] z-20 bg-background/5 -mx-4 px-4 py-2 backdrop-blur-md">
+                        <h2 className="text-muted-foreground/60 text-[12px] font-bold tracking-widest uppercase">
                           {group}
                         </h2>
                       </div>
-
-                      <div className="grid gap-2">
+                      <div className="grid grid-cols-1 gap-2">
                         {items.map(notification => (
                           <NotificationCard
                             key={notification.id}

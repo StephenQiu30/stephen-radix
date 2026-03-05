@@ -16,7 +16,7 @@ export function SiteHeader() {
 
   return (
     <header className="bg-background/70 supports-backdrop-filter:bg-background/50 sticky top-0 z-50 w-full border-b border-border/40 backdrop-blur-xl transition-all duration-300">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+      <div className="container mx-auto grid h-16 grid-cols-3 items-center px-4">
         <div className="flex items-center gap-4">
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
@@ -30,15 +30,17 @@ export function SiteHeader() {
             </SheetContent>
           </Sheet>
 
-          <SiteLogo showText={true} className="hidden sm:flex" />
-          <SiteLogo showText={false} className="sm:hidden" />
+          <SiteLogo showText={true} className="hidden sm:flex shrink-0" />
+          <SiteLogo showText={false} className="sm:hidden shrink-0" />
         </div>
 
-        <div className="hidden flex-1 justify-center lg:flex">
+        <div className="hidden items-center justify-center lg:flex">
           <Menus />
         </div>
 
-        <HeaderActions authModalOpen={authModalOpen} onAuthModalOpenChange={setAuthModalOpen} />
+        <div className="flex items-center justify-end">
+          <HeaderActions authModalOpen={authModalOpen} onAuthModalOpenChange={setAuthModalOpen} />
+        </div>
       </div>
     </header>
   )

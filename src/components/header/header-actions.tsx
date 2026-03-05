@@ -8,6 +8,7 @@ import { UserDropdown } from '@/components/auth/user-dropdown'
 import { useAppSelector } from '@/store/hooks'
 import type { RootState } from '@/store'
 import { CommandMenu } from '@/components/search/command-menu'
+import { getNotificationUnreadCount } from '@/api/notification/notificationController'
 
 interface HeaderActionsProps {
   onAuthModalOpenChange: (open: boolean) => void
@@ -17,6 +18,30 @@ interface HeaderActionsProps {
 export function HeaderActions({ onAuthModalOpenChange, authModalOpen }: HeaderActionsProps) {
   const { user } = useAppSelector((state: RootState) => state.user)
   const [open, setOpen] = React.useState(false)
+  const [unreadCount, setUnreadCount] = React.useState(0)
+
+  const fetchUnreadCount = React.useCallback(async () => {
+    if (!user) return
+    try {
+      const res = await getNotificationUnreadCount()
+      if (res.code === 0) {
+        setUnreadCount(Number(res.data) || 0)
+      }
+    } catch (error) {
+      console.error('Failed to fetch unread count:', error)
+    }
+  }, [user])
+
+  React.useEffect(() => {
+    fetchUnreadCount()
+
+    const handleUpdate = () => {
+      fetchUnreadCount()
+    }
+
+    window.addEventListener('notification-updated', handleUpdate)
+    return () => window.removeEventListener('notification-updated', handleUpdate)
+  }, [fetchUnreadCount])
 
   return (
     <>
@@ -69,6 +94,9 @@ export function HeaderActions({ onAuthModalOpenChange, authModalOpen }: HeaderAc
             <Link href="/user/notifications">
               <Button variant="ghost" size="icon" className="text-muted-foreground hover:bg-transparent hover:text-foreground h-9 w-9 rounded-full transition-colors relative">
                 <Bell className="h-4 w-4" />
+                {unreadCount > 0 && (
+                  <span className="absolute right-2.5 top-2.5 flex h-2 w-2 rounded-full bg-red-500 shadow-sm ring-1 ring-background" />
+                )}
                 <span className="sr-only">通知</span>
               </Button>
             </Link>
