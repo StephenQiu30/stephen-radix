@@ -4,7 +4,7 @@ import request from '@/lib/request'
 
 /** 创建用户登录日志 记录用户登录日志 POST /log/login/add */
 export async function addUserLoginLog(
-  body: LogAPI.UserLoginLogCreateRequest,
+  body: LogAPI.UserLoginLogAddRequest,
   options?: { [key: string]: any }
 ) {
   return request<LogAPI.BaseResponseBoolean>('/log/login/add', {

@@ -4,7 +4,7 @@ import request from '@/lib/request'
 
 /** 创建邮件记录 记录邮件发送信息 POST /log/email/add */
 export async function addEmailRecord(
-  body: LogAPI.EmailRecordCreateRequest,
+  body: LogAPI.EmailRecordAddRequest,
   options?: { [key: string]: any }
 ) {
   return request<LogAPI.BaseResponseBoolean>('/log/email/add', {
@@ -19,7 +19,7 @@ export async function addEmailRecord(
 
 /** 创建邮件记录并返回 ID 记录邮件发送信息并返回记录 ID POST /log/email/add/id */
 export async function addEmailRecordReturnId(
-  body: LogAPI.EmailRecordCreateRequest,
+  body: LogAPI.EmailRecordAddRequest,
   options?: { [key: string]: any }
 ) {
   return request<LogAPI.BaseResponseLong>('/log/email/add/id', {
@@ -61,7 +61,7 @@ export async function listRecordByPage1(
 
 /** 更新邮件记录状态 更新指定邮件记录的状态 POST /log/email/update/status */
 export async function updateRecordStatus(
-  body: LogAPI.EmailRecordCreateRequest,
+  body: LogAPI.EmailRecordAddRequest,
   options?: { [key: string]: any }
 ) {
   return request<LogAPI.BaseResponseBoolean>('/log/email/update/status', {

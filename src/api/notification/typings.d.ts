@@ -180,6 +180,7 @@ declare namespace NotificationAPI {
     type?: string
     /** 接收用户ID */
     userId?: number
+    userVO?: UserVO
     /** 关联对象ID */
     relatedId?: number
     /** 关联对象类型 */
@@ -229,5 +230,30 @@ declare namespace NotificationAPI {
     maxLimit?: number
     countId?: string
     pages?: number
+  }
+
+  type UserVO = {
+    /** 用户ID */
+    id?: number
+    /** 用户昵称 */
+    userName?: string
+    /** 用户头像 */
+    userAvatar?: string
+    /** 用户简介 */
+    userProfile?: string
+    /** 用户角色 */
+    userRole?: string
+    /** 用户邮箱 */
+    userEmail?: string
+    /** 用户电话 */
+    userPhone?: string
+    /** GitHub 登录账号 */
+    githubLogin?: string
+    /** GitHub 主页 */
+    githubUrl?: string
+    /** 创建时间 */
+    createTime?: string
+    /** 更新时间 */
+    updateTime?: string
   }
 }

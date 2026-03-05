@@ -14,14 +14,6 @@ export async function doSearchAll(body: SearchAPI.SearchRequest, options?: { [ke
   })
 }
 
-/** 手动重建所有 ES 索引 POST /search/index/reinit */
-export async function reinitAllIndices(options?: { [key: string]: any }) {
-  return request<SearchAPI.BaseResponseBoolean>('/search/index/reinit', {
-    method: 'POST',
-    ...(options || {}),
-  })
-}
-
 /** 批量同步帖子到 ES POST /search/post/batch/upsert */
 export async function batchUpsertPost(
   body: SearchAPI.PostEsDTO[],

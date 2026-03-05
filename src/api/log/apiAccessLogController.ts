@@ -4,7 +4,7 @@ import request from '@/lib/request'
 
 /** 创建API访问日志 记录API访问日志 POST /log/access/add */
 export async function addApiAccessLog(
-  body: LogAPI.ApiAccessLogCreateRequest,
+  body: LogAPI.ApiAccessLogAddRequest,
   options?: { [key: string]: any }
 ) {
   return request<LogAPI.BaseResponseBoolean>('/log/access/add', {

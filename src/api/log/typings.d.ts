@@ -1,5 +1,5 @@
 declare namespace LogAPI {
-  type ApiAccessLogCreateRequest = {
+  type ApiAccessLogAddRequest = {
     /** 链路追踪ID */
     traceId?: string
     /** 用户ID */
@@ -147,7 +147,7 @@ declare namespace LogAPI {
     id: number
   }
 
-  type EmailRecordCreateRequest = {
+  type EmailRecordAddRequest = {
     /** 记录ID */
     id?: number
     /** 消息ID */
@@ -238,7 +238,7 @@ declare namespace LogAPI {
     updateTime?: string
   }
 
-  type FileUploadRecordCreateRequest = {
+  type FileUploadRecordAddRequest = {
     /** 上传用户ID */
     userId?: number
     /** 业务类型 */
@@ -329,7 +329,7 @@ declare namespace LogAPI {
     updateTime?: string
   }
 
-  type OperationLogCreateRequest = {
+  type OperationLogAddRequest = {
     /** 操作人ID */
     operatorId?: number
     /** 操作人名称 */
@@ -485,7 +485,7 @@ declare namespace LogAPI {
     pages?: number
   }
 
-  type UserLoginLogCreateRequest = {
+  type UserLoginLogAddRequest = {
     /** 用户ID */
     userId?: number
     /** 登录账号 */

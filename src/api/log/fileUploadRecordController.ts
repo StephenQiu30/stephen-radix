@@ -4,7 +4,7 @@ import request from '@/lib/request'
 
 /** 创建文件上传记录 记录文件上传信息 POST /log/file/upload/add */
 export async function addFileUploadRecord(
-  body: LogAPI.FileUploadRecordCreateRequest,
+  body: LogAPI.FileUploadRecordAddRequest,
   options?: { [key: string]: any }
 ) {
   return request<LogAPI.BaseResponseBoolean>('/log/file/upload/add', {

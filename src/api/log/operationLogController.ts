@@ -4,7 +4,7 @@ import request from '@/lib/request'
 
 /** 创建操作日志 记录用户操作日志 POST /log/operation/add */
 export async function addOperationLog(
-  body: LogAPI.OperationLogCreateRequest,
+  body: LogAPI.OperationLogAddRequest,
   options?: { [key: string]: any }
 ) {
   return request<LogAPI.BaseResponseBoolean>('/log/operation/add', {
