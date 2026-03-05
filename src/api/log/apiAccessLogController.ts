@@ -18,7 +18,10 @@ export async function addApiAccessLog(
 }
 
 /** 删除API访问日志 删除指定API访问日志（仅管理员） POST /log/access/delete */
-export async function deleteLog2(body: LogAPI.DeleteRequest, options?: { [key: string]: any }) {
+export async function deleteApiAccessLog(
+  body: LogAPI.DeleteRequest,
+  options?: { [key: string]: any }
+) {
   return request<LogAPI.BaseResponseBoolean>('/log/access/delete', {
     method: 'POST',
     headers: {

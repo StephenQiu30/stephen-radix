@@ -1,4 +1,8 @@
 declare namespace FileAPI {
+  type addFileParams = {
+    fileUploadRequest: FileUploadRequest
+  }
+
   type BaseResponseFileUploadVO = {
     /** 状态码 */
     code?: number
@@ -17,9 +21,5 @@ declare namespace FileAPI {
     url?: string
     /** 文件名 */
     fileName?: string
-  }
-
-  type uploadFileParams = {
-    fileUploadRequest: FileUploadRequest
   }
 }

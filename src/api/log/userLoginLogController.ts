@@ -18,7 +18,10 @@ export async function addUserLoginLog(
 }
 
 /** 删除用户登录日志 删除指定用户登录日志（仅管理员） POST /log/login/delete */
-export async function deleteLog1(body: LogAPI.DeleteRequest, options?: { [key: string]: any }) {
+export async function deleteUserLoginLog(
+  body: LogAPI.DeleteRequest,
+  options?: { [key: string]: any }
+) {
   return request<LogAPI.BaseResponseBoolean>('/log/login/delete', {
     method: 'POST',
     headers: {

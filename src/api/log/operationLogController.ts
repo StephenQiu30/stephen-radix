@@ -18,7 +18,10 @@ export async function addOperationLog(
 }
 
 /** 删除操作日志 删除指定操作日志（仅管理员） POST /log/operation/delete */
-export async function deleteLog(body: LogAPI.DeleteRequest, options?: { [key: string]: any }) {
+export async function deleteOperationLog(
+  body: LogAPI.DeleteRequest,
+  options?: { [key: string]: any }
+) {
   return request<LogAPI.BaseResponseBoolean>('/log/operation/delete', {
     method: 'POST',
     headers: {

@@ -18,7 +18,10 @@ export async function addFileUploadRecord(
 }
 
 /** 删除文件上传记录 删除指定文件上传记录（仅管理员） POST /log/file/upload/delete */
-export async function deleteRecord(body: LogAPI.DeleteRequest, options?: { [key: string]: any }) {
+export async function deleteFileUploadRecord(
+  body: LogAPI.DeleteRequest,
+  options?: { [key: string]: any }
+) {
   return request<LogAPI.BaseResponseBoolean>('/log/file/upload/delete', {
     method: 'POST',
     headers: {

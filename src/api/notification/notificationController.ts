@@ -33,7 +33,7 @@ export async function batchDeleteNotification(
 }
 
 /** 批量标记已读 批量将选中通知标记为已读 POST /notification/batch/read */
-export async function batchMarkRead(
+export async function batchMarkNotificationRead(
   body: NotificationAPI.NotificationBatchReadRequest,
   options?: { [key: string]: any }
 ) {
@@ -123,7 +123,7 @@ export async function listMyNotificationVoByPage(
 }
 
 /** 标记已读 将指定通知标记为已读状态 POST /notification/read */
-export async function markRead(
+export async function markNotificationRead(
   body: NotificationAPI.NotificationReadRequest,
   options?: { [key: string]: any }
 ) {
@@ -138,7 +138,7 @@ export async function markRead(
 }
 
 /** 全部标记已读 将当前用户的所有未读通知标记为已读 POST /notification/read/all */
-export async function markAllRead(options?: { [key: string]: any }) {
+export async function markAllNotificationRead(options?: { [key: string]: any }) {
   return request<NotificationAPI.BaseResponseBoolean>('/notification/read/all', {
     method: 'POST',
     ...(options || {}),
@@ -146,7 +146,7 @@ export async function markAllRead(options?: { [key: string]: any }) {
 }
 
 /** 获取未读通知数 获取当前用户未读通知的总数 GET /notification/unread/count */
-export async function getUnreadCount(options?: { [key: string]: any }) {
+export async function getNotificationUnreadCount(options?: { [key: string]: any }) {
   return request<NotificationAPI.BaseResponseLong>('/notification/unread/count', {
     method: 'GET',
     ...(options || {}),

@@ -33,7 +33,10 @@ export async function addEmailRecordReturnId(
 }
 
 /** 删除邮件记录 删除指定邮件记录（仅管理员） POST /log/email/delete */
-export async function deleteRecord1(body: LogAPI.DeleteRequest, options?: { [key: string]: any }) {
+export async function deleteEmailRecord(
+  body: LogAPI.DeleteRequest,
+  options?: { [key: string]: any }
+) {
   return request<LogAPI.BaseResponseBoolean>('/log/email/delete', {
     method: 'POST',
     headers: {
