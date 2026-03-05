@@ -7,13 +7,18 @@ import { UserAvatar } from '@/components/header/user-avatar'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { motion } from 'framer-motion'
-import { AtSign, Award, Calendar, Edit, Github, Shield, User as UserIcon, Zap } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { AuthModal } from '@/components/auth/auth-modal'
 import { LoginPromptCard } from '@/components/auth/login-prompt-card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { BookMarked, FileText, Heart, User as UserIcon, Calendar, Github, Award, AtSign, Shield, Zap, Edit, Loader2 } from 'lucide-react'
+import { PostCard } from '@/components/blog/post-card'
+import { listMyPostVoByPage } from '@/api/post/postController'
+import { listMyThumbPostByPage } from '@/api/post/postThumbController'
+import { listMyFavourPostByPage } from '@/api/post/postFavourController'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -39,6 +44,67 @@ const itemVariants = {
 export default function ProfilePage() {
   const { user } = useAppSelector((state: RootState) => state.user)
   const [authModalOpen, setAuthModalOpen] = React.useState(false)
+
+  // 选项卡状态与数据
+  const [activeTab, setActiveTab] = React.useState('about')
+  const [posts, setPosts] = React.useState<PostAPI.PostVO[]>([])
+  const [likedPosts, setLikedPosts] = React.useState<PostAPI.PostVO[]>([])
+  const [favoritedPosts, setFavoritedPosts] = React.useState<PostAPI.PostVO[]>([])
+
+  const [loadingPosts, setLoadingPosts] = React.useState(false)
+  const [loadingLikes, setLoadingLikes] = React.useState(false)
+  const [loadingFavorites, setLoadingFavorites] = React.useState(false)
+
+  // Fetch functions
+  const fetchMyPosts = async () => {
+    try {
+      setLoadingPosts(true)
+      const res = await listMyPostVoByPage({ current: 1, pageSize: 20 })
+      if (res.code === 0 && res.data?.records) {
+        setPosts(res.data.records)
+      }
+    } catch (error) {
+      console.error('Failed to fetch posts:', error)
+    } finally {
+      setLoadingPosts(false)
+    }
+  }
+
+  const fetchMyLikes = async () => {
+    try {
+      setLoadingLikes(true)
+      const res = await listMyThumbPostByPage({ current: 1, pageSize: 20 })
+      if (res.code === 0 && res.data?.records) {
+        setLikedPosts(res.data.records)
+      }
+    } catch (error) {
+      console.error('Failed to fetch liked posts:', error)
+    } finally {
+      setLoadingLikes(false)
+    }
+  }
+
+  const fetchMyFavorites = async () => {
+    try {
+      setLoadingFavorites(true)
+      const res = await listMyFavourPostByPage({ current: 1, pageSize: 20 })
+      if (res.code === 0 && res.data?.records) {
+        setFavoritedPosts(res.data.records)
+      }
+    } catch (error) {
+      console.error('Failed to fetch favorited posts:', error)
+    } finally {
+      setLoadingFavorites(false)
+    }
+  }
+
+  // Effect to load data when tab changes or component mounts
+  React.useEffect(() => {
+    if (!user) return
+    if (activeTab === 'posts' && posts.length === 0 && !loadingPosts) fetchMyPosts()
+    if (activeTab === 'likes' && likedPosts.length === 0 && !loadingLikes) fetchMyLikes()
+    if (activeTab === 'favorites' && favoritedPosts.length === 0 && !loadingFavorites) fetchMyFavorites()
+  }, [activeTab, user])
 
   if (!user) {
     return (
@@ -110,14 +176,16 @@ export default function ProfilePage() {
 
       <div className="grid gap-8 lg:grid-cols-12">
         {/* 左侧 - 用户名片 (4cols) */}
-        <motion.div className="lg:col-span-4" variants={itemVariants}>
-          <Card className="border-border/40 bg-card/50 overflow-hidden rounded-[2rem] shadow-sm backdrop-blur-xl transition-all hover:shadow-md">
-            {/* 简约背景 */}
-            <div className="h-32 bg-gradient-to-b from-blue-500/10 to-transparent dark:from-blue-400/10">
-              <div className="absolute top-4 right-4">
-                <Badge variant="secondary" className="bg-background/80 shadow-sm backdrop-blur-md">
-                  Active
-                </Badge>
+        <motion.div className="lg:col-span-4 lg:sticky lg:top-24 self-start" variants={itemVariants}>
+          <Card className="border-border/50 bg-background shadow-sm rounded-3xl overflow-hidden flex flex-col relative w-full">
+            {/* Minimal Apple-Style Themed Header */}
+            <div className="h-32 relative bg-primary/5 dark:bg-primary/10 border-b border-border/50 transition-colors">
+              <div className="absolute top-4 right-4 flex items-center gap-2 bg-background/80 backdrop-blur-[2px] px-3 py-1 rounded-full border border-border shadow-sm">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span className="text-xs font-semibold text-primary uppercase tracking-wider">Active</span>
               </div>
             </div>
 
@@ -182,137 +250,242 @@ export default function ProfilePage() {
                   </TooltipProvider>
                 </div>
 
-                <div className="bg-secondary/30 rounded-2xl p-4 text-sm">
-                  <ScrollArea className="h-24 w-full pr-4">
-                    <p className="text-muted-foreground leading-relaxed">
-                      "{user?.userProfile || '这个人很懒，什么都没留下...'}"
-                    </p>
-                  </ScrollArea>
+                <div className="px-2 pt-2">
+                  <p className="text-muted-foreground/80 leading-relaxed text-sm">
+                    "{user?.userProfile || '这个人很懒，什么都没留下...'}"
+                  </p>
                 </div>
 
-                {/* 核心数据 */}
-                <div className="border-border/40 mt-8 grid grid-cols-3 gap-4 border-t pt-8">
-                  <StatItem label="天数" value={accountAge} icon={<Zap />} />
-                  <StatItem label="动态" value={0} />
-                  <StatItem label="获赞" value={0} />
+                {/* 核心数据 - Apple Themed Metrics */}
+                <div className="grid grid-cols-3 gap-3 mt-8">
+                  <div className="bg-primary/5 dark:bg-primary/10 rounded-[20px] p-4 flex flex-col items-center justify-center border border-primary/10 hover:bg-primary/10 hover:scale-[1.02] transition-all cursor-default">
+                    <StatItem label="天数" value={accountAge} icon={<Zap className="w-4 h-4 text-emerald-500 mb-1" />} />
+                  </div>
+                  <div className="bg-primary/5 dark:bg-primary/10 rounded-[20px] p-4 flex flex-col items-center justify-center border border-primary/10 hover:bg-primary/10 hover:scale-[1.02] transition-all cursor-default">
+                    <StatItem label="动态" value={posts.length} icon={<FileText className="w-4 h-4 text-primary mb-1" />} />
+                  </div>
+                  <div className="bg-primary/5 dark:bg-primary/10 rounded-[20px] p-4 flex flex-col items-center justify-center border border-primary/10 hover:bg-primary/10 hover:scale-[1.02] transition-all cursor-default">
+                    <StatItem label="获赞" value={likedPosts.length} icon={<Heart className="w-4 h-4 text-rose-500 mb-1" />} />
+                  </div>
                 </div>
               </div>
             </CardContent>
           </Card>
         </motion.div>
 
-        {/* 右侧 - 详情模块 (8cols) */}
+        {/* 右侧 - 动态与详情模块 (8cols) */}
         <motion.div className="space-y-6 lg:col-span-8" variants={itemVariants}>
-          {/* 基本信息网格 */}
-          {/* 基本信息网格 */}
-          <Card className="border-border/40 bg-card/50 rounded-[2rem] shadow-sm backdrop-blur-xl">
-            <CardHeader className="border-border/40 border-b px-8 py-6">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <UserIcon className="text-primary h-5 w-5" />
-                基本信息
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-8">
-              <div className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
-                <InfoItem
-                  label="用户昵称"
-                  value={user?.userName || '未设置'}
-                  description="在社区展示的名字"
-                />
-                <InfoItem
-                  label="电子邮箱"
-                  value={user?.userEmail || '未绑定'}
-                  description="用于接收重要通知"
-                />
-                <InfoItem
-                  label="手机号码"
-                  value={user?.userPhone || '未绑定'}
-                  description="账号安全验证"
-                />
-                <InfoItem
-                  label="用户 ID"
-                  value={user?.id ? `#${user.id}` : '未知'}
-                  description="系统唯一识别码"
-                />
-                {user?.githubLogin && (
-                  <InfoItem
-                    label="GitHub"
-                    value={
-                      <div className="flex items-center gap-2">
-                        <Github className="h-4 w-4" />
-                        {user?.githubUrl ? (
-                          <a
-                            href={user.githubUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:underline"
-                          >
-                            {user.githubLogin}
-                          </a>
-                        ) : (
-                          user?.githubLogin
-                        )}
-                      </div>
-                    }
-                    description="已绑定的 GitHub 账号"
-                  />
-                )}
-              </div>
-            </CardContent>
-          </Card>
+          <Tabs defaultValue="about" value={activeTab} onValueChange={setActiveTab} className="w-full space-y-6">
+            <TabsList className="bg-primary/5 dark:bg-primary/10 h-14 w-full justify-start rounded-2xl p-1.5 border border-primary/10 backdrop-blur-md">
+              <TabsTrigger value="about" className="data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm data-[state=active]:border-primary/20 rounded-xl px-6 py-2.5 text-sm font-medium transition-all border border-transparent">
+                <UserIcon className="mr-2 h-4 w-4" />
+                关于我
+              </TabsTrigger>
+              <TabsTrigger value="posts" className="data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm data-[state=active]:border-primary/20 rounded-xl px-6 py-2.5 text-sm font-medium transition-all border border-transparent">
+                <FileText className="mr-2 h-4 w-4" />
+                我的帖子 ({posts.length})
+              </TabsTrigger>
+              <TabsTrigger value="likes" className="data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm data-[state=active]:border-primary/20 rounded-xl px-6 py-2.5 text-sm font-medium transition-all border border-transparent">
+                <Heart className="mr-2 h-4 w-4" />
+                我的点赞 ({likedPosts.length})
+              </TabsTrigger>
+              <TabsTrigger value="favorites" className="data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm data-[state=active]:border-primary/20 rounded-xl px-6 py-2.5 text-sm font-medium transition-all border border-transparent">
+                <BookMarked className="mr-2 h-4 w-4" />
+                我的收藏 ({favoritedPosts.length})
+              </TabsTrigger>
+            </TabsList>
 
-          {/* 账户历程 */}
-          {/* 账户历程 */}
-          <Card className="border-border/40 bg-card/50 rounded-[2rem] shadow-sm backdrop-blur-xl">
-            <CardHeader className="border-border/40 border-b px-8 py-6">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Calendar className="text-primary h-5 w-5" />
-                账户历程
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-8">
-              <div className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
-                <InfoItem
-                  label="注册日期"
-                  value={
-                    user?.createTime
-                      ? new Date(user.createTime).toLocaleDateString('zh-CN', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })
-                      : '未知'
-                  }
-                />
-                <InfoItem label="常用活跃地" value="已开启地理屏蔽" />
-              </div>
-              <div className="bg-secondary/20 mt-8 flex items-center gap-4 rounded-xl p-4">
-                <div className="bg-background flex h-10 w-10 items-center justify-center rounded-full shadow-sm">
-                  <Shield className="h-5 w-5 text-green-500" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-medium">账户状态良好</h4>
-                  <p className="text-muted-foreground text-xs">通过所有安全验证</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+            {/* 关于我 Tab (原基本信息) */}
+            <TabsContent value="about" className="space-y-6 outline-none">
+              <Card className="border-border/50 bg-background shadow-sm rounded-3xl">
+                <CardHeader className="p-8 pb-4">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <UserIcon className="text-primary h-5 w-5" />
+                    基本信息
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-8 pt-0">
+                  <div className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
+                    <InfoItem
+                      label="用户昵称"
+                      value={user?.userName || '未设置'}
+                      description="在社区展示的名字"
+                    />
+                    <InfoItem
+                      label="电子邮箱"
+                      value={user?.userEmail || '未绑定'}
+                      description="用于接收重要通知"
+                    />
+                    <InfoItem
+                      label="手机号码"
+                      value={user?.userPhone || '未绑定'}
+                      description="账号安全验证"
+                    />
+                    <InfoItem
+                      label="用户 ID"
+                      value={user?.id ? `#${user.id}` : '未知'}
+                      description="系统唯一识别码"
+                    />
+                    {user?.githubLogin && (
+                      <InfoItem
+                        label="GitHub"
+                        value={
+                          <div className="flex items-center gap-2">
+                            <Github className="h-4 w-4" />
+                            {user?.githubUrl ? (
+                              <a
+                                href={user.githubUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:underline"
+                              >
+                                {user.githubLogin}
+                              </a>
+                            ) : (
+                              user?.githubLogin
+                            )}
+                          </div>
+                        }
+                        description="已绑定的 GitHub 账号"
+                      />
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
 
-          {/* 账户安全 & 隐私 */}
-          <div className="flex gap-4">
-            <Link href="/user/settings" className="flex-1">
-              <Button
-                variant="outline"
-                className="border-border/40 bg-card/50 hover:bg-secondary/50 h-14 w-full justify-between rounded-xl px-6 backdrop-blur-xl"
-              >
-                <div className="flex items-center gap-3">
-                  <Edit className="h-4 w-4" />
-                  <span>完善个人资料</span>
+              {/* 账户历程 */}
+              <Card className="border-border/50 bg-background shadow-sm rounded-3xl">
+                <CardHeader className="p-8 pb-4">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Calendar className="text-primary h-5 w-5" />
+                    账户历程
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-8 pt-0">
+                  <div className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
+                    <InfoItem
+                      label="注册日期"
+                      value={
+                        user?.createTime
+                          ? new Date(user.createTime).toLocaleDateString('zh-CN', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })
+                          : '未知'
+                      }
+                    />
+                    <InfoItem label="常用活跃地" value="已开启地理屏蔽" />
+                  </div>
+                  <div className="bg-secondary/20 mt-8 flex items-center gap-4 rounded-xl p-4">
+                    <div className="bg-background flex h-10 w-10 items-center justify-center rounded-xl shadow-sm">
+                      <Shield className="h-5 w-5 text-emerald-500" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-medium">账户状态良好</h4>
+                      <p className="text-muted-foreground text-xs">通过所有安全验证</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* 账户安全 & 隐私 Actions */}
+              <div className="flex gap-4">
+                <Link href="/user/settings" className="flex-1">
+                  <Button
+                    variant="outline"
+                    className="border-black/5 dark:border-white/5 bg-background shadow-sm hover:bg-secondary/50 h-14 w-full justify-between rounded-xl px-6 transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Edit className="h-4 w-4 text-primary" />
+                      <span className="font-medium">完善个人资料</span>
+                    </div>
+                    <div className="text-muted-foreground text-xl">→</div>
+                  </Button>
+                </Link>
+              </div>
+            </TabsContent>
+
+            {/* 我的帖子 Tab */}
+            <TabsContent value="posts" className="outline-none">
+              {loadingPosts ? (
+                <Card className="border-black/5 dark:border-white/5 bg-background shadow-sm rounded-[24px] min-h-[400px] flex items-center justify-center p-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </Card>
+              ) : posts.length > 0 ? (
+                <div className="grid gap-6 sm:grid-cols-2">
+                  {posts.map((post) => (
+                    <PostCard key={`post-${post.id}`} post={post} />
+                  ))}
                 </div>
-                <div className="text-muted-foreground text-xl">→</div>
-              </Button>
-            </Link>
-          </div>
+              ) : (
+                <Card className="border-black/5 dark:border-white/5 bg-background shadow-sm rounded-[24px] min-h-[400px] flex items-center justify-center p-8">
+                  <div className="text-center space-y-3">
+                    <div className="bg-secondary/40 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <FileText className="h-8 w-8 text-muted-foreground opacity-50" />
+                    </div>
+                    <h3 className="text-xl font-semibold">暂无动态</h3>
+                    <p className="text-muted-foreground text-sm">你还没有发布过任何帖子，去写点什么吧</p>
+                    <Button className="mt-4 rounded-xl shadow-sm">
+                      <Edit className="mr-2 h-4 w-4" /> 发布新帖
+                    </Button>
+                  </div>
+                </Card>
+              )}
+            </TabsContent>
+
+            {/* 我的点赞 Tab */}
+            <TabsContent value="likes" className="outline-none">
+              {loadingLikes ? (
+                <Card className="border-black/5 dark:border-white/5 bg-background shadow-sm rounded-[24px] min-h-[400px] flex items-center justify-center p-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </Card>
+              ) : likedPosts.length > 0 ? (
+                <div className="grid gap-6 sm:grid-cols-2">
+                  {likedPosts.map((post) => (
+                    <PostCard key={`liked-${post.id}`} post={post} />
+                  ))}
+                </div>
+              ) : (
+                <Card className="border-black/5 dark:border-white/5 bg-background shadow-sm rounded-[24px] min-h-[400px] flex items-center justify-center p-8">
+                  <div className="text-center space-y-3">
+                    <div className="bg-secondary/40 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <Heart className="h-8 w-8 text-muted-foreground opacity-50" />
+                    </div>
+                    <h3 className="text-xl font-semibold">还没有点赞</h3>
+                    <p className="text-muted-foreground text-sm">去社区逛逛，给喜欢的帖子点个赞吧</p>
+                  </div>
+                </Card>
+              )}
+            </TabsContent>
+
+            {/* 我的收藏 Tab */}
+            <TabsContent value="favorites" className="outline-none">
+              {loadingFavorites ? (
+                <Card className="border-black/5 dark:border-white/5 bg-background shadow-sm rounded-[24px] min-h-[400px] flex items-center justify-center p-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </Card>
+              ) : favoritedPosts.length > 0 ? (
+                <div className="grid gap-6 sm:grid-cols-2">
+                  {favoritedPosts.map((post) => (
+                    <PostCard key={`favour-${post.id}`} post={post} />
+                  ))}
+                </div>
+              ) : (
+                <Card className="border-black/5 dark:border-white/5 bg-background shadow-sm rounded-[24px] min-h-[400px] flex items-center justify-center p-8">
+                  <div className="text-center space-y-3">
+                    <div className="bg-secondary/40 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <BookMarked className="h-8 w-8 text-muted-foreground opacity-50" />
+                    </div>
+                    <h3 className="text-xl font-semibold">收藏空空如也</h3>
+                    <p className="text-muted-foreground text-sm">遇到干货文章别忘了收藏哦</p>
+                  </div>
+                </Card>
+              )}
+            </TabsContent>
+
+
+          </Tabs>
         </motion.div>
       </div>
     </motion.div>
@@ -330,9 +503,10 @@ function StatItem({
   icon?: React.ReactNode
 }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-1">
-      <div className="text-foreground text-2xl font-bold tracking-tight">{value}</div>
-      <div className="text-muted-foreground text-xs font-medium">{label}</div>
+    <div className="flex flex-col items-center justify-center">
+      {icon}
+      <div className="text-foreground text-xl md:text-2xl font-bold tracking-tight">{value}</div>
+      <div className="text-muted-foreground text-[10px] md:text-xs font-medium uppercase tracking-wider">{label}</div>
     </div>
   )
 }

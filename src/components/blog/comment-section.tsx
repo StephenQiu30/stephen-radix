@@ -79,8 +79,8 @@ export function CommentSection({ postId, onTotalChange }: CommentSectionProps) {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-8 space-y-8 duration-700">
       <div className="mb-8 flex items-center gap-2">
-        <MessageSquare className="text-muted-foreground h-5 w-5" />
-        <h3 className="text-xl font-bold tracking-tight text-foreground">
+        <MessageSquare className="text-muted-foreground/80 h-5 w-5" />
+        <h3 className="text-lg font-semibold tracking-tight text-foreground">
           评论 ({total})
         </h3>
       </div>

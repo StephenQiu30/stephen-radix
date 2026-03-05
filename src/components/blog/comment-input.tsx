@@ -77,7 +77,7 @@ export function CommentInput({
               value={content}
               onChange={e => setContent(e.target.value)}
               placeholder={placeholder}
-              className="bg-muted/40 border-transparent focus:border-border focus:bg-background/50 min-h-24 resize-none rounded-xl p-4 pr-12 text-[15px] shadow-none transition-all placeholder:text-muted-foreground/60"
+              className="bg-muted/30 border-border/50 focus:border-primary/30 focus:bg-background/50 focus:ring-4 focus:ring-primary/5 min-h-[100px] resize-none rounded-2xl p-4 pr-12 text-[15px] shadow-sm transition-all placeholder:text-muted-foreground/50"
               autoFocus={autoFocus}
             />
           </div>
@@ -88,7 +88,7 @@ export function CommentInput({
                 size="sm"
                 onClick={onCancel}
                 disabled={submitting}
-                className="text-muted-foreground hover:text-foreground rounded-md px-4"
+                className="text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full px-4"
               >
                 取消
               </Button>
@@ -97,7 +97,7 @@ export function CommentInput({
               size="sm"
               onClick={handleSubmit}
               disabled={!content.trim() || submitting}
-              className="bg-foreground text-background hover:bg-foreground/90 rounded-md px-6 shadow-none transition-all font-medium"
+              className="bg-foreground text-background hover:bg-foreground/90 rounded-full px-6 shadow-sm transition-all font-medium"
             >
               {submitting ? (
                 <>

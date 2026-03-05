@@ -50,30 +50,26 @@ export function CommentItem({ comment, postId, onReplySuccess }: CommentItemProp
         {/* Content */}
         <div className="flex-1 space-y-2">
           {/* Header */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-foreground text-sm font-semibold">
-                {comment.userVO?.userName || '匿名用户'}
-              </span>
-              <span className="text-muted-foreground/60 text-xs">
-                {comment.createTime ? dayjs(comment.createTime).fromNow() : ''}
-              </span>
-            </div>
+          <div className="flex items-baseline gap-2 mb-1">
+            <span className="text-foreground text-[15px] font-medium tracking-tight">
+              {comment.userVO?.userName || '匿名用户'}
+            </span>
+            <span className="text-muted-foreground/60 text-[12px]">
+              {comment.createTime ? dayjs(comment.createTime).fromNow() : ''}
+            </span>
           </div>
 
           {/* Body */}
-          {/* Body */}
-          <div className="text-foreground/90 text-sm leading-relaxed">
+          <div className="text-foreground/90 text-[15px] leading-relaxed">
             <div className="wrap-break-word whitespace-pre-wrap">{comment.content}</div>
           </div>
 
           {/* Actions */}
-          <div className="text-muted-foreground flex items-center gap-4 text-xs">
+          <div className="text-muted-foreground flex items-center gap-4 text-[13px] pt-1">
             <button
               onClick={() => setIsReplying(!isReplying)}
               className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition-colors font-medium"
             >
-              <MessageSquare className="h-3 w-3" />
               回复
             </button>
 
@@ -81,7 +77,6 @@ export function CommentItem({ comment, postId, onReplySuccess }: CommentItemProp
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition-colors focus:outline-none font-medium">
-                    <MoreHorizontal className="h-3 w-3" />
                     更多
                   </button>
                 </DropdownMenuTrigger>
@@ -130,7 +125,7 @@ export function CommentItem({ comment, postId, onReplySuccess }: CommentItemProp
 
       {/* Nested Replies */}
       {comment.children && comment.children.length > 0 && (
-        <div className="border-border/50 mt-4 ml-5 space-y-6 border-l pl-6">
+        <div className="border-border/30 mt-5 ml-5 space-y-6 border-l pl-6">
           {comment.children.map(reply => (
             <CommentItem
               key={reply.id}

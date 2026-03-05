@@ -32,7 +32,7 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
           h1: ({ id, children }) => (
             <h1
               id={id}
-              className="mt-12 mb-6 scroll-m-24 text-3xl leading-tight font-extrabold tracking-tighter text-foreground md:text-4xl first:mt-0"
+              className="mt-12 mb-6 scroll-m-24 text-2xl leading-tight font-bold tracking-tight text-foreground md:text-3xl first:mt-0"
             >
               {children}
             </h1>
@@ -40,7 +40,7 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
           h2: ({ id, children }) => (
             <h2
               id={id}
-              className="mt-12 mb-6 scroll-m-24 text-2xl font-bold tracking-tight text-foreground first:mt-0"
+              className="mt-12 mb-6 scroll-m-24 text-xl md:text-2xl font-semibold tracking-tight text-foreground first:mt-0"
             >
               {children}
             </h2>
@@ -48,7 +48,7 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
           h3: ({ id, children }) => (
             <h3
               id={id}
-              className="mt-8 mb-4 scroll-m-24 text-xl font-semibold tracking-tight text-foreground"
+              className="mt-8 mb-4 scroll-m-24 text-lg md:text-xl font-medium tracking-tight text-foreground"
             >
               {children}
             </h3>
@@ -56,7 +56,7 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
           h4: ({ id, children }) => (
             <h4
               id={id}
-              className="mt-6 mb-4 scroll-m-24 text-[17px] font-medium tracking-tight text-foreground"
+              className="mt-6 mb-4 scroll-m-24 text-base md:text-[17px] font-medium tracking-tight text-foreground"
             >
               {children}
             </h4>

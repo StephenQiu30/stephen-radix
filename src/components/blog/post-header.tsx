@@ -31,7 +31,7 @@ export function PostHeader({ post }: PostHeaderProps) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="text-foreground tracking-tighter text-4xl sm:text-5xl md:text-[3.25rem] lg:text-[4rem] font-extrabold leading-[1.1] mb-8 text-balance"
+        className="text-foreground tracking-tight text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-6 text-balance"
       >
         {title || '无标题文章'}
       </motion.h1>

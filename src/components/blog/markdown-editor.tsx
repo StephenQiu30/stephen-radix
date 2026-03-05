@@ -143,8 +143,8 @@ export function MarkdownEditor({
       {/* 浮动/固定工具栏 */}
       <div
         className={cn(
-          'border-border/40 flex items-center justify-between border-b px-4 py-2 backdrop-blur-sm',
-          isFullscreen ? 'bg-background/80 sticky top-0 z-10' : 'bg-muted/20 rounded-t-xl'
+          'border-border/40 flex items-center justify-between border-b px-4 py-3 backdrop-blur-md',
+          isFullscreen ? 'bg-background/80 sticky top-0 z-10' : 'bg-background/80 sticky top-0 z-10'
         )}
       >
         <div className="flex items-center gap-1">
@@ -260,7 +260,7 @@ export function MarkdownEditor({
               onChange={e => onChange(e.target.value)}
               onPaste={handlePaste}
               placeholder={placeholder || '开始写作...'} // Localized
-              className="h-full w-full resize-none border-none bg-transparent p-8 font-mono text-[15px] leading-relaxed focus:outline-none"
+              className="h-full w-full resize-none border-none bg-transparent p-6 lg:p-10 font-mono text-[15px] leading-relaxed focus:outline-none placeholder:text-muted-foreground/40"
               style={{ fontFamily: 'var(--font-mono)' }}
             />
           </div>
@@ -272,7 +272,7 @@ export function MarkdownEditor({
               view === 'split' && 'w-1/2'
             )}
           >
-            <div className="mx-auto max-w-4xl p-8">
+            <div className="mx-auto w-full p-6 lg:p-10">
               <MarkdownRender content={value || '*暂无内容预览*'} /> {/* Localized */}
             </div>
           </div>

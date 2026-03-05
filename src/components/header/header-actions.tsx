@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Link from 'next/link'
-import { Bell, Github, Search, UserCircle } from 'lucide-react'
+import { Bell, Github, Search, UserCircle, PenSquare } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme/theme-toggle'
 import { AuthModal } from '@/components/auth/auth-modal'
@@ -20,41 +20,70 @@ export function HeaderActions({ onAuthModalOpenChange, authModalOpen }: HeaderAc
 
   return (
     <>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 md:gap-2">
+        <div className="hidden sm:flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-muted-foreground hover:bg-transparent hover:text-foreground h-9 w-9 rounded-full transition-colors"
+            onClick={() => setOpen(true)}
+          >
+            <Search className="h-4 w-4" />
+            <span className="sr-only">搜索</span>
+          </Button>
+          <Link
+            href={process.env.NEXT_PUBLIC_AUTHOR_GITHUB || 'https://github.com/StephenQiu30'}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button variant="ghost" size="icon" className="text-muted-foreground hover:bg-transparent hover:text-foreground h-9 w-9 rounded-full transition-colors">
+              <Github className="h-4 w-4" />
+              <span className="sr-only">GitHub</span>
+            </Button>
+          </Link>
+          <ThemeToggle />
+        </div>
+
+        {/* Mobile Search Button */}
         <Button
           variant="ghost"
           size="icon"
-          className="hover:text-primary"
+          className="sm:hidden text-muted-foreground hover:bg-transparent hover:text-foreground h-9 w-9 rounded-full transition-colors"
           onClick={() => setOpen(true)}
         >
-          <Search className="h-5 w-5" />
-          <span className="sr-only">搜索</span>
+          <Search className="h-4 w-4" />
         </Button>
-        <Link
-          href={process.env.NEXT_PUBLIC_AUTHOR_GITHUB || 'https://github.com/StephenQiu30'}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Button variant="ghost" size="icon" className="hover:text-primary">
-            <Github className="h-5 w-5" />
-            <span className="sr-only">GitHub</span>
-          </Button>
-        </Link>
-        <ThemeToggle />
 
         {user ? (
-          <>
+          <div className="flex items-center gap-1">
+            <Link href="/blog/create">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hidden md:flex h-9 rounded-full px-3 text-[13px] font-medium text-muted-foreground hover:bg-transparent hover:text-foreground transition-all duration-300"
+              >
+                <PenSquare className="mr-1.5 h-3.5 w-3.5" />
+                写文章
+              </Button>
+            </Link>
             <Link href="/user/notifications">
-              <Button variant="ghost" size="icon" className="hover:text-primary relative">
-                <Bell className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="text-muted-foreground hover:bg-transparent hover:text-foreground h-9 w-9 rounded-full transition-colors relative">
+                <Bell className="h-4 w-4" />
                 <span className="sr-only">通知</span>
               </Button>
             </Link>
-            <UserDropdown />
-          </>
+            <div className="flex items-center h-9 ml-0.5">
+              <UserDropdown />
+            </div>
+          </div>
         ) : (
-          <Button size="default" onClick={() => onAuthModalOpenChange(true)} className="gap-2">
-            <UserCircle className="h-4 w-4" />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onAuthModalOpenChange(true)}
+            className="h-9 rounded-full px-4 text-[13px] font-medium text-foreground hover:bg-transparent hover:text-foreground/80 transition-all"
+          >
+            <UserCircle className="mr-1.5 h-4 w-4" />
             <span className="hidden sm:inline">登录</span>
           </Button>
         )}

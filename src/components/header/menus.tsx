@@ -79,7 +79,7 @@ export function Menus({ className, vertical = false }: { className?: string; ver
 
   return (
     <NavigationMenu className={className}>
-      <NavigationMenuList className="bg-background/50 dark:bg-accent/10 rounded-full border px-2 py-1 backdrop-blur-md">
+      <NavigationMenuList className="flex items-center gap-1 md:gap-2">
         {menuItems.map(item => {
           const active = isActive(item)
           return (
@@ -89,8 +89,8 @@ export function Menus({ className, vertical = false }: { className?: string; ver
                   href={item.href || '#'}
                   className={cn(
                     navigationMenuTriggerStyle(),
-                    'hover:bg-accent/50 focus:bg-accent/50 data-[active]:bg-accent data-[active]:text-accent-foreground rounded-full bg-transparent px-4 py-2',
-                    active && 'bg-accent text-accent-foreground'
+                    'h-9 bg-transparent px-3 text-sm font-medium transition-colors hover:bg-transparent hover:text-foreground focus:bg-transparent data-[active]:bg-transparent',
+                    active ? 'text-foreground font-semibold' : 'text-foreground/60 font-medium'
                   )}
                 >
                   <span className="mr-2 h-4 w-4">{item.icon}</span>

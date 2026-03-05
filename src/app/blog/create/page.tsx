@@ -29,15 +29,34 @@ export default function CreatePostPage() {
         if (draft.title) setTitle(draft.title)
         if (draft.content) setContent(draft.content)
         if (draft.tags) setTags(draft.tags)
-        if (draft.cover) setCover(draft.cover)
-        toast.info('已恢复草稿内容')
+        if (draft.title || draft.content || draft.tags || draft.cover) {
+          toast.info('已恢复未保存的草稿内容')
+        }
       } catch (err) {
         console.error('Failed to parse blog draft', err)
       }
     }
   }, [])
 
+  // Auto-save draft every 30 seconds if there's content changes
+  React.useEffect(() => {
+    const isContentEmpty = !title.trim() && !content.trim() && !tags.trim() && !cover;
+    if (isContentEmpty) return;
+
+    const timer = setInterval(() => {
+      localStorage.setItem('blog_draft', JSON.stringify({ title, content, tags, cover }))
+      // We don't show toast on auto-save to avoid annoyance, just silently save
+    }, 30000) // 30 seconds
+
+    return () => clearInterval(timer)
+  }, [title, content, tags, cover])
+
   const handleSave = () => {
+    const isContentEmpty = !title.trim() && !content.trim() && !tags.trim() && !cover;
+    if (isContentEmpty) {
+      toast.error('没有任何内容需要保存')
+      return;
+    }
     localStorage.setItem('blog_draft', JSON.stringify({ title, content, tags, cover }))
     toast.success('已保存到草稿箱')
   }
@@ -78,10 +97,13 @@ export default function CreatePostPage() {
     const toastId = toast.loading('正在发布文章...')
 
     try {
-      const tagList = tags
-        .split(/[,，]/)
-        .map(t => t.trim())
-        .filter(Boolean)
+      let tagList: string[] = []
+      if (tags.trim()) {
+        tagList = tags
+          .split(/[,，]/)
+          .map(t => t.trim())
+          .filter(Boolean)
+      }
 
       const res = await addPost({
         title,
@@ -128,7 +150,7 @@ export default function CreatePostPage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-muted-foreground"
+                  className="text-muted-foreground hover:bg-muted/50 hover:text-foreground rounded-full px-4 font-medium transition-colors"
                   onClick={handleSave}
                   disabled={loading}
                 >
@@ -146,7 +168,7 @@ export default function CreatePostPage() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  className="bg-foreground text-background hover:bg-foreground/90 rounded-full px-6"
+                  className="bg-foreground text-background hover:bg-foreground/90 rounded-full px-6 shadow-sm transition-all font-medium"
                   onClick={handleSubmit}
                   disabled={loading}
                 >
@@ -166,8 +188,8 @@ export default function CreatePostPage() {
         </div>
       </nav>
 
-      <div className="flex flex-1 overflow-auto">
-        <div className="mx-auto flex w-full max-w-4xl flex-col px-8 py-10">
+      <div className="flex flex-1 overflow-auto bg-background">
+        <div className="mx-auto flex w-full flex-col px-6 py-8 md:px-12 lg:px-20 xl:px-32 2xl:px-48 min-h-full">
           {/* Cover Image Area */}
           <div className="group relative mb-8">
             {cover ? (
@@ -216,7 +238,7 @@ export default function CreatePostPage() {
           </div>
 
           {/* Title Input */}
-          <div className="relative mb-4">
+          <div className="relative mb-6">
             <textarea
               placeholder="输入标题..."
               value={title}
@@ -226,28 +248,28 @@ export default function CreatePostPage() {
                 e.target.style.height = e.target.scrollHeight + 'px'
               }}
               rows={1}
-              className="placeholder:text-muted-foreground/40 w-full resize-none overflow-hidden bg-transparent text-5xl leading-tight font-bold tracking-tight focus:outline-none md:text-6xl"
+              className="placeholder:text-muted-foreground/30 w-full resize-none overflow-hidden bg-transparent text-4xl sm:text-5xl md:text-[3.5rem] leading-[1.1] font-bold tracking-tight text-foreground focus:outline-none transition-colors"
             />
           </div>
 
           {/* Tags Input */}
-          <div className="mb-8 flex items-center gap-2">
-            <div className="text-muted-foreground/50 text-lg">#</div>
+          <div className="mb-10 flex items-center gap-3 border-b border-border/40 pb-6">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted/50 text-muted-foreground/70 text-sm font-semibold">#</div>
             <input
               value={tags}
               onChange={e => setTags(e.target.value)}
               placeholder="添加标签 (用逗号分隔)..."
-              className="placeholder:text-muted-foreground/40 text-muted-foreground focus:text-foreground w-full bg-transparent text-lg font-medium focus:outline-none"
+              className="placeholder:text-muted-foreground/40 text-muted-foreground focus:text-foreground w-full bg-transparent text-[15px] font-medium focus:outline-none transition-colors"
             />
           </div>
 
           {/* Editor */}
-          <div className="flex flex-1 flex-col">
+          <div className="flex flex-1 flex-col mt-2">
             <MarkdownEditor
               value={content}
               onChange={setContent}
               placeholder="开始讲述你的故事..."
-              className="min-h-[500px] border-none bg-transparent px-0 shadow-none"
+              className="flex-1 min-h-[60vh] border-none bg-transparent px-0 shadow-none rounded-none"
               viewMode="edit"
             />
           </div>
