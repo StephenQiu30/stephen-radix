@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { ImagePlus, Loader2 } from 'lucide-react'
-import { addFile } from '@/api/file/fileController'
+import { uploadFile } from '@/api/file/fileController'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
@@ -23,7 +23,7 @@ export function ImageUploader({
   onChange,
   biz = FileUploadBizEnum.POST_COVER,
   className,
-  placeholder = '点击或拖拽上传封面',
+  placeholder = '点击或拖拽上传图片',
 }: ImageUploaderProps) {
   const [loading, setLoading] = React.useState(false)
   const [dragActive, setDragActive] = React.useState(false)
@@ -38,24 +38,26 @@ export function ImageUploader({
       return
     }
 
-    // Validate size (e.g., 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error('图片大小不能超过 5MB')
+    // Validate size (e.g., 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('图片大小不能超过 10MB')
       return
     }
 
     setLoading(true)
     try {
-      const res = await addFile({ fileUploadRequest: { biz } }, file)
+      const res = await uploadFile({ fileUploadRequest: { biz } }, {}, file)
       if (res.code === 0 && res.data?.url) {
         onChange?.(res.data.url)
-        toast.success('图片上传成功')
+        toast.success('图片上传成功', {
+          description: res.data.fileName || '已成功保存到云端',
+        })
       } else {
         toast.error(res.message || '上传失败')
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Upload error:', error)
-      toast.error('上传失败，请重试')
+      toast.error(error.message || '上传失败，请重试')
     } finally {
       setLoading(false)
     }
@@ -87,24 +89,25 @@ export function ImageUploader({
   const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation()
     onChange?.('')
+    toast.info('已移除图片')
   }
 
   return (
     <div className={cn('w-full', className)}>
       <div
         className={cn(
-          'relative flex flex-col items-center justify-center overflow-hidden rounded-lg border-2 border-dashed transition-all duration-200',
+          'group relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed transition-all duration-300 ease-in-out',
           dragActive
-            ? 'border-primary bg-primary/5'
-            : 'border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50',
-          value ? 'bg-muted/20 h-48 border-none' : 'h-32',
-          loading && 'pointer-events-none opacity-50'
+            ? 'border-primary bg-primary/5 ring-8 ring-primary/5'
+            : 'border-muted-foreground/20 hover:border-primary/40 hover:bg-muted/30 hover:shadow-lg',
+          value ? 'h-56 border-none bg-muted/20' : 'h-40',
+          loading && 'pointer-events-none'
         )}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
         onDrop={handleDrop}
-        onClick={() => !value && inputRef.current?.click()}
+        onClick={() => !value && !loading && inputRef.current?.click()}
       >
         <input
           ref={inputRef}
@@ -114,107 +117,86 @@ export function ImageUploader({
           onChange={handleChange}
         />
 
-        {loading ? (
-          <div className="text-muted-foreground flex flex-col items-center gap-2">
-            <Loader2 className="h-8 w-8 animate-spin" />
-            <span className="text-xs font-medium">上传中...</span>
+        {loading && (
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/60 backdrop-blur-[2px]">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <span className="mt-2 text-sm font-medium text-foreground/60">正在努力上传...</span>
           </div>
-        ) : value ? (
-          biz === FileUploadBizEnum.USER_AVATAR ? (
-            <div className="flex h-full w-full items-center justify-center">
-              <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
-                <AvatarImage src={value} alt="Uploaded avatar" />
-                <AvatarFallback>User</AvatarFallback>
-              </Avatar>
-              <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                <div className="flex gap-2">
-                  <TooltipProvider delayDuration={300}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={e => {
-                            e.stopPropagation()
-                            inputRef.current?.click()
-                          }}
-                        >
-                          更换
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>更换图片</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+        )}
 
-                  <TooltipProvider delayDuration={300}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button size="sm" variant="destructive" onClick={handleRemove}>
-                          移除
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>移除图片</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
+        {value ? (
+          <div className="relative h-full w-full overflow-hidden group">
+            {biz === FileUploadBizEnum.USER_AVATAR ? (
+              <div className="flex h-full w-full items-center justify-center p-4">
+                <Avatar className="h-32 w-32 shadow-2xl ring-4 ring-background transition-transform duration-500 group-hover:scale-105">
+                  <AvatarImage src={value} alt="Uploaded avatar" className="object-cover" />
+                  <AvatarFallback className="bg-muted text-2xl font-semibold">
+                    {placeholder.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
               </div>
-            </div>
-          ) : (
-            <>
+            ) : (
               <img
                 src={value}
-                alt="Uploaded cover"
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                alt="Uploaded image"
+                className="h-full w-full object-cover transition-all duration-700 ease-in-out group-hover:scale-110 group-hover:blur-[2px]"
               />
-              <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                <div className="flex gap-2">
-                  <TooltipProvider delayDuration={300}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={e => {
-                            e.stopPropagation()
-                            inputRef.current?.click()
-                          }}
-                        >
-                          更换
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>更换图片</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+            )}
 
-                  <TooltipProvider delayDuration={300}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button size="sm" variant="destructive" onClick={handleRemove}>
-                          移除
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>移除图片</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/40 opacity-0 transition-all duration-300 backdrop-blur-[4px] group-hover:opacity-100">
+              <div className="flex translate-y-4 gap-3 transition-transform duration-300 group-hover:translate-y-0 text-white">
+                <TooltipProvider delayDuration={0}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="rounded-full px-5 font-semibold shadow-lg hover:bg-white hover:text-black"
+                        onClick={e => {
+                          e.stopPropagation()
+                          inputRef.current?.click()
+                        }}
+                      >
+                        更换
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      <p>更换当前图片</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <TooltipProvider delayDuration={0}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        className="rounded-full px-5 font-semibold shadow-lg"
+                        onClick={handleRemove}
+                      >
+                        移除
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      <p>彻底移除此图片</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
-            </>
-          )
-        ) : (
-          <div className="text-muted-foreground flex flex-col items-center gap-2 p-4 text-center">
-            <div className="bg-muted rounded-full p-3">
-              <ImagePlus className="h-6 w-6" />
             </div>
-            <p className="text-sm font-medium">{placeholder}</p>
-            <p className="text-muted-foreground/60 text-xs">支持 JPG, PNG, WebP (最大 5MB)</p>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-4 p-8 text-center transition-all duration-300 group-hover:scale-105">
+            <div className="bg-muted flex h-16 w-16 items-center justify-center rounded-2xl shadow-inner transition-colors group-hover:bg-primary/10">
+              <ImagePlus className="h-8 w-8 text-muted-foreground/60 transition-colors group-hover:text-primary" />
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-semibold tracking-tight">{placeholder}</p>
+              <p className="text-muted-foreground/60 text-xs">
+                支持 JPG, PNG, WebP (建议 10MB 以内)
+              </p>
+            </div>
           </div>
         )}
       </div>

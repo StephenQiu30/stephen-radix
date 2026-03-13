@@ -1,4 +1,20 @@
 declare namespace AiAPI {
+  type AiChatRecord = {
+    id?: number
+    userId?: number
+    sessionId?: string
+    message?: string
+    response?: string
+    modelType?: string
+    totalTokens?: number
+    promptTokens?: number
+    completionTokens?: number
+    postId?: number
+    createTime?: string
+    updateTime?: string
+    isDelete?: number
+  }
+
   type AiChatRecordQueryRequest = {
     /** 当前页号 */
     current?: number
@@ -8,6 +24,10 @@ declare namespace AiAPI {
     sortField?: string
     /** 排序顺序（默认升序） */
     sortOrder?: string
+    /** id */
+    id?: number
+    /** 用户 id */
+    userId?: number
     /** 会话 id */
     sessionId?: string
     /** 模型类型 */
@@ -92,6 +112,14 @@ declare namespace AiAPI {
     message?: string
   }
 
+  type BaseResponsePageAiChatRecord = {
+    /** 状态码 */
+    code?: number
+    data?: PageAiChatRecord
+    /** 消息 */
+    message?: string
+  }
+
   type BaseResponsePageAiChatRecordVO = {
     /** 状态码 */
     code?: number
@@ -108,6 +136,20 @@ declare namespace AiAPI {
   type OrderItem = {
     column?: string
     asc?: boolean
+  }
+
+  type PageAiChatRecord = {
+    records?: AiChatRecord[]
+    total?: number
+    size?: number
+    current?: number
+    orders?: OrderItem[]
+    optimizeCountSql?: PageAiChatRecord
+    searchCount?: PageAiChatRecord
+    optimizeJoinOfCountSql?: boolean
+    maxLimit?: number
+    countId?: string
+    pages?: number
   }
 
   type PageAiChatRecordVO = {
