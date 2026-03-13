@@ -6,7 +6,7 @@ import { SiteHeader } from '@/components/header/site-header'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Stephen Radix - NextJS Starter',
+  title: "StephenQiu's Blog",
   description: 'A modern Next.js starter template',
 }
 

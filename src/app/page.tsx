@@ -30,6 +30,19 @@ export default function LandingPage() {
   const springConfig = { stiffness: 100, damping: 30, restDelta: 0.001 }
   const scale = useSpring(useTransform(scrollY, [0, 500], [1, 0.95]), springConfig)
 
+  // Floating blob animation variants
+  const blobVariants = {
+    animate: {
+      scale: [1, 1.1, 1],
+      rotate: [0, 90, 180, 270, 360],
+      transition: {
+        duration: 20,
+        repeat: Infinity,
+        ease: "linear" as const
+      }
+    }
+  }
+
   const features = [
     {
       icon: <BookOpen className="h-6 w-6 text-blue-500" />,
@@ -68,8 +81,18 @@ export default function LandingPage() {
       <section className="relative flex min-h-[90vh] flex-col items-center justify-center overflow-hidden px-6 pt-20 pb-20">
         {/* Background Gradients */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute top-[-20%] left-[10%] h-[70vw] w-[70vw] rounded-full bg-primary/5 opacity-40 blur-[120px] filter" />
-          <div className="absolute bottom-[-10%] right-[10%] h-[50vw] w-[50vw] rounded-full bg-indigo-500/5 opacity-40 blur-[120px] filter" />
+          <motion.div 
+            variants={blobVariants}
+            animate="animate"
+            className="absolute top-[-10%] left-[5%] h-[60vw] w-[60vw] rounded-full bg-primary/10 opacity-30 blur-[100px] filter dark:bg-primary/5" 
+          />
+          <motion.div 
+            variants={blobVariants}
+            animate="animate"
+            className="absolute bottom-[-10%] right-[5%] h-[50vw] w-[50vw] rounded-full bg-indigo-500/10 opacity-30 blur-[100px] filter dark:bg-indigo-500/5" 
+            style={{ animationDirection: 'reverse' }}
+          />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0)_0%,var(--background)_100%)]" />
         </div>
 
         <motion.div
@@ -80,9 +103,9 @@ export default function LandingPage() {
           className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center text-center"
         >
           <motion.div variants={fadeInUp}>
-            <span className="inline-flex items-center gap-2 rounded-full border border-black/5 bg-white/50 px-4 py-1.5 text-sm font-medium text-black/80 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/10 dark:text-white/80">
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
-              <span>Stephen Radix v2.0</span>
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-semibold text-primary shadow-[0_0_15px_rgba(var(--primary),0.1)] backdrop-blur-2xl dark:border-primary/30 dark:bg-primary/10">
+              <Sparkles className="h-4 w-4 animate-pulse" />
+              <span>StephenQiu's Blog</span>
             </span>
           </motion.div>
 
@@ -90,9 +113,9 @@ export default function LandingPage() {
             variants={fadeInUp}
             className="mt-8 text-6xl font-bold tracking-tight text-foreground md:text-8xl lg:text-9xl"
           >
-            探索技术。<br />
+            思考沉淀。<br />
             <span className="bg-gradient-to-r from-primary to-indigo-600 bg-clip-text pb-2 text-transparent">
-              链接未来。
+              遇见更好的自己。
             </span>
           </motion.h1>
 
@@ -100,9 +123,9 @@ export default function LandingPage() {
             variants={fadeInUp}
             className="text-muted-foreground mt-8 max-w-2xl text-xl leading-relaxed font-medium md:text-2xl"
           >
-            沉淀、分享、成长。
+            专注于技术、架构与思维的深度分享。
             <br className="hidden md:block" />
-            在代码与灵感的交汇处，发现更多可能。
+            在字节与逻辑的交织中，记录技术的点滴。
           </motion.p>
 
           <motion.div variants={fadeInUp} className="mt-12 flex flex-col gap-4 sm:flex-row">
@@ -137,9 +160,11 @@ export default function LandingPage() {
             transition={{ duration: 0.8 }}
             className="mb-20 text-center"
           >
-            <h2 className="text-4xl font-bold tracking-tight md:text-6xl text-foreground">核心驱动。</h2>
-            <p className="text-muted-foreground mt-6 text-xl font-medium md:text-2xl">
-              为您打造极致的数字化体验。
+            <h2 className="text-4xl font-bold tracking-tight md:text-6xl lg:text-7xl text-foreground">
+              核心 <span className="text-primary italic">驱动</span>
+            </h2>
+            <p className="text-muted-foreground mt-6 text-xl font-medium md:text-2xl max-w-2xl mx-auto">
+              追求技术与审美的平衡，为您打造极致的数字化体验。
             </p>
           </motion.div>
 
@@ -166,11 +191,14 @@ export default function LandingPage() {
 
                 <div className="relative z-10 flex h-full flex-col justify-between">
                   <div className="space-y-6">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-background/80 shadow-inner group-hover:scale-110 transition-transform duration-500">
-                      {feature.icon}
+                    <div className="relative inline-block">
+                      <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-background/50 border border-border/50 backdrop-blur-sm shadow-inner group-hover:scale-110 group-hover:bg-background transition-all duration-500">
+                        {feature.icon}
+                      </div>
                     </div>
                     <div>
-                      <h3 className="text-3xl font-bold tracking-tight text-foreground">{feature.title}</h3>
+                      <h3 className="text-3xl font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">{feature.title}</h3>
                       <p className="mt-4 text-muted-foreground text-lg leading-relaxed font-medium">
                         {feature.description}
                       </p>
@@ -180,7 +208,7 @@ export default function LandingPage() {
                     <div className="mt-10">
                       <Link 
                         href={feature.href}
-                        className="inline-flex items-center text-primary font-bold hover:underline"
+                        className="inline-flex items-center text-primary font-bold transition-all group-hover:gap-4"
                       >
                         了解更多 <ArrowRight className="ml-2 h-4 w-4" />
                       </Link>
@@ -245,29 +273,39 @@ export default function LandingPage() {
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 1.2 }}
-              className="relative"
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              className="relative group"
             >
-              <div className="relative aspect-square rounded-[3.5rem] bg-gradient-to-tr from-primary/20 via-primary/5 to-transparent p-1 shadow-2xl overflow-hidden">
+              <div className="absolute -inset-4 bg-gradient-to-tr from-primary/20 to-indigo-500/20 rounded-[4rem] blur-2xl opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
+              <div className="relative aspect-square rounded-[3.5rem] bg-gradient-to-tr from-primary/30 via-border to-transparent p-[1px] shadow-2xl overflow-hidden">
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px]" />
-                <div className="h-full w-full rounded-[3.4rem] bg-card flex items-center justify-center p-12 relative overflow-hidden">
+                <div className="h-full w-full rounded-[3.45rem] bg-card/95 backdrop-blur-xl flex items-center justify-center p-12 relative overflow-hidden">
                   <div className="absolute -top-1/4 -right-1/4 w-3/4 h-3/4 bg-primary/10 blur-[100px] rounded-full" />
+                  <div className="absolute -bottom-1/4 -left-1/4 w-3/4 h-3/4 bg-indigo-500/10 blur-[100px] rounded-full" />
+                  
+                  {/* Floating dots decoration */}
+                  <div className="absolute top-10 right-10 flex gap-1">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary/20" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary/40" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary/60" />
+                  </div>
+
                   <div className="relative z-10 w-full font-mono text-sm space-y-4">
-                    <div className="flex gap-2 mb-8">
-                      <div className="h-3 w-3 rounded-full bg-red-400" />
-                      <div className="h-3 w-3 rounded-full bg-amber-400" />
-                      <div className="h-3 w-3 rounded-full bg-emerald-400" />
+                    <div className="flex gap-2 mb-10">
+                      <div className="h-3 w-3 rounded-full bg-red-500/80 shadow-[0_0_8px_rgba(239,68,68,0.4)]" />
+                      <div className="h-3 w-3 rounded-full bg-amber-500/80 shadow-[0_0_8px_rgba(245,158,11,0.4)]" />
+                      <div className="h-3 w-3 rounded-full bg-emerald-500/80 shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
                     </div>
-                    <p className="text-primary font-bold">@Service</p>
-                    <p className="text-foreground/80"><span className="text-primary/60">public class</span> <span className="text-blue-500 font-bold">StephenRadix</span> {'{'}</p>
-                    <p className="pl-6 text-foreground/70"><span className="text-primary/60">private final</span> <span className="text-purple-500">Innovation</span> vision;</p>
-                    <p className="pl-6 text-foreground/70"><span className="text-primary/60">private final</span> <span className="text-purple-500">Quality</span> standard;</p>
+                    <p className="text-primary font-bold animate-pulse">@Service</p>
+                    <p className="text-foreground/90"><span className="text-primary/70">public class</span> <span className="text-blue-500 font-bold drop-shadow-[0_0_8px_rgba(59,130,246,0.3)]">StephenQiuBlog</span> {'{'}</p>
+                    <p className="pl-6 text-foreground/80"><span className="text-primary/70">private final</span> <span className="text-purple-500">Insights</span> content;</p>
+                    <p className="pl-6 text-foreground/80"><span className="text-primary/70">private final</span> <span className="text-purple-500">Quality</span> standard;</p>
                     <p className="pl-6">&nbsp;</p>
-                    <p className="pl-6 text-foreground/80"><span className="text-primary/60">public void</span> <span className="text-blue-500 font-bold">deliverValue</span>() {'{'}</p>
-                    <p className="pl-12 text-foreground/70"><span className="text-emerald-500 font-bold">vision</span>.accelerate();</p>
-                    <p className="pl-12 text-foreground/70"><span className="text-emerald-500 font-bold">standard</span>.exceed();</p>
-                    <p className="pl-6 text-foreground/80">{'}'}</p>
-                    <p className="text-foreground/80">{'}'}</p>
+                    <p className="pl-6 text-foreground/90"><span className="text-primary/70">public void</span> <span className="text-blue-500 font-bold">shareKnowledge</span>() {'{'}</p>
+                    <p className="pl-12 text-foreground/80"><span className="text-emerald-500 font-bold">content</span>.publish();</p>
+                    <p className="pl-12 text-foreground/80"><span className="text-emerald-500 font-bold">standard</span>.exceed();</p>
+                    <p className="pl-6 text-foreground/90">{'}'}</p>
+                    <p className="text-foreground/90">{'}'}</p>
                   </div>
                 </div>
               </div>
