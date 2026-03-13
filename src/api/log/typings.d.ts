@@ -352,6 +352,8 @@ declare namespace LogAPI {
     errorMessage?: string
     /** 客户端IP */
     clientIp?: string
+    /** 归属地 */
+    location?: string
   }
 
   type OperationLogQueryRequest = {
@@ -406,6 +408,8 @@ declare namespace LogAPI {
     errorMessage?: string
     /** 客户端IP */
     clientIp?: string
+    /** 归属地 */
+    location?: string
     /** 创建时间 */
     createTime?: string
   }
@@ -498,6 +502,8 @@ declare namespace LogAPI {
     failReason?: string
     /** 客户端IP */
     clientIp?: string
+    /** 归属地 */
+    location?: string
     /** User-Agent */
     userAgent?: string
   }
@@ -542,6 +548,8 @@ declare namespace LogAPI {
     failReason?: string
     /** 客户端IP */
     clientIp?: string
+    /** 归属地 */
+    location?: string
     /** User-Agent */
     userAgent?: string
     /** 创建时间 */

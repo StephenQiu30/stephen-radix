@@ -93,7 +93,10 @@ declare namespace UserAPI {
   }
 
   type checkParams = {
-    request: WxMpCheckRequest
+    signature?: string
+    timestamp?: string
+    nonce?: string
+    echostr?: string
   }
 
   type checkWxLoginStatusParams = {
@@ -352,16 +355,5 @@ declare namespace UserAPI {
     qrCodeUrl?: string
     /** 场景 ID */
     sceneId?: string
-  }
-
-  type WxMpCheckRequest = {
-    /** 时间戳 */
-    timestamp?: string
-    /** 随机数 */
-    nonce?: string
-    /** 签名 */
-    signature?: string
-    /** 随机字符串 */
-    echostr?: string
   }
 }
