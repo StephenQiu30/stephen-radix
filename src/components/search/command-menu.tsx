@@ -2,7 +2,7 @@
 
 import * as React from 'react' // turbo
 import { useRouter } from 'next/navigation'
-import { Activity, FileText, Home, Settings, User } from 'lucide-react'
+import { FileText, Home, Settings, User } from 'lucide-react'
 
 import {
   CommandDialog,
@@ -15,7 +15,7 @@ import {
   CommandShortcut,
 } from '@/components/ui/command'
 
-import { ALGORITHMS } from '@/lib/sorting-algorithms'
+
 
 interface CommandMenuProps {
   open: boolean
@@ -59,24 +59,6 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
             <FileText className="mr-2 h-4 w-4" />
             <span>博客 Blog</span>
           </CommandItem>
-          <CommandItem onSelect={() => runCommand(() => router.push('/algorithms'))}>
-            <Activity className="mr-2 h-4 w-4" />
-            <span>算法 Algorithms</span>
-          </CommandItem>
-        </CommandGroup>
-        <CommandSeparator />
-        <CommandGroup heading="Algorithms">
-          {ALGORITHMS.map(algo => (
-            <CommandItem
-              key={algo.id}
-              onSelect={() => runCommand(() => router.push(`/algorithms/${algo.id}`))}
-            >
-              <Activity className="mr-2 h-4 w-4" />
-              <span>
-                {algo.name} ({algo.id})
-              </span>
-            </CommandItem>
-          ))}
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Settings">

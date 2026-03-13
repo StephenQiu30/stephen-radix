@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { MarkdownRender } from '@/components/blog/markdown-render'
 
-import { addFile } from '@/api/file/fileController'
+import { uploadFile } from '@/api/file/fileController'
 import { FileUploadBizEnum } from '@/enums/FileUploadBizEnum'
 import { toast } from 'sonner'
 
@@ -69,10 +69,11 @@ export function MarkdownEditor({
   const handleImageUpload = async (file: File) => {
     const toastId = toast.loading('正在上传图片...')
     try {
-      const res = await addFile(
+      const res = await uploadFile(
         {
           fileUploadRequest: { biz: FileUploadBizEnum.POST_IMAGE_COVER },
         },
+        {},
         file
       )
       if (res.code === 0 && res.data?.url) {

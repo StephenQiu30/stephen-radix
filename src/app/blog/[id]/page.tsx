@@ -51,15 +51,16 @@ export default function PostDetailPage() {
       setLoading(true)
       setError(null)
       try {
-        const res = (await getPostVoById({
+        const res = await getPostVoById({
           id: postId as any,
-        })) as unknown as PostAPI.BaseResponsePostVO
+        })
         if (res && res.code === 0 && res.data) {
-          setPost(res.data)
-          setHasThumb(res.data.hasThumb || false)
-          setHasFavour(res.data.hasFavour || false)
-          setThumbNum(res.data.thumbNum || 0)
-          setFavourNum(res.data.favourNum || 0)
+          const postData = res.data
+          setPost(postData)
+          setHasThumb(postData.hasThumb || false)
+          setHasFavour(postData.hasFavour || false)
+          setThumbNum(postData.thumbNum || 0)
+          setFavourNum(postData.favourNum || 0)
         } else {
           setError(`${res?.message || 'Story not found'} (ID: ${postId})`)
           setPost(null)

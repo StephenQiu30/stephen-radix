@@ -16,7 +16,8 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { BookMarked, FileText, Heart, User as UserIcon, Calendar, Github, Award, AtSign, Shield, Zap, Edit, Loader2 } from 'lucide-react'
 import { PostCard } from '@/components/blog/post-card'
-import { listMyPostVoByPage } from '@/api/post/postController'
+import { searchPostByPage } from '@/api/search/searchController'
+
 import { listMyThumbPostByPage } from '@/api/post/postThumbController'
 import { listMyFavourPostByPage } from '@/api/post/postFavourController'
 
@@ -59,9 +60,13 @@ export default function ProfilePage() {
   const fetchMyPosts = async () => {
     try {
       setLoadingPosts(true)
-      const res = await listMyPostVoByPage({ current: 1, pageSize: 20 })
+      const res = await searchPostByPage({
+        userId: user?.id,
+        current: 1,
+        pageSize: 20,
+      })
       if (res.code === 0 && res.data?.records) {
-        setPosts(res.data.records)
+        setPosts(res.data.records as PostAPI.PostVO[])
       }
     } catch (error) {
       console.error('Failed to fetch posts:', error)
@@ -270,8 +275,8 @@ export default function ProfilePage() {
                 </div>
               </div>
             </CardContent>
-          </Card>
-        </motion.div>
+            </Card>
+          </motion.div>
 
         {/* 右侧 - 动态与详情模块 (8cols) */}
         <motion.div className="space-y-6 lg:col-span-8" variants={itemVariants}>

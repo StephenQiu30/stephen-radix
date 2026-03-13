@@ -17,7 +17,9 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { searchUserByPage } from '@/api/search/searchController'
+import { searchUserByPage, searchPostByPage } from '@/api/search/searchController'
+import { PostCard } from '@/components/blog/post-card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -46,36 +48,51 @@ export default function UserDetailPage() {
   const userId = params.id as string
 
   const [user, setUser] = React.useState<UserAPI.UserVO | null>(null)
+  const [posts, setPosts] = React.useState<PostAPI.PostVO[]>([])
   const [loading, setLoading] = React.useState(true)
+  const [loadingPosts, setLoadingPosts] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
 
   React.useEffect(() => {
     if (!userId) return
 
-    const fetchUser = async () => {
+    const fetchData = async () => {
       setLoading(true)
       try {
-        // Use ES search to find user by ID as requested
-        const res = (await searchUserByPage({
+        // Use ES search to find user by ID
+        const userRes = (await searchUserByPage({
           id: userId as any,
           current: 1,
           pageSize: 1,
         })) as unknown as SearchAPI.BaseResponsePage
 
-        if (res.code === 0 && res.data?.records && (res.data.records as any).length > 0) {
-          setUser((res.data.records as any)[0])
+        if (userRes.code === 0 && userRes.data?.records && (userRes.data.records as any).length > 0) {
+          const userData = (userRes.data.records as any)[0] as UserAPI.UserVO
+          setUser(userData)
+          
+          // Fetch user's posts from ES
+          setLoadingPosts(true)
+          const postsRes = await searchPostByPage({
+            userId: userId as any,
+            current: 1,
+            pageSize: 20,
+          })
+          if (postsRes.code === 0 && postsRes.data?.records) {
+            setPosts(postsRes.data.records as PostAPI.PostVO[])
+          }
+          setLoadingPosts(false)
         } else {
           setError('用户不存在')
         }
       } catch (err) {
-        console.error('Failed to fetch user:', err)
-        setError('获取用户信息失败')
+        console.error('Failed to fetch user data:', err)
+        setError('获取信息失败')
       } finally {
         setLoading(false)
       }
     }
 
-    fetchUser()
+    fetchData()
   }, [userId])
 
   if (loading) {
@@ -192,14 +209,14 @@ export default function UserDetailPage() {
 
                 <div className="bg-secondary/30 rounded-2xl p-6 text-sm">
                   <p className="text-muted-foreground leading-relaxed">
-                    "{(user as any).userProfile || '这个人很懒，什么都没留下...'}"
+                    "{user.userProfile || '这个人很懒，什么都没留下...'}"
                   </p>
                 </div>
 
                 {/* Stats */}
                 <div className="border-border/40 mt-8 grid grid-cols-3 gap-4 border-t pt-8">
                   <StatItem label="天数" value={accountAge} icon={<Zap />} />
-                  <StatItem label="动态" value={0} />
+                  <StatItem label="动态" value={posts.length} />
                   <StatItem label="获赞" value={0} />
                 </div>
               </div>
@@ -209,53 +226,85 @@ export default function UserDetailPage() {
 
         {/* Right Side - Details */}
         <motion.div className="space-y-6 lg:col-span-8" variants={itemVariants}>
-          <div className="border-border/40 bg-card/50 rounded-[2rem] border shadow-sm backdrop-blur-xl">
-            <div className="border-border/40 border-b px-8 py-6">
-              <h3 className="flex items-center gap-2 text-lg font-semibold">
-                <UserIcon className="text-primary h-5 w-5" />
-                基本信息
-              </h3>
-            </div>
-            <div className="p-8">
-              <div className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
-                <InfoItem
-                  label="用户昵称"
-                  value={user.userName || '未设置'}
-                  description="在社区展示的名字"
-                />
-                <InfoItem
-                  label="用户 ID"
-                  value={user.id ? `#${user.id}` : '未知'}
-                  description="系统唯一识别码"
-                />
-              </div>
-            </div>
-          </div>
+          <Tabs defaultValue="about" className="w-full space-y-6">
+            <TabsList className="bg-primary/5 dark:bg-primary/10 h-14 w-full justify-start rounded-2xl p-1.5 border border-primary/10 backdrop-blur-md">
+              <TabsTrigger value="about" className="data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-xl px-6 py-2.5 text-sm font-medium transition-all">
+                关于
+              </TabsTrigger>
+              <TabsTrigger value="posts" className="data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-xl px-6 py-2.5 text-sm font-medium transition-all">
+                博文 ({posts.length})
+              </TabsTrigger>
+            </TabsList>
 
-          <div className="border-border/40 bg-card/50 rounded-[2rem] border shadow-sm backdrop-blur-xl">
-            <div className="border-border/40 border-b px-8 py-6">
-              <h3 className="flex items-center gap-2 text-lg font-semibold">
-                <Calendar className="text-primary h-5 w-5" />
-                账户历程
-              </h3>
-            </div>
-            <div className="p-8">
-              <div className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
-                <InfoItem
-                  label="注册日期"
-                  value={
-                    user.createTime
-                      ? new Date(user.createTime).toLocaleDateString('zh-CN', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })
-                      : '未知'
-                  }
-                />
+            <TabsContent value="about" className="space-y-6 outline-none">
+              <div className="border-border/40 bg-card/50 rounded-[2rem] border shadow-sm backdrop-blur-xl">
+                <div className="border-border/40 border-b px-8 py-6">
+                  <h3 className="flex items-center gap-2 text-lg font-semibold">
+                    <UserIcon className="text-primary h-5 w-5" />
+                    基本信息
+                  </h3>
+                </div>
+                <div className="p-8">
+                  <div className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
+                    <InfoItem
+                      label="用户昵称"
+                      value={user.userName || '未设置'}
+                      description="在社区展示的名字"
+                    />
+                    <InfoItem
+                      label="用户 ID"
+                      value={user.id ? `#${user.id}` : '未知'}
+                      description="系统唯一识别码"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+
+              <div className="border-border/40 bg-card/50 rounded-[2rem] border shadow-sm backdrop-blur-xl">
+                <div className="border-border/40 border-b px-8 py-6">
+                  <h3 className="flex items-center gap-2 text-lg font-semibold">
+                    <Calendar className="text-primary h-5 w-5" />
+                    账户历程
+                  </h3>
+                </div>
+                <div className="p-8">
+                  <div className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
+                    <InfoItem
+                      label="注册日期"
+                      value={
+                        user.createTime
+                          ? new Date(user.createTime).toLocaleDateString('zh-CN', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            })
+                          : '未知'
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="posts" className="outline-none">
+              {loadingPosts ? (
+                <div className="flex h-40 items-center justify-center">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : posts.length > 0 ? (
+                <div className="grid gap-6 sm:grid-cols-2">
+                  {posts.map((post) => (
+                    <PostCard key={`post-${post.id}`} post={post} />
+                  ))}
+                </div>
+              ) : (
+                <div className="border-border/40 bg-card/50 flex min-h-[300px] flex-col items-center justify-center gap-4 rounded-[2rem] border p-8 text-center backdrop-blur-xl">
+                  <FileWarning className="text-muted-foreground/30 h-12 w-12" />
+                  <p className="text-muted-foreground">暂无发布的博文</p>
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         </motion.div>
       </div>
     </motion.div>

@@ -3,7 +3,7 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Activity, BookOpen, Home, User } from 'lucide-react'
+import { BookOpen, Home, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
   NavigationMenu,
@@ -30,7 +30,6 @@ const menuItems: MenuItem[] = [
     activePrefix: '/blog',
     icon: <BookOpen className="h-4 w-4" />,
   },
-  { title: '算法可视化', href: '/algorithms', icon: <Activity className="h-4 w-4" /> },
   {
     title: '我的空间',
     href: '/user/profile',

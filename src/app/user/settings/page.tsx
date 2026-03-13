@@ -16,7 +16,8 @@ import Link from 'next/link'
 import { AuthModal } from '@/components/auth/auth-modal'
 import { LoginPromptCard } from '@/components/auth/login-prompt-card'
 import { getLoginUser, editUser } from '@/api/user/userController'
-import { addFile } from '@/api/file/fileController'
+import { uploadFile } from '@/api/file/fileController'
+import { FileUploadBizEnum } from '@/enums/FileUploadBizEnum'
 import { setLoginUser } from '@/store/modules/user/userSlice'
 
 const containerVariants = {
@@ -113,8 +114,9 @@ export default function SettingsPage() {
 
     setUploading(true)
     try {
-      const res = await addFile(
-        { fileUploadRequest: { biz: 'user_avatar' } },
+      const res = await uploadFile(
+        { fileUploadRequest: { biz: FileUploadBizEnum.USER_AVATAR } },
+        {},
         file
       )
       if (res.code === 0 && res.data?.url) {
