@@ -4,7 +4,9 @@ import * as React from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { UserAvatar } from '@/components/header/user-avatar'
 import { Badge } from '@/components/ui/badge'
-import { motion } from 'framer-motion'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
+import dayjs from '@/lib/dayjs'
 import {
   ArrowLeft,
   Award,
@@ -21,28 +23,8 @@ import { searchUserByPage, searchPostByPage } from '@/api/search/searchControlle
 import { PostCard } from '@/components/blog/post-card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-}
-
-const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.5,
-    },
-  },
-}
-
 export default function UserDetailPage() {
+  const containerRef = React.useRef<HTMLDivElement>(null)
   const params = useParams()
   const router = useRouter()
   const userId = params.id as string
@@ -69,7 +51,7 @@ export default function UserDetailPage() {
         if (userRes.code === 0 && userRes.data?.records && (userRes.data.records as any).length > 0) {
           const userData = (userRes.data.records as any)[0] as UserAPI.UserVO
           setUser(userData)
-          
+
           // Fetch user's posts from ES
           setLoadingPosts(true)
           const postsRes = await searchPostByPage({
@@ -118,10 +100,23 @@ export default function UserDetailPage() {
     )
   }
 
-  // Calculate account age
-  const accountAge = user.createTime
-    ? Math.floor((Date.now() - new Date(user.createTime).getTime()) / (1000 * 60 * 60 * 24))
-    : 0
+  // Use dayjs for dates and relative time
+  const joinedDate = user.createTime ? dayjs(user.createTime).format('MMMM D, YYYY') : 'Unknown'
+  const joinedAgo = user.createTime ? dayjs(user.createTime).fromNow(true) : '0 days'
+  useGSAP(
+    () => {
+      if (!loading && user) {
+        gsap.from('.animate-in', {
+          opacity: 0,
+          y: 30,
+          duration: 1.2,
+          stagger: 0.15,
+          ease: 'power4.out',
+        })
+      }
+    },
+    { scope: containerRef, dependencies: [loading, user] }
+  )
 
   // Role config (Read-Only)
   const roleConfig = {
@@ -146,184 +141,131 @@ export default function UserDetailPage() {
   const RoleIcon = roleInfo.icon
 
   return (
-    <motion.div
-      className="container mx-auto max-w-6xl space-y-8 py-8 md:py-12"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
-      {/* Header */}
-      <motion.div className="flex items-center justify-between" variants={itemVariants}>
-        <div className="space-y-1">
-          <button
-            onClick={() => router.back()}
-            className="text-muted-foreground hover:text-foreground mb-4 flex items-center gap-2 text-sm transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            返回
-          </button>
-          <h1 className="from-foreground to-foreground/70 bg-gradient-to-r bg-clip-text text-4xl font-extrabold tracking-tight text-transparent">
-            用户主页
-          </h1>
-        </div>
-      </motion.div>
+    <div ref={containerRef} className="container mx-auto px-6 max-w-7xl py-12 md:py-24 space-y-20 selection:bg-primary/20">
+      {/* Header - Back Button Only */}
+      <div className="animate-in flex items-center justify-between">
+        <button
+          onClick={() => router.back()}
+          className="group flex items-center text-[13px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-all duration-300"
+        >
+          <ArrowLeft className="h-4 w-4 mr-1 transition-transform group-hover:-translate-x-1" />
+          Back
+        </button>
+      </div>
 
-      <div className="grid gap-8 lg:grid-cols-12">
-        {/* Left Side - User Card */}
-        <motion.div className="lg:col-span-4" variants={itemVariants}>
-          <div className="border-border/40 bg-card/50 overflow-hidden rounded-[2rem] border shadow-sm backdrop-blur-xl transition-all hover:shadow-md">
-            {/* Background */}
-            <div className="h-32 bg-gradient-to-b from-blue-500/10 to-transparent dark:from-blue-400/10"></div>
-
-            <div className="relative px-8 pb-8">
-              {/* Avatar */}
-              <div className="-mt-16 mb-6 flex justify-center">
-                <div className="relative">
-                  <UserAvatar
-                    user={user}
-                    size="xl"
-                    className="border-background h-32 w-32 border-[6px] shadow-xl"
-                  />
-                  <div className="border-background absolute right-2 bottom-2 h-5 w-5 rounded-full border-4 bg-green-500 shadow-sm" />
-                </div>
-              </div>
-
-              {/* Basic Info */}
-              <div className="space-y-4 text-center">
-                <div className="space-y-1">
-                  <h2 className="text-2xl font-bold tracking-tight">
-                    {user.userName || '未设置用户名'}
-                  </h2>
-                </div>
-
-                <div className="flex justify-center gap-2">
-                  <Badge variant="secondary" className="bg-secondary/50 font-medium">
-                    <RoleIcon className="mr-1.5 h-3.5 w-3.5 opacity-70" />
-                    {roleInfo.label}
-                  </Badge>
-                  <Badge variant="outline" className="border-primary/20 text-primary font-medium">
-                    <Award className="mr-1.5 h-3.5 w-3.5" />
-                    Lv.1 成员
-                  </Badge>
-                </div>
-
-                <div className="bg-secondary/30 rounded-2xl p-6 text-sm">
-                  <p className="text-muted-foreground leading-relaxed">
-                    "{user.userProfile || '这个人很懒，什么都没留下...'}"
-                  </p>
-                </div>
-
-                {/* Stats */}
-                <div className="border-border/40 mt-8 grid grid-cols-3 gap-4 border-t pt-8">
-                  <StatItem label="天数" value={accountAge} icon={<Zap />} />
-                  <StatItem label="动态" value={posts.length} />
-                  <StatItem label="获赞" value={0} />
-                </div>
-              </div>
+      {/* Huge Typography Profile Header */}
+      <div className="animate-in space-y-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
+          <div className="space-y-6">
+            <Badge variant="secondary" className="animate-in bg-muted/50 text-muted-foreground font-bold px-4 py-1.5 rounded-full text-[10px] tracking-widest uppercase mb-4">
+              {roleInfo.label} • Lv.1 Member
+            </Badge>
+            <h1 className="animate-in text-foreground text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-[0.85] text-balance">
+              {user.userName || 'Unknown'}
+            </h1>
+            <p className="animate-in text-muted-foreground/60 max-w-xl text-xl font-medium tracking-tight leading-relaxed">
+              {user.userProfile || 'No description provided.'}
+            </p>
+          </div>
+          <div className="animate-in shrink-0">
+            <div className="relative group">
+              <UserAvatar
+                user={user}
+                size="xl"
+                className="h-32 w-32 md:h-48 md:w-48 border-4 border-background shadow-2xl transition-transform duration-500 group-hover:scale-105"
+              />
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Right Side - Details */}
-        <motion.div className="space-y-6 lg:col-span-8" variants={itemVariants}>
-          <Tabs defaultValue="about" className="w-full space-y-6">
-            <TabsList className="bg-primary/5 dark:bg-primary/10 h-14 w-full justify-start rounded-2xl p-1.5 border border-primary/10 backdrop-blur-md">
-              <TabsTrigger value="about" className="data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-xl px-6 py-2.5 text-sm font-medium transition-all">
-                关于
-              </TabsTrigger>
-              <TabsTrigger value="posts" className="data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-xl px-6 py-2.5 text-sm font-medium transition-all">
-                博文 ({posts.length})
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="about" className="space-y-6 outline-none">
-              <div className="border-border/40 bg-card/50 rounded-[2rem] border shadow-sm backdrop-blur-xl">
-                <div className="border-border/40 border-b px-8 py-6">
-                  <h3 className="flex items-center gap-2 text-lg font-semibold">
-                    <UserIcon className="text-primary h-5 w-5" />
-                    基本信息
-                  </h3>
-                </div>
-                <div className="p-8">
-                  <div className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
-                    <InfoItem
-                      label="用户昵称"
-                      value={user.userName || '未设置'}
-                      description="在社区展示的名字"
-                    />
-                    <InfoItem
-                      label="用户 ID"
-                      value={user.id ? `#${user.id}` : '未知'}
-                      description="系统唯一识别码"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-border/40 bg-card/50 rounded-[2rem] border shadow-sm backdrop-blur-xl">
-                <div className="border-border/40 border-b px-8 py-6">
-                  <h3 className="flex items-center gap-2 text-lg font-semibold">
-                    <Calendar className="text-primary h-5 w-5" />
-                    账户历程
-                  </h3>
-                </div>
-                <div className="p-8">
-                  <div className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
-                    <InfoItem
-                      label="注册日期"
-                      value={
-                        user.createTime
-                          ? new Date(user.createTime).toLocaleDateString('zh-CN', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                            })
-                          : '未知'
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="posts" className="outline-none">
-              {loadingPosts ? (
-                <div className="flex h-40 items-center justify-center">
-                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                </div>
-              ) : posts.length > 0 ? (
-                <div className="grid gap-6 sm:grid-cols-2">
-                  {posts.map((post) => (
-                    <PostCard key={`post-${post.id}`} post={post} />
-                  ))}
-                </div>
-              ) : (
-                <div className="border-border/40 bg-card/50 flex min-h-[300px] flex-col items-center justify-center gap-4 rounded-[2rem] border p-8 text-center backdrop-blur-xl">
-                  <FileWarning className="text-muted-foreground/30 h-12 w-12" />
-                  <p className="text-muted-foreground">暂无发布的博文</p>
-                </div>
-              )}
-            </TabsContent>
-          </Tabs>
-        </motion.div>
+        {/* Action Buttons & Quick Stats */}
+        <div className="animate-in flex flex-wrap items-center gap-12 pt-8 border-t border-border/10">
+          <StatItem label="Joined" value={joinedAgo} />
+          <StatItem label="Stories" value={posts.length} />
+          <StatItem label="Likes" value={0} />
+          <div className="ml-auto">
+            {user.id === (params as any).id && (
+              <Link href="/user/settings">
+                <Button variant="outline" className="rounded-full px-8 h-12 font-bold tracking-tight border-2 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300">
+                  Edit Profile
+                </Button>
+              </Link>
+            )}
+          </div>
+        </div>
       </div>
-    </motion.div>
+
+      <div className="animate-in space-y-12">
+        <Tabs defaultValue="posts" className="w-full space-y-12">
+          <TabsList className="bg-transparent h-auto p-0 gap-8 border-b border-border/10 rounded-none w-full justify-start">
+            <TabsTrigger
+              value="posts"
+              className="data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:border-primary border-b-2 border-transparent px-0 pb-4 rounded-none text-xl font-bold tracking-tight text-muted-foreground transition-all"
+            >
+              Published Stories ({posts.length})
+            </TabsTrigger>
+            <TabsTrigger
+              value="about"
+              className="data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:border-primary border-b-2 border-transparent px-0 pb-4 rounded-none text-xl font-bold tracking-tight text-muted-foreground transition-all"
+            >
+              Member Info
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="about" className="animate-in space-y-12 outline-none pt-4">
+            <div className="grid gap-16 md:grid-cols-2">
+              <InfoItem
+                label="Display Name"
+                value={user.userName || 'Not set'}
+                description="The name visible to the community."
+              />
+              <InfoItem
+                label="Unique Identifier"
+                value={user.id ? `#${user.id}` : 'Unknown'}
+                description="System identification code."
+              />
+              <InfoItem
+                label="Member Since"
+                value={joinedDate}
+              />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="posts" className="animate-in outline-none pt-4">
+            {loadingPosts ? (
+              <div className="flex h-40 items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground/30" />
+              </div>
+            ) : posts.length > 0 ? (
+              <div className="grid gap-8 sm:grid-cols-2">
+                {posts.map((post) => (
+                  <PostCard key={`post-${post.id}`} post={post} />
+                ))}
+              </div>
+            ) : (
+              <div className="flex min-h-[400px] flex-col items-center justify-center gap-6 text-center">
+                <FileWarning className="text-muted-foreground/20 h-16 w-16" />
+                <p className="text-muted-foreground/60 text-lg font-medium">No published stories yet.</p>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
   )
 }
 
 function StatItem({
   label,
   value,
-  icon,
 }: {
   label: string
   value: number | string
-  icon?: React.ReactNode
 }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-1">
-      <div className="text-foreground text-2xl font-bold tracking-tight">{value}</div>
-      <div className="text-muted-foreground text-xs font-medium">{label}</div>
+    <div className="flex flex-col gap-1">
+      <div className="text-foreground text-3xl font-bold tracking-tighter">{value}</div>
+      <div className="text-muted-foreground text-[10px] font-bold tracking-widest uppercase">{label}</div>
     </div>
   )
 }
@@ -338,12 +280,12 @@ function InfoItem({
   description?: string
 }) {
   return (
-    <div className="space-y-1">
-      <p className="text-muted-foreground/60 text-xs font-medium tracking-wider uppercase">
+    <div className="space-y-2">
+      <p className="text-muted-foreground font-bold text-[10px] tracking-widest uppercase">
         {label}
       </p>
-      <div className="text-foreground text-base font-semibold">{value}</div>
-      {description && <p className="text-muted-foreground text-xs">{description}</p>}
+      <div className="text-foreground text-2xl font-bold tracking-tight leading-tight">{value}</div>
+      {description && <p className="text-muted-foreground/60 text-sm font-medium tracking-tight">{description}</p>}
     </div>
   )
 }

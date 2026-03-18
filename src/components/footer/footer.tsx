@@ -18,46 +18,35 @@ export function Footer({
   icpNumber = process.env.NEXT_PUBLIC_ICP_NUMBER || '',
 }: FooterProps) {
   return (
-    <footer className={cn('bg-muted/30 border-t', className)}>
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          {/* Copyright & Author */}
-          <div className="flex flex-col items-center gap-1 md:items-start">
-            <p className="text-muted-foreground text-sm">
-              &copy; {new Date().getFullYear()} {author}. All rights reserved.
-            </p>
+    <footer className={cn('bg-background border-t border-border/10 py-12', className)}>
+      <div className="container mx-auto px-6">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40">
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+            <span>© {new Date().getFullYear()} {author}. 保留所有权利.</span>
             {icpNumber && (
-              <p className="text-muted-foreground text-xs">
-                <a
-                  href="https://beian.miit.gov.cn/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-foreground transition-colors"
-                >
-                  备案号：{icpNumber}
-                </a>
-              </p>
+              <a
+                href="https://beian.miit.gov.cn/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-foreground transition-colors"
+              >
+                备案号：{icpNumber}
+              </a>
             )}
           </div>
 
-          {/* Social Links */}
-          <div className="flex items-center gap-4">
-            <Link
-              href={githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm transition-colors"
-            >
-              <Github className="h-4 w-4" />
-              <span>GitHub</span>
+          <div className="flex items-center gap-6">
+            <Link href={githubUrl} target="_blank" rel="noopener noreferrer" className="hover:text-foreground flex items-center gap-2 transition-colors">
+              GitHub <Github className="h-3 w-3" />
             </Link>
-            <Link
-              href={email}
-              className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm transition-colors"
-            >
-              <Mail className="h-4 w-4" />
-              <span>Email</span>
+            <Link href={email} className="hover:text-foreground flex items-center gap-2 transition-colors">
+              Email <Mail className="h-3 w-3" />
             </Link>
+          </div>
+
+          <div className="flex items-center gap-8">
+             <Link href="/blog" className="hover:text-foreground">博客见解</Link>
+             <Link href="/user/settings" className="hover:text-foreground">账户设置</Link>
           </div>
         </div>
       </div>

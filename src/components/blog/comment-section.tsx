@@ -78,12 +78,17 @@ export function CommentSection({ postId, onTotalChange }: CommentSectionProps) {
   }, [postId, fetchComments])
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-8 space-y-8 duration-700">
-      <div className="mb-8 flex items-center gap-2">
-        <MessageSquare className="text-muted-foreground/80 h-5 w-5" />
-        <h3 className="text-lg font-semibold tracking-tight text-foreground">
-          评论 ({total})
-        </h3>
+    <div className="animate-in fade-in slide-in-from-bottom-8 space-y-12 duration-700 bg-muted/5 rounded-[40px] p-8 md:p-12 border border-border/5">
+      <div className="flex items-center gap-5">
+        <div className="bg-primary h-12 w-1.5 rounded-full shadow-[0_0_15px_rgba(var(--primary),0.3)]" />
+        <div>
+          <h3 className="text-2xl font-black tracking-tight text-foreground uppercase">
+            参与讨论 ({total})
+          </h3>
+          <p className="text-foreground/60 text-[11px] font-bold tracking-widest uppercase mt-1">
+            已有 {total} 条深度见解 · 开启你的对话
+          </p>
+        </div>
       </div>
 
       {/* Main Input */}

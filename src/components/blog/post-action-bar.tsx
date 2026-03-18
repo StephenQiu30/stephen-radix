@@ -51,45 +51,45 @@ export function PostActionBar({
         className="flex items-center gap-1.5 rounded-full bg-white/70 dark:bg-zinc-900/90 px-2.5 py-2 shadow-2xl backdrop-blur-xl ring-1 ring-black/5 dark:ring-white/10 relative overflow-hidden"
       >
         <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent dark:from-white/[0.05] pointer-events-none" />
-        <div className="relative flex items-center gap-0.5 text-foreground/80">
+        <div className="relative flex items-center gap-1.5 text-foreground/80">
           <Button
             variant="ghost"
             size="sm"
             className={cn(
-              'h-9 rounded-full px-3.5 transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/5',
-              hasThumb && 'text-red-500 dark:text-red-400 bg-red-500/10 dark:bg-red-500/10 hover:bg-red-500/20 dark:hover:bg-red-500/20'
+              'h-10 rounded-full px-4 transition-all duration-300 hover:bg-muted/40',
+              hasThumb && 'text-primary bg-primary/10 hover:bg-primary/20 shadow-sm'
             )}
             onClick={onThumb}
           >
-            <Heart className={cn('h-[18px] w-[18px] mr-1.5', hasThumb && 'fill-current')} />
-            {thumbNum > 0 && <span className="text-[13px] font-semibold tracking-tight">{thumbNum}</span>}
+            <Heart className={cn('h-[18px] w-[18px] mr-2 transition-all duration-300', hasThumb && 'fill-current scale-110')} />
+            {thumbNum > 0 && <span className="text-[13px] font-black tracking-tight">{thumbNum}</span>}
           </Button>
 
           <Button
             variant="ghost"
             size="sm"
             className={cn(
-              'h-9 rounded-full px-3.5 transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/5',
-              hasFavour && 'text-amber-500 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-500/10 hover:bg-amber-500/20 dark:hover:bg-amber-500/20'
+              'h-10 rounded-full px-4 transition-all duration-300 hover:bg-muted/40',
+              hasFavour && 'text-primary bg-primary/10 hover:bg-primary/20 shadow-sm'
             )}
             onClick={onFavour}
           >
-            <Bookmark className={cn('h-[18px] w-[18px] mr-1.5', hasFavour && 'fill-current')} />
-            {favourNum > 0 && <span className="text-[13px] font-semibold tracking-tight">{favourNum}</span>}
+            <Bookmark className={cn('h-[18px] w-[18px] mr-2 transition-all duration-300', hasFavour && 'fill-current scale-110')} />
+            {favourNum > 0 && <span className="text-[13px] font-black tracking-tight">{favourNum}</span>}
           </Button>
 
           <Button
             variant="ghost"
             size="sm"
-            className="h-9 rounded-full px-3.5 transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/5"
+            className="h-10 rounded-full px-4 transition-all duration-300 hover:bg-muted/40"
             onClick={onComment}
           >
-            <MessageSquare className="h-[18px] w-[18px] mr-1.5" />
-            {commentNum > 0 && <span className="text-[13px] font-semibold tracking-tight">{commentNum}</span>}
+            <MessageSquare className="h-[18px] w-[18px] mr-2" />
+            {commentNum > 0 && <span className="text-[13px] font-black tracking-tight">{commentNum}</span>}
           </Button>
         </div>
 
-        <div className="relative mx-1.5 h-4 w-[1px] bg-black/10 dark:bg-white/20" />
+        <div className="relative mx-3 h-4 w-px bg-border/40" />
 
         <Popover>
           <PopoverTrigger asChild>

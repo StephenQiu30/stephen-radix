@@ -9,6 +9,8 @@ import { RootState } from '@/store'
 import { toast } from 'sonner'
 import { addPostComment } from '@/api/post/postCommentController'
 
+import { UserAvatar } from '@/components/header/user-avatar'
+
 interface CommentInputProps {
   postId: string
   parentId?: number
@@ -24,7 +26,7 @@ export function CommentInput({
   onSuccess,
   onCancel,
   autoFocus = false,
-  placeholder = '写下你的评论...',
+  placeholder = '写下你的评论见解...',
 }: CommentInputProps) {
   const { user } = useAppSelector((state: RootState) => state.user)
   const [content, setContent] = React.useState('')
@@ -45,69 +47,65 @@ export function CommentInput({
         parentId,
       })) as unknown as PostAPI.BaseResponseLong
       if (res.code === 0) {
-        toast.success('评论发表成功')
+        toast.success('分享评论见解')
         setContent('')
         onSuccess?.()
       } else {
-        toast.error(res.message || '发表评论失败')
+        toast.error(res.message || '分享失败')
       }
     } catch (error) {
       console.error('Failed to submit comment:', error)
-      toast.error('发表评论失败，请稍后重试')
+      toast.error('评论发表失败')
     } finally {
       setSubmitting(false)
     }
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex gap-4">
-        <div className="bg-muted/50 flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full">
-          {user?.userAvatar ? (
-            <img src={user.userAvatar} alt={user.userName} className="h-full w-full object-cover" />
-          ) : (
-            <span className="text-muted-foreground text-sm font-medium">
-              {user?.userName?.charAt(0).toUpperCase() || '?'}
-            </span>
-          )}
-        </div>
-        <div className="flex-1 space-y-3">
-          <div className="relative">
+    <div className="space-y-6">
+      <div className="flex gap-6">
+        <UserAvatar
+          user={user}
+          size="md"
+          className="h-12 w-12 border-2 border-border/10 shadow-sm shrink-0"
+        />
+        <div className="flex-1 space-y-4">
+          <div className="relative group">
             <Textarea
               value={content}
               onChange={e => setContent(e.target.value)}
               placeholder={placeholder}
-              className="bg-muted/30 border-border/50 focus:border-primary/30 focus:bg-background/50 focus:ring-4 focus:ring-primary/5 min-h-[100px] resize-none rounded-2xl p-4 pr-12 text-[15px] shadow-sm transition-all placeholder:text-muted-foreground/50"
+              className="bg-card/30 border-border/40 focus:border-primary/20 focus:bg-background/80 focus:ring-[6px] focus:ring-primary/5 min-h-[140px] resize-none rounded-3xl p-6 text-base shadow-sm transition-all duration-300 placeholder:text-foreground/20 placeholder:font-bold leading-relaxed overflow-hidden"
               autoFocus={autoFocus}
             />
           </div>
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end items-center gap-4">
             {onCancel && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={onCancel}
                 disabled={submitting}
-                className="text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full px-4"
+                className="text-foreground/40 hover:text-foreground hover:bg-muted/50 rounded-full px-6 h-10 font-bold transition-all"
               >
                 取消
               </Button>
             )}
             <Button
-              size="sm"
+              size="lg"
               onClick={handleSubmit}
               disabled={!content.trim() || submitting}
-              className="bg-foreground text-background hover:bg-foreground/90 rounded-full px-6 shadow-sm transition-all font-medium"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-8 h-12 shadow-xl shadow-primary/10 hover:shadow-primary/20 transition-all font-black tracking-tight"
             >
               {submitting ? (
                 <>
-                  <Loader2 className="mr-2 h-3 w-3 animate-spin" />
-                  发布中
+                  <Loader2 className="mr-3 h-4 w-4 animate-spin" />
+                  见解同步中
                 </>
               ) : (
                 <>
-                  发布
-                  <Send className="ml-2 h-3 w-3" />
+                  发布见解
+                  <Send className="ml-3 h-4 w-4" />
                 </>
               )}
             </Button>

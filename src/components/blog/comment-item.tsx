@@ -16,6 +16,8 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/zh-cn'
 
+import { UserAvatar } from '@/components/header/user-avatar'
+
 dayjs.extend(relativeTime)
 dayjs.locale('zh-cn')
 
@@ -31,36 +33,30 @@ export function CommentItem({ comment, postId, onReplySuccess }: CommentItemProp
 
   return (
     <div className="group animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex gap-4">
+      <div className="flex gap-5">
         {/* Avatar */}
-        <div className="bg-muted/50 mt-1 flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full">
-          {comment.userVO?.userAvatar ? (
-            <img
-              src={comment.userVO.userAvatar}
-              alt={comment.userVO.userName}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <span className="text-muted-foreground text-sm font-medium">
-              {comment.userVO?.userName?.charAt(0).toUpperCase() || '?'}
-            </span>
-          )}
+        <div className="shrink-0 mt-1">
+          <UserAvatar
+            user={comment.userVO}
+            size="md"
+            className="h-10 w-10 border border-border/10 shadow-sm transition-transform group-hover:scale-105"
+          />
         </div>
 
         {/* Content */}
-        <div className="flex-1 space-y-2">
+        <div className="flex-1 space-y-2.5">
           {/* Header */}
-          <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-foreground text-[15px] font-medium tracking-tight">
+          <div className="flex items-center gap-3">
+            <span className="text-foreground text-[15px] font-black tracking-tight">
               {comment.userVO?.userName || '匿名用户'}
             </span>
-            <span className="text-muted-foreground/60 text-[12px]">
+            <span className="text-foreground/30 text-[11px] font-bold uppercase tracking-wider">
               {comment.createTime ? dayjs(comment.createTime).fromNow() : ''}
             </span>
           </div>
 
           {/* Body */}
-          <div className="text-foreground/90 text-[15px] leading-relaxed">
+          <div className="text-foreground/80 text-[15px] leading-relaxed font-medium">
             <div className="wrap-break-word whitespace-pre-wrap">{comment.content}</div>
           </div>
 

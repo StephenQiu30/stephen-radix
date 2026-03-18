@@ -15,15 +15,17 @@ export function LoadingSkeleton({ type = 'grid', count = 8, className }: Loading
         return (
             <div className={cn('space-y-4', className)}>
                 {Array.from({ length: count }).map((_, i) => (
-                    <div key={i} className="border-black/[0.03] bg-white/40 shadow-[0_8px_16px_rgba(0,0,0,0.02)] flex gap-4 rounded-[18px] border p-3 dark:border-white/[0.05] dark:bg-white/5">
-                        <Skeleton className="h-9 w-9 shrink-0 rounded-[10px]" />
-                        <div className="flex-1 space-y-2">
-                            <div className="flex justify-between">
-                                <Skeleton className="h-4 w-1/3" />
-                                <Skeleton className="h-3 w-10" />
+                    <div key={i} className="animate-pulse bg-muted/20 border border-border/10 flex gap-3 rounded-[20px] p-4 backdrop-blur-sm">
+                        <Skeleton className="h-9 w-9 shrink-0 rounded-[10px] bg-muted/40" />
+                        <div className="flex-1 space-y-3 pt-0.5">
+                            <div className="flex justify-between items-center pr-2">
+                                <Skeleton className="h-4 w-1/4 rounded-full bg-muted/40" />
+                                <Skeleton className="h-2.5 w-8 rounded-full bg-muted/20" />
                             </div>
-                            <Skeleton className="h-3 w-full" />
-                            <Skeleton className="h-3 w-2/3" />
+                            <div className="space-y-2">
+                                <Skeleton className="h-3.5 w-full rounded-full bg-muted/30" />
+                                <Skeleton className="h-3.5 w-4/5 rounded-full bg-muted/30" />
+                            </div>
                         </div>
                     </div>
                 ))}

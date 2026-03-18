@@ -7,7 +7,9 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from 'sonner'
 import { BellOff, Check, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
+import dayjs from '@/lib/dayjs'
 import {
   deleteNotification,
   listMyNotificationVoByPage,
@@ -18,15 +20,12 @@ import { LoadingSkeleton } from '@/components/common/loading-skeleton'
 import type { RootState } from '@/store'
 import { LoginPromptCard } from '@/components/auth/login-prompt-card'
 import { AuthModal } from '@/components/auth/auth-modal'
-import { NotificationCard } from './notification-card'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import 'dayjs/locale/zh-cn'
+import { NotificationCard } from '@/components/notification/notification-card'
 
-dayjs.extend(relativeTime)
-dayjs.locale('zh-cn')
+const TOAST_DURATION = 2000
 
 export default function NotificationsPage() {
+  const containerRef = React.useRef<HTMLDivElement>(null)
   const router = useRouter()
   const { user } = useAppSelector((state: RootState) => state.user)
   const [authModalOpen, setAuthModalOpen] = React.useState(false)
@@ -52,20 +51,34 @@ export default function NotificationsPage() {
         setNotifications((res.data.records as NotificationAPI.NotificationVO[]) || [])
         setTotal(Number(res.data.total) || 0)
       } else {
-        toast.error(res.message || '获取通知失败')
+        toast.error(res.message || '获取通知失败', { duration: TOAST_DURATION })
       }
     } catch (error) {
-      toast.error('获取通知失败')
+      toast.error('获取通知失败', { duration: TOAST_DURATION })
     } finally {
       setLoading(false)
     }
   }, [current, activeTab, user?.id])
 
+  useGSAP(
+    () => {
+      if (!loading && user) {
+        gsap.from('.animate-in', {
+          opacity: 0,
+          y: 40,
+          duration: 1.2,
+          stagger: 0.15,
+          ease: 'power4.out',
+        })
+      }
+    },
+    { scope: containerRef, dependencies: [loading, user] }
+  )
+
   React.useEffect(() => {
     if (user) {
       fetchNotifications()
       const handleUpdate = () => {
-        // Refresh if we are on the first page or if it might affect current view
         if (current === 1) fetchNotifications()
       }
       window.addEventListener('notification-updated', handleUpdate)
@@ -84,13 +97,13 @@ export default function NotificationsPage() {
     try {
       const res = await deleteNotification({ id })
       if (res.code === 0) {
-        toast.success('已删除')
+        toast.success('已删除', { duration: TOAST_DURATION })
         fetchNotifications()
       } else {
-        toast.error('删除失败')
+        toast.error('删除失败', { duration: TOAST_DURATION })
       }
     } catch (error) {
-      toast.error('删除失败')
+      toast.error('删除失败', { duration: TOAST_DURATION })
     }
   }
 
@@ -99,14 +112,9 @@ export default function NotificationsPage() {
     try {
       const res = await markNotificationRead({ id: notification.id })
       if (res.code === 0) {
-        // If we are in 'unread' tab, removing it from view might be abrupt, but standard behavior.
-        // However, user might misclick.
-        // For now, let's just update locally.
         setNotifications(prev =>
           prev.map(item => (item.id === notification.id ? { ...item, isRead: 1 } : item))
         )
-        // If in unread tab, maybe fetch again or filter out?
-        // Let's keep it visible but marked read until refresh/tab switch to avoid layout jump.
       }
     } catch (error) {
       console.error('Mark read failed', error)
@@ -117,16 +125,15 @@ export default function NotificationsPage() {
     try {
       const res = await markAllNotificationRead()
       if (res.code === 0) {
-        toast.success('全部已读')
+        toast.success('全部已标记为已读', { duration: TOAST_DURATION })
         fetchNotifications()
       }
     } catch (error) {
-      toast.error('操作失败')
+      toast.error('操作失败', { duration: TOAST_DURATION })
     }
   }
 
   const handleView = (notification: NotificationAPI.NotificationVO) => {
-    // 1. Check contentUrl
     if (notification.contentUrl) {
       if (notification.contentUrl.startsWith('http')) {
         window.open(notification.contentUrl, '_blank')
@@ -136,7 +143,6 @@ export default function NotificationsPage() {
       return
     }
 
-    // 2. Check relatedType and relatedId
     if (notification.relatedType && notification.relatedId) {
       switch (notification.relatedType) {
         case 'post':
@@ -151,7 +157,6 @@ export default function NotificationsPage() {
     }
   }
 
-  // Grouping
   const groupedNotifications = React.useMemo(() => {
     const groups: Record<string, NotificationAPI.NotificationVO[]> = {
       今天: [],
@@ -193,32 +198,32 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="bg-white dark:bg-[#000000] relative min-h-screen w-full selection:bg-blue-500/30">
-      <div className="relative z-10 mx-auto w-full max-w-[1200px] px-4 pt-16 pb-20 sm:px-8 xl:px-12">
-        {/* Header - iOS style Large Title - Left Aligned */}
-        <div className="mb-10 flex flex-col gap-6">
-          <div className="flex flex-col gap-2">
-            <h1 className="text-3xl md:text-4xl leading-tight font-extrabold tracking-tight text-[#1D1D1F] dark:text-[#F5F5F7]">
+    <div ref={containerRef} className="bg-background relative min-h-screen w-full selection:bg-primary/20">
+      <div className="relative z-10 mx-auto w-full container px-6 pt-16 pb-40">
+        {/* Header - Minimalist Typography */}
+        <div className="animate-in mb-12 space-y-6">
+          <div className="space-y-3">
+            <h1 className="text-foreground text-4xl md:text-5xl lg:text-6xl font-black tracking-tight">
               通知中心
             </h1>
-            <p className="max-w-xl text-[#86868B] text-sm md:text-base font-medium tracking-tight">
+            <p className="text-foreground/80 max-w-xl text-lg font-bold tracking-tight">
               您的全部动态、互动与系统提醒。随时掌握最新进展。
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-black/5 pb-6 dark:border-white/5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-6 border-t border-border/10">
             <div className="flex items-center gap-4">
               <Tabs value={activeTab} onValueChange={handleTabChange} className="w-fit">
-                <TabsList className="bg-muted/30 rounded-full p-1 backdrop-blur-2xl">
+                <TabsList className="bg-muted/30 rounded-full p-1.5 backdrop-blur-2xl border border-border/10">
                   <TabsTrigger
                     value="all"
-                    className="data-[state=active]:bg-background rounded-full px-8 text-xs font-bold transition-all data-[state=active]:shadow-sm"
+                    className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm rounded-full px-10 h-10 text-[13px] font-black tracking-tight transition-all duration-300"
                   >
                     全部
                   </TabsTrigger>
                   <TabsTrigger
                     value="unread"
-                    className="data-[state=active]:bg-background rounded-full px-8 text-xs font-bold transition-all data-[state=active]:shadow-sm"
+                    className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm rounded-full px-10 h-10 text-[13px] font-black tracking-tight transition-all duration-300"
                   >
                     未读
                   </TabsTrigger>
@@ -228,101 +233,89 @@ export default function NotificationsPage() {
 
             {activeTab === 'unread' && notifications.some(n => n.isRead === 0) && (
               <Button
-                variant="ghost"
-                className="h-9 w-fit rounded-full px-4 text-[14px] font-semibold text-[#007AFF] hover:bg-[#007AFF]/10"
+                variant="outline"
+                className="h-10 rounded-full px-6 text-[13px] font-bold tracking-tight border-2 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
                 onClick={handleMarkAllRead}
               >
-                <Check className="mr-1.5 h-4 w-4 stroke-[2.5]" />
-                全部标记为已读
+                <Check className="mr-1.5 h-4 w-4" />
+                一键已读
               </Button>
             )}
           </div>
+        </div>
 
-          {/* Content Area - Full width but left aligned */}
-          <div className="w-full">
-            {loading ? (
-              <LoadingSkeleton type="list" count={5} />
-            ) : notifications.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col items-center justify-center space-y-8 py-40 text-center"
-              >
-                <div className="flex h-32 w-32 items-center justify-center rounded-[38px] bg-gray-50 shadow-sm dark:bg-zinc-900 border border-gray-100 dark:border-white/5">
-                  <BellOff className="text-muted-foreground/20 h-14 w-14" />
-                </div>
-                <div className="max-w-md space-y-3 px-6">
-                  <h3 className="text-foreground/80 text-2xl font-bold tracking-tight">
-                    {activeTab === 'unread' ? '已读完所有通知' : '空空如也'}
-                  </h3>
-                  <p className="text-muted-foreground/60 text-sm leading-relaxed">
-                    {activeTab === 'unread' ? '现在您可以享受专注时光了。' : '当有新的社群互动或系统更新时，我们将第一时间告知您。'}
-                  </p>
-                </div>
-              </motion.div>
-            ) : (
-              <div className="space-y-12">
-                <AnimatePresence mode="popLayout" initial={false}>
-                  {groupedNotifications.map(([group, items], index) => (
-                    <motion.div
-                      key={group}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      className="space-y-4"
-                    >
-                      <div className="sticky top-[72px] z-20 bg-background/5 -mx-4 px-4 py-2 backdrop-blur-md">
-                        <h2 className="text-muted-foreground/60 text-[12px] font-bold tracking-widest uppercase">
-                          {group}
-                        </h2>
-                      </div>
-                      <div className="grid grid-cols-1 gap-2">
-                        {items.map(notification => (
-                          <NotificationCard
-                            key={notification.id}
-                            notification={notification}
-                            onMarkRead={handleMarkRead}
-                            onDelete={handleDelete}
-                            onView={handleView}
-                          />
-                        ))}
-                      </div>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
+        {/* Content Area */}
+        <div className="w-full">
+          {loading ? (
+            <LoadingSkeleton type="list" count={5} />
+          ) : notifications.length === 0 ? (
+            <div className="animate-in flex flex-col items-center justify-center space-y-8 py-40 text-center">
+              <div className="flex h-32 w-32 items-center justify-center rounded-[38px] bg-muted/40 shadow-sm border border-border/10">
+                <BellOff className="text-foreground/30 h-14 w-14" />
               </div>
-            )}
-          </div>
-
-          {/* Pagination - iOS style 'Load More' feel */}
-          {total > 20 && (
-            <div className="mt-16 flex justify-center pb-12">
-              <div className="flex items-center gap-1 rounded-full border border-white/40 bg-white/60 p-1.5 shadow-[0_10px_20px_rgba(0,0,0,0.04)] backdrop-blur-2xl dark:border-white/5 dark:bg-zinc-800/60">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 rounded-full"
-                  onClick={() => setCurrent(p => Math.max(1, p - 1))}
-                  disabled={current === 1 || loading}
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <span className="text-secondary-foreground/80 min-w-[3rem] px-3 text-center text-[13px] font-medium tabular-nums">
-                  {current} / {Math.ceil(total / 20)}
-                </span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 rounded-full"
-                  onClick={() => setCurrent(p => p + 1)}
-                  disabled={current * 20 >= total || loading}
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
+              <div className="max-w-md space-y-4 px-6">
+                <h3 className="text-foreground text-3xl font-black tracking-tighter">
+                  {activeTab === 'unread' ? '已读完所有通知' : '空空如也'}
+                </h3>
+                <p className="text-foreground/70 text-lg font-bold tracking-tight leading-relaxed">
+                  {activeTab === 'unread' ? '现在您可以享受专注时光了。' : '当有新的社群互动或系统更新时，我们将第一时间告知您。'}
+                </p>
               </div>
+            </div>
+          ) : (
+            <div className="space-y-16">
+              {groupedNotifications.map(([group, items]) => (
+                <div key={group} className="animate-in space-y-8">
+                  <div className="sticky top-[80px] z-20 -mx-4 px-4 py-4 bg-background/5 backdrop-blur-md">
+                    <h2 className="text-foreground/50 text-[11px] font-black tracking-[0.2em] uppercase">
+                      {group}
+                    </h2>
+                  </div>
+                  <div className="grid grid-cols-1 gap-4">
+                    {items.map(notification => (
+                      <NotificationCard
+                        key={notification.id}
+                        notification={notification}
+                        onMarkRead={handleMarkRead}
+                        onDelete={handleDelete}
+                        onView={handleView}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
+
+        {/* Pagination */}
+        {total > 15 && (
+          <div className="animate-in mt-24 flex justify-center">
+            <div className="flex items-center gap-2 rounded-full border border-border/10 bg-muted/20 p-2 backdrop-blur-2xl">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-10 w-10 rounded-full hover:bg-background/80"
+                onClick={() => setCurrent(p => Math.max(1, p - 1))}
+                disabled={current === 1 || loading}
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </Button>
+              <span className="text-foreground/60 min-w-[4rem] px-4 text-center text-sm font-bold tracking-tighter tabular-nums">
+                {current} / {Math.ceil(total / 15)}
+              </span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-10 w-10 rounded-full hover:bg-background/80"
+                onClick={() => setCurrent(p => p + 1)}
+                disabled={current * 15 >= total || loading}
+              >
+                <ChevronRight className="h-5 w-5" />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

@@ -10,6 +10,7 @@ import {
   PostActionBar,
   PostHeader,
 } from '@/components/blog'
+import { UserAvatar } from '@/components/header/user-avatar'
 import { Button } from '@/components/ui/button'
 import { getPostVoById } from '@/api/post/postController'
 import { doThumb } from '@/api/post/postThumbController'
@@ -18,8 +19,11 @@ import { useAppSelector } from '@/store/hooks'
 import type { RootState } from '@/store'
 import { ArrowLeft, ChevronLeft, FileWarning, Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
 
 export default function PostDetailPage() {
+  const container = React.useRef<HTMLDivElement>(null)
   const params = useParams()
   const router = useRouter()
   const postId = params.id as string
@@ -119,6 +123,21 @@ export default function PostDetailPage() {
     }
   }
 
+  useGSAP(
+    () => {
+      if (!loading && post) {
+        gsap.from('.gsap-reveal', {
+          opacity: 0,
+          y: 20,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: 'power3.out',
+        })
+      }
+    },
+    { scope: container, dependencies: [loading, post] }
+  )
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -143,7 +162,7 @@ export default function PostDetailPage() {
   }
 
   return (
-    <div className="bg-background relative min-h-screen pb-32 pt-4 md:pt-12">
+    <div ref={container} className="bg-background relative min-h-screen pb-40 pt-16 md:pt-20">
       <motion.div
         className="bg-gradient-to-r from-primary to-indigo-500 fixed top-0 right-0 left-0 z-50 h-[3px] origin-left shadow-[0_0_10px_rgba(var(--primary),0.5)]"
         style={{ scaleX }}
@@ -157,64 +176,49 @@ export default function PostDetailPage() {
         </Link>
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6 md:pt-14">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_280px] xl:gap-24 relative">
-          <motion.article
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="mx-auto w-full max-w-[680px]"
-          >
+      <div className="relative z-10 mx-auto container px-6">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_300px] xl:gap-12 relative">
+          <article className="w-full max-w-[760px]">
             {/* Minimal Back Button (Apple Style) */}
-            <div className="hidden md:flex mb-10">
+            <div className="flex mb-16 gsap-reveal">
               <Link
                 href="/blog"
-                className="group flex items-center text-[15px] font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
+                className="group flex items-center text-[11px] font-black uppercase tracking-[0.25em] text-foreground/30 hover:text-foreground transition-all duration-300"
               >
-                <div className="flex bg-muted/40 group-hover:bg-muted/60 p-1 rounded-full mr-2 transition-colors">
-                  <ArrowLeft className="h-4 w-4" />
-                </div>
-                返回博客
+                <ArrowLeft className="h-4 w-4 mr-2 transition-transform group-hover:-translate-x-1" />
+                返回文章见解
               </Link>
             </div>
 
-            <PostHeader post={post} />
+            <PostHeader post={post} className="gsap-reveal" />
 
-            <MarkdownRender content={post.content || ''} />
+            <MarkdownRender content={post.content || ''} className="gsap-reveal" />
 
             {/* Author Bio Footer (Minimalist) */}
             <hr className="my-16 border-border/40" />
-            <div className="mx-auto w-full">
+            <div className="mx-auto w-full gsap-reveal">
               <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-6 rounded-2xl border border-border/50 bg-muted/20 p-6 sm:p-8 hover:bg-muted/40 transition-colors duration-300">
                 <div className="flex flex-col sm:flex-row items-center sm:items-center gap-5 text-center sm:text-left">
-                  <Link href={`/user/${post.userVO?.id}`} className="shrink-0 relative group">
-                    <div className="relative bg-muted h-16 w-16 overflow-hidden rounded-full shadow-sm ring-1 ring-border/50 transition-transform duration-300 group-hover:scale-105">
-                      {post.userVO?.userAvatar ? (
-                        <img
-                          src={post.userVO.userAvatar}
-                          alt={post.userVO.userName}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <div className="text-muted-foreground flex h-full w-full items-center justify-center text-xl font-medium">
-                          {post.userVO?.userName?.charAt(0) || '?'}
-                        </div>
-                      )}
-                    </div>
+                  <Link href={`/user/${post.userVO?.id}`} className="shrink-0 group">
+                    <UserAvatar
+                      user={post.userVO}
+                      size="xl"
+                      className="h-20 w-20 border-border/10 shadow-xl transition-transform duration-500 group-hover:scale-110"
+                    />
                   </Link>
-                  <div className="space-y-1.5 flex-1 pt-0.5">
+                  <div className="space-y-4 flex-1">
                     <div>
-                      <p className="text-muted-foreground text-[11px] font-semibold tracking-wider uppercase mb-0.5">
-                        Author
+                      <p className="text-foreground/30 text-[10px] font-black tracking-[0.25em] uppercase mb-1.5">
+                        发布见解于轨迹
                       </p>
                       <Link href={`/user/${post.userVO?.id}`}>
-                        <h3 className="text-foreground hover:text-primary text-xl font-bold tracking-tight transition-colors">
+                        <h3 className="text-foreground hover:text-primary text-2xl font-black tracking-tight transition-all">
                           {post.userVO?.userName || '匿名用户'}
                         </h3>
                       </Link>
                     </div>
-                    <p className="text-muted-foreground/80 text-sm leading-relaxed max-w-[440px]">
-                      {post.userVO?.userProfile || '感谢阅读！希望这篇文章对你有所帮助。如果不介意的话，点个赞支持一下吧！'}
+                    <p className="text-foreground/60 text-base font-bold leading-relaxed max-w-[480px]">
+                      {post.userVO?.userProfile || '致力于构建更美好的数字化世界，感谢并见证每一次阅读与成长。'}
                     </p>
                   </div>
                 </div>
@@ -233,7 +237,7 @@ export default function PostDetailPage() {
                 <CommentSection postId={postId} onTotalChange={setCommentNum} />
               </div>
             </div>
-          </motion.article>
+          </article>
 
           {/* Desktop MarkdownToc */}
           <aside className="hidden lg:block relative">

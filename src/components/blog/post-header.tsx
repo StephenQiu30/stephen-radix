@@ -1,80 +1,46 @@
-'use client'
-
-import { motion } from 'framer-motion'
+import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
-import { UserAvatar } from '@/components/header/user-avatar'
-import { Calendar, Clock, ChevronRight } from 'lucide-react'
+import dayjs from '@/lib/dayjs'
 
 interface PostHeaderProps {
   post: PostAPI.PostVO
+  className?: string
 }
 
-export function PostHeader({ post }: PostHeaderProps) {
-  const { title, cover, tags, createTime, userVO, content } = post
+export function PostHeader({ post, className }: PostHeaderProps) {
+  const { title, createTime, tags, content } = post
 
-  // 估算阅读时间
   const readingTime = content ? Math.max(1, Math.ceil(content.length / 300)) : 1
 
-  // 格式化日期
-  const formattedDate = createTime
-    ? new Date(createTime).toLocaleDateString('zh-CN', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
-    : ''
+  const formattedDate = createTime ? dayjs(createTime).format('LL') : ''
 
   return (
-    <header className="relative mb-12 lg:mb-16 w-full">
-      {/* 标题 - Apple Style (Tight tracking, ultra-bold) */}
-      <motion.h1
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="text-foreground tracking-tight text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-6 text-balance"
-      >
+    <header className={cn('relative mb-12 w-full', className)}>
+      <h1 className="text-foreground tracking-tight text-3xl md:text-4xl lg:text-5xl font-black leading-[1.2] mb-6 text-balance">
         {title || '无标题文章'}
-      </motion.h1>
+      </h1>
 
-      {/* 标签与元数据信息 - 极其干净的居左布局 */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        className="flex flex-col sm:flex-row sm:items-center gap-6 pb-8 border-b border-border/40"
-      >
-        <div className="flex items-center gap-3.5">
-          <UserAvatar
-            user={userVO}
-            size="sm"
-            className="ring-1 ring-black/5 dark:ring-white/10 h-11 w-11 shadow-sm"
-          />
-          <div className="flex flex-col flex-1">
-            <span className="text-foreground font-semibold text-[15px] leading-snug">
-              {userVO?.userName || '匿名作者'}
-            </span>
-            <div className="flex items-center gap-3 text-muted-foreground text-[13px] font-medium tracking-tight mt-0.5">
-              <time dateTime={createTime}>{formattedDate}</time>
-              <span className="w-1 h-1 rounded-full bg-border" />
-              <span>{readingTime} 分钟阅读</span>
-            </div>
-          </div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-8">
+        <div className="flex items-center gap-5 text-foreground/80 text-lg md:text-xl font-bold tracking-tight">
+          <time dateTime={createTime}>{formattedDate}</time>
+          <span className="w-2 h-2 rounded-full bg-primary/20" />
+          <span>{readingTime} 分钟阅读见解</span>
         </div>
 
         {tags && tags.length > 0 && (
-          <div className="flex flex-wrap items-center gap-1.5 sm:ml-auto">
+          <div className="flex flex-wrap items-center gap-2">
             {tags.map((tag, index) => (
               <Badge
                 key={index}
                 variant="secondary"
-                className="bg-muted/50 text-muted-foreground hover:bg-muted/80 hover:text-foreground font-medium px-3 py-1 rounded-full text-xs transition-colors"
+                className="bg-muted/30 text-foreground/60 font-black px-4 py-1.5 rounded-full text-[10px] tracking-[0.2em] uppercase transition-all hover:bg-muted hover:text-primary border-transparent"
               >
                 {tag}
               </Badge>
             ))}
           </div>
         )}
-      </motion.div>
+      </div>
     </header>
   )
 }

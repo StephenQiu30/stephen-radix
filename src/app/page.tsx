@@ -1,346 +1,190 @@
 'use client'
 
-import * as React from 'react'
-import { Button } from '@/components/ui/button'
-import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
-import { ArrowRight, BookOpen, ChevronRight, Code2, Cpu, Globe, Layout, MessageSquare, Sparkles, Zap } from 'lucide-react'
+import React, { useRef } from 'react'
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { PostCard, PostCardSkeleton } from '@/components/blog/post-card'
+import { searchPostByPage } from '@/api/search/searchController'
 
-// Animation variants
-const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
-}
-
-const staggerContainer = {
-  animate: {
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-}
+gsap.registerPlugin(ScrollTrigger)
 
 export default function LandingPage() {
-  const { scrollY } = useScroll()
-  const yHero = useTransform(scrollY, [0, 500], [0, 100])
-  const opacityHero = useTransform(scrollY, [0, 400], [1, 0])
+  const container = useRef<HTMLDivElement>(null)
+  const [posts, setPosts] = React.useState<PostAPI.PostVO[]>([])
+  const [isLoading, setIsLoading] = React.useState(true)
 
-  const springConfig = { stiffness: 100, damping: 30, restDelta: 0.001 }
-  const scale = useSpring(useTransform(scrollY, [0, 500], [1, 0.95]), springConfig)
-
-  // Floating blob animation variants
-  const blobVariants = {
-    animate: {
-      scale: [1, 1.1, 1],
-      rotate: [0, 90, 180, 270, 360],
-      transition: {
-        duration: 20,
-        repeat: Infinity,
-        ease: "linear" as const
+  React.useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const res = await searchPostByPage({
+          current: 1,
+          pageSize: 6,
+          sortField: 'createTime',
+          sortOrder: 'descend',
+        })
+        if (res.code === 0 && res.data?.records) {
+          // Cast records to PostVO[] as they share the same structure for these fields
+          setPosts(res.data.records as unknown as PostAPI.PostVO[])
+        }
+      } catch (err) {
+        console.error('Failed to fetch posts from ES:', err)
+      } finally {
+        setIsLoading(false)
       }
     }
-  }
+    fetchPosts()
+  }, [])
 
-  const features = [
-    {
-      icon: <BookOpen className="h-6 w-6 text-blue-500" />,
-      title: '深度博客',
-      description: '分享前沿技术、架构设计与工程实践，沉淀技术思考。',
-      className: 'md:col-span-2',
-      bg: 'bg-gradient-to-br from-blue-50/80 to-indigo-50/80 dark:from-blue-950/30 dark:to-indigo-950/30',
-      href: '/blog',
+  // Refresh ScrollTrigger when posts load
+  React.useEffect(() => {
+    if (!isLoading) {
+      setTimeout(() => {
+        ScrollTrigger.refresh()
+      }, 100)
+    }
+  }, [isLoading, posts])
+
+  useGSAP(
+    () => {
+      // Hero reveal
+      gsap.from('.hero-reveal', {
+        y: 80,
+        opacity: 0,
+        duration: 1.5,
+        stagger: 0.2,
+        ease: 'power4.out',
+        clearProps: 'all',
+      })
+
+      // Section scroll reveal
+      const sections = gsap.utils.toArray('.section-reveal')
+      sections.forEach((section: any) => {
+        gsap.from(section, {
+          y: 100,
+          opacity: 0,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+            invalidateOnRefresh: true,
+          },
+          clearProps: 'all',
+        })
+      })
     },
-    {
-      icon: <Layout className="h-6 w-6 text-emerald-500" />,
-      title: '极简设计',
-      description: '采用现代化的设计语言，提供极致的阅读与交互体验。',
-      className: 'md:col-span-1',
-      bg: 'bg-gradient-to-br from-emerald-50/80 to-teal-50/80 dark:from-emerald-950/30 dark:to-teal-950/30',
-    },
-    {
-      icon: <MessageSquare className="h-6 w-6 text-orange-500" />,
-      title: '智能助手',
-      description: '集成 AI 服务，为您提供智能化的内容推荐与问答支持。',
-      className: 'md:col-span-1',
-      bg: 'bg-gradient-to-br from-orange-50/80 to-amber-50/80 dark:from-orange-950/30 dark:to-amber-950/30',
-    },
-    {
-      icon: <Globe className="h-6 w-6 text-purple-500" />,
-      title: '全栈生态',
-      description: '从前端的极致体验到后端的分布式架构，全方位展示现代 Web 开发。',
-      className: 'md:col-span-2',
-      bg: 'bg-gradient-to-br from-purple-50/80 to-pink-50/80 dark:from-purple-950/30 dark:to-pink-950/30',
-    },
-  ]
+    { scope: container, dependencies: [posts, isLoading] }
+  )
 
   return (
-    <div className="bg-background min-h-screen overflow-x-hidden font-sans selection:bg-primary/20">
-      {/* Hero Section */}
-      <section className="relative flex min-h-[90vh] flex-col items-center justify-center overflow-hidden px-6 pt-20 pb-20">
-        {/* Background Gradients */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <motion.div 
-            variants={blobVariants}
-            animate="animate"
-            className="absolute top-[-10%] left-[5%] h-[60vw] w-[60vw] rounded-full bg-primary/10 opacity-30 blur-[100px] filter dark:bg-primary/5" 
-          />
-          <motion.div 
-            variants={blobVariants}
-            animate="animate"
-            className="absolute bottom-[-10%] right-[5%] h-[50vw] w-[50vw] rounded-full bg-indigo-500/10 opacity-30 blur-[100px] filter dark:bg-indigo-500/5" 
-            style={{ animationDirection: 'reverse' }}
-          />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0)_0%,var(--background)_100%)]" />
-        </div>
+    <main
+      ref={container}
+      className="container mx-auto min-h-screen pt-32 pb-40 px-6 selection:bg-foreground selection:text-background relative"
+    >
 
-        <motion.div
-          style={{ y: yHero, opacity: opacityHero, scale }}
-          variants={staggerContainer}
-          initial="initial"
-          animate="animate"
-          className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center text-center"
-        >
-          <motion.div variants={fadeInUp}>
-            <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-semibold text-primary shadow-[0_0_15px_rgba(var(--primary),0.1)] backdrop-blur-2xl dark:border-primary/30 dark:bg-primary/10">
-              <Sparkles className="h-4 w-4 animate-pulse" />
-              <span>StephenQiu's Blog</span>
-            </span>
-          </motion.div>
+      {/* Hero Section: Visionary Layout */}
+      <section className="relative flex flex-col lg:flex-row items-start justify-between gap-16 mb-80">
+        <div className="flex-1">
+          <div className="hero-reveal bg-foreground h-1.5 w-16 mb-12 rounded-full" />
+          <h1 className="hero-reveal text-foreground text-7xl md:text-8xl lg:text-[10rem] font-black tracking-tighter leading-[0.9] mb-12 select-none">
+            Less is<br />
+            better.
+          </h1>
+          <div className="hero-reveal flex items-center gap-6 text-foreground/30 text-[11px] font-black tracking-[0.5em] uppercase mb-16">
+            <span>技术深度</span>
+            <span className="h-1 w-1 rounded-full bg-border" />
+            <span>建筑美学</span>
+            <span className="h-1 w-1 rounded-full bg-border" />
+            <span>数字灵魂</span>
+          </div>
 
-          <motion.h1
-            variants={fadeInUp}
-            className="mt-8 text-6xl font-bold tracking-tight text-foreground md:text-8xl lg:text-9xl"
-          >
-            思考沉淀。<br />
-            <span className="bg-gradient-to-r from-primary to-indigo-600 bg-clip-text pb-2 text-transparent">
-              遇见更好的自己。
-            </span>
-          </motion.h1>
-
-          <motion.p
-            variants={fadeInUp}
-            className="text-muted-foreground mt-8 max-w-2xl text-xl leading-relaxed font-medium md:text-2xl"
-          >
-            专注于技术、架构与思维的深度分享。
-            <br className="hidden md:block" />
-            在字节与逻辑的交织中，记录技术的点滴。
-          </motion.p>
-
-          <motion.div variants={fadeInUp} className="mt-12 flex flex-col gap-4 sm:flex-row">
-            <Button
-              size="lg"
-              className="h-14 rounded-full bg-foreground px-10 text-lg font-semibold text-background shadow-xl transition-all hover:scale-105 active:scale-95"
-              asChild
-            >
-              <Link href="/blog">
-                开始阅读 <ChevronRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="h-14 rounded-full border-foreground/10 bg-background/50 px-10 text-lg font-semibold backdrop-blur-md transition-all hover:bg-foreground/5 active:scale-95"
-              asChild
-            >
-              <Link href="/user/profile">关于我</Link>
-            </Button>
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* Featured Sections */}
-      <section className="relative px-6 py-32 bg-secondary/20">
-        <div className="container mx-auto max-w-6xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="mb-20 text-center"
-          >
-            <h2 className="text-4xl font-bold tracking-tight md:text-6xl lg:text-7xl text-foreground">
-              核心 <span className="text-primary italic">驱动</span>
-            </h2>
-            <p className="text-muted-foreground mt-6 text-xl font-medium md:text-2xl max-w-2xl mx-auto">
-              追求技术与审美的平衡，为您打造极致的数字化体验。
+          <div className="hero-reveal max-w-xl">
+            <p className="text-xl md:text-2xl font-black leading-relaxed tracking-tight text-foreground/80">
+              致力于探索技术与美学的边界，<br />
+              在极致简胜繁的创作中，寻求数字生命的真谛。
             </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            {features.map((feature, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                whileHover={{ y: -8 }}
-                className={cn(
-                  'group relative overflow-hidden rounded-[2.5rem] border border-border bg-card p-10 shadow-sm transition-all duration-500 hover:shadow-2xl',
-                  feature.className
-                )}
-              >
-                <div
-                  className={cn(
-                    'absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100',
-                    feature.bg
-                  )}
-                />
-
-                <div className="relative z-10 flex h-full flex-col justify-between">
-                  <div className="space-y-6">
-                    <div className="relative inline-block">
-                      <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-background/50 border border-border/50 backdrop-blur-sm shadow-inner group-hover:scale-110 group-hover:bg-background transition-all duration-500">
-                        {feature.icon}
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="text-3xl font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">{feature.title}</h3>
-                      <p className="mt-4 text-muted-foreground text-lg leading-relaxed font-medium">
-                        {feature.description}
-                      </p>
-                    </div>
-                  </div>
-                  {feature.href && (
-                    <div className="mt-10">
-                      <Link 
-                        href={feature.href}
-                        className="inline-flex items-center text-primary font-bold transition-all group-hover:gap-4"
-                      >
-                        了解更多 <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            ))}
           </div>
         </div>
-      </section>
 
-      {/* Modern Technical Showcase */}
-      <section className="px-6 py-40 overflow-hidden">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid items-center gap-24 lg:grid-cols-2">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-              className="space-y-10"
-            >
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-bold text-primary">
-                <Code2 className="h-4 w-4" />
-                <span>技术架构</span>
-              </div>
-              <h2 className="text-5xl font-bold tracking-tight md:text-7xl leading-[1.1]">
-                现代、可靠、<br />
-                <span className="text-muted-foreground/60">可扩展。</span>
-              </h2>
-              <p className="text-muted-foreground text-xl leading-relaxed font-medium">
-                基于 Next.js 15 和 Spring Cloud 微服务架构，构建高性能、高可用的全栈应用流程。
-              </p>
-
-              <div className="grid gap-8 pt-6">
-                {[
-                  { icon: Zap, title: '极致性能', desc: '服务端渲染、边缘计算、毫秒级响应。' },
-                  { icon: Cpu, title: '分布式架构', desc: '容器化部署，跨服务治理。' },
-                ].map((item, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3 + i * 0.1 }}
-                    className="flex gap-6 items-start"
-                  >
-                    <div className="bg-primary/5 p-4 rounded-2xl">
-                      <item.icon className="h-7 w-7 text-primary" />
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-bold">{item.title}</h4>
-                      <p className="mt-2 text-muted-foreground font-medium">{item.desc}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              className="relative group"
-            >
-              <div className="absolute -inset-4 bg-gradient-to-tr from-primary/20 to-indigo-500/20 rounded-[4rem] blur-2xl opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
-              <div className="relative aspect-square rounded-[3.5rem] bg-gradient-to-tr from-primary/30 via-border to-transparent p-[1px] shadow-2xl overflow-hidden">
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px]" />
-                <div className="h-full w-full rounded-[3.45rem] bg-card/95 backdrop-blur-xl flex items-center justify-center p-12 relative overflow-hidden">
-                  <div className="absolute -top-1/4 -right-1/4 w-3/4 h-3/4 bg-primary/10 blur-[100px] rounded-full" />
-                  <div className="absolute -bottom-1/4 -left-1/4 w-3/4 h-3/4 bg-indigo-500/10 blur-[100px] rounded-full" />
-                  
-                  {/* Floating dots decoration */}
-                  <div className="absolute top-10 right-10 flex gap-1">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary/20" />
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary/40" />
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary/60" />
-                  </div>
-
-                  <div className="relative z-10 w-full font-mono text-sm space-y-4">
-                    <div className="flex gap-2 mb-10">
-                      <div className="h-3 w-3 rounded-full bg-red-500/80 shadow-[0_0_8px_rgba(239,68,68,0.4)]" />
-                      <div className="h-3 w-3 rounded-full bg-amber-500/80 shadow-[0_0_8px_rgba(245,158,11,0.4)]" />
-                      <div className="h-3 w-3 rounded-full bg-emerald-500/80 shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
-                    </div>
-                    <p className="text-primary font-bold animate-pulse">@Service</p>
-                    <p className="text-foreground/90"><span className="text-primary/70">public class</span> <span className="text-blue-500 font-bold drop-shadow-[0_0_8px_rgba(59,130,246,0.3)]">StephenQiuBlog</span> {'{'}</p>
-                    <p className="pl-6 text-foreground/80"><span className="text-primary/70">private final</span> <span className="text-purple-500">Insights</span> content;</p>
-                    <p className="pl-6 text-foreground/80"><span className="text-primary/70">private final</span> <span className="text-purple-500">Quality</span> standard;</p>
-                    <p className="pl-6">&nbsp;</p>
-                    <p className="pl-6 text-foreground/90"><span className="text-primary/70">public void</span> <span className="text-blue-500 font-bold">shareKnowledge</span>() {'{'}</p>
-                    <p className="pl-12 text-foreground/80"><span className="text-emerald-500 font-bold">content</span>.publish();</p>
-                    <p className="pl-12 text-foreground/80"><span className="text-emerald-500 font-bold">standard</span>.exceed();</p>
-                    <p className="pl-6 text-foreground/90">{'}'}</p>
-                    <p className="text-foreground/90">{'}'}</p>
+        {/* Floating Intro Card (Vision Pro Style) */}
+        <div className="hero-reveal w-full lg:w-[450px] shrink-0">
+          <div className="relative group">
+            <div className="absolute -inset-2 bg-gradient-to-tr from-foreground/5 to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition duration-1000" />
+            <div className="relative flex flex-col gap-10 rounded-[48px] border border-border bg-background/80 backdrop-blur-3xl p-12 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] transition-all duration-700 hover:scale-[1.02] hover:shadow-[0_48px_96px_-24px_rgba(0,0,0,0.2)]">
+              <div className="flex items-start justify-between">
+                <div className="bg-foreground text-background h-16 w-16 rounded-2xl flex items-center justify-center font-black text-3xl shadow-xl shadow-foreground/20">
+                  S.
+                </div>
+                <div className="text-right pt-2">
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/50 font-mono mb-1">Status</p>
+                  <div className="flex items-center gap-2 justify-end">
+                    <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_12px_rgba(34,197,94,0.8)]" />
+                    <p className="text-xs font-black text-foreground">当前在线</p>
                   </div>
                 </div>
               </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
 
-      {/* Footer CTA */}
-      <section className="px-6 py-40">
-        <div className="container mx-auto max-w-4xl text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="space-y-12"
-          >
-            <h2 className="text-6xl font-bold tracking-tight md:text-8xl">开启深度阅读。</h2>
-            <p className="text-muted-foreground mx-auto max-w-2xl text-xl font-medium md:text-2xl">
-              加入 50,000+ 开发者，获取最新的技术动态与深度见解。
-            </p>
-            <div className="pt-8 flex flex-col sm:flex-row items-center justify-center gap-6">
-              <Button
-                size="lg"
-                className="h-20 rounded-full px-16 text-2xl font-bold shadow-2xl hover:scale-105 transition-all"
-                asChild
-              >
-                <Link href="/blog">
-                  阅读博客 <ArrowRight className="ml-3 h-8 w-8" />
+              <div className="space-y-12 pl-1">
+                <p className="text-foreground text-2xl font-black leading-tight tracking-tight">
+                  致力于在跨越维度的代码中，寻求纯粹的直觉。
+                  此处记录了每一次的技术迭代与思维的灵光。
+                </p>
+
+                <Link href="/blog" className="flex items-center justify-between group/btn pt-8 border-t border-border/60">
+                  <span className="text-[11px] font-black uppercase tracking-[0.3em] text-foreground/80 group-hover:text-foreground transition-colors">探索全部见解</span>
+                  <div className="h-14 w-14 rounded-full bg-foreground flex items-center justify-center transition-all duration-500 group-hover/btn:rotate-45 group-hover:shadow-lg group-hover:shadow-foreground/30 group-hover:scale-110">
+                    <svg className="w-6 h-6 text-background" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </div>
                 </Link>
-              </Button>
+              </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
-    </div>
+
+      {/* Philosophy Section */}
+      <section className="section-reveal mb-80 w-full py-24 border-y border-border/10">
+        <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] text-foreground">
+          「细节不仅仅是细节，<br />
+          它们共同构成了<span className="text-foreground underline underline-offset-[20px] decoration-border/40 decoration-4">设计</span>的灵魂。」
+        </h2>
+        <p className="mt-12 text-foreground/60 text-[11px] font-black tracking-[0.6em] uppercase">— 见解哲学</p>
+      </section>
+
+      {/* Featured Insights Grid */}
+      <section className="mb-80 w-full">
+        <div className="section-reveal flex items-center justify-between mb-24">
+          <div className="flex items-baseline gap-4">
+            <h3 className="text-[11px] font-black uppercase tracking-[0.8em] text-foreground/60">
+              精选见解
+            </h3>
+            <span className="text-xs font-bold text-foreground/40 italic">/ 06</span>
+          </div>
+          <Link href="/blog" className="text-[10px] font-black uppercase tracking-widest text-foreground/80 hover:text-foreground transition-all flex items-center gap-2 group">
+            <span className="group-hover:mr-2 transition-all">所有见解 archive</span>
+            <span>→</span>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-40">
+          {isLoading ? (
+            Array.from({ length: 6 }).map((_, i) => (
+              <PostCardSkeleton key={i} />
+            ))
+          ) : (
+            posts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))
+          )}
+        </div>
+      </section>
+
+      <div className="h-24" />
+    </main>
   )
 }
