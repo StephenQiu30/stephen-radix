@@ -3,10 +3,11 @@
 import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import { Bookmark, Heart, MessageSquare, Share2 } from 'lucide-react'
-import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { QRCodeSVG } from 'qrcode.react'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
 
 interface PostActionBarProps {
   hasThumb: boolean
@@ -34,6 +35,7 @@ export function PostActionBar({
   thumbNum = 0,
   favourNum = 0,
 }: PostActionBarProps) {
+  const barRef = React.useRef<HTMLDivElement>(null)
   const [currentUrl, setCurrentUrl] = React.useState('')
 
   React.useEffect(() => {
@@ -42,12 +44,21 @@ export function PostActionBar({
     }
   }, [])
 
+  useGSAP(() => {
+    gsap.from(barRef.current, {
+      y: 40,
+      opacity: 0,
+      scale: 0.9,
+      duration: 1.2,
+      ease: 'power4.out',
+      delay: 0.5, // Delay to let page content start revealing first
+    })
+  }, { scope: barRef })
+
   return (
     <div className={cn('fixed bottom-8 left-1/2 z-40 -translate-x-1/2', className)}>
-      <motion.div
-        initial={{ y: 20, opacity: 0, scale: 0.9 }}
-        animate={{ y: 0, opacity: 1, scale: 1 }}
-        transition={{ type: 'spring', stiffness: 400, damping: 30, delay: 0.2 }}
+      <div
+        ref={barRef}
         className="flex items-center gap-1.5 rounded-full bg-white/70 dark:bg-zinc-900/90 px-2.5 py-2 shadow-2xl backdrop-blur-xl ring-1 ring-black/5 dark:ring-white/10 relative overflow-hidden"
       >
         <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent dark:from-white/[0.05] pointer-events-none" />
@@ -110,8 +121,7 @@ export function PostActionBar({
             </div>
           </PopoverContent>
         </Popover>
-      </motion.div>
+      </div>
     </div>
   )
 }
-

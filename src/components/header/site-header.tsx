@@ -18,13 +18,37 @@ export function SiteHeader() {
   const [authModalOpen, setAuthModalOpen] = useState(false)
 
   useGSAP(() => {
-    gsap.from(headerRef.current, {
-      y: -20,
-      opacity: 0,
-      duration: 1,
-      ease: 'power3.out',
-      clearProps: 'all',
+    const tl = gsap.timeline({
+      defaults: { ease: 'power4.out', duration: 1.2 }
     })
+
+    // Header bar slide down
+    tl.from(headerRef.current, {
+      y: -80,
+      opacity: 0,
+      duration: 1.5,
+    })
+
+    // Staggered children entrance - Menus first
+    tl.from('.menu-item', {
+      y: 15,
+      opacity: 0,
+      stagger: 0.1,
+      clearProps: 'all'
+    }, '-=1.2') // Start very early during header animation
+
+    tl.from('.site-logo', {
+      y: 15,
+      opacity: 0,
+      clearProps: 'all'
+    }, '-=0.8')
+
+    tl.from('.action-item', {
+      y: 15,
+      opacity: 0,
+      stagger: 0.08,
+      clearProps: 'all'
+    }, '-=0.8')
   }, { scope: headerRef })
 
   return (

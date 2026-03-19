@@ -1,65 +1,65 @@
 'use client'
 
-import React from 'react'
-import { motion } from 'framer-motion'
+import React, { useRef } from 'react'
 import { Loader2 } from 'lucide-react'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
 
 export function FullScreenLoader() {
+  const container = useRef<HTMLDivElement>(null)
+  const logoRef = useRef<HTMLDivElement>(null)
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Stephen Radix'
   const logoLetter = siteName.charAt(0).toUpperCase()
 
+  useGSAP(() => {
+    const tl = gsap.timeline()
+    
+    // Entrance
+    tl.from('.gsap-reveal', {
+      scale: 0.8,
+      opacity: 0,
+      y: 10,
+      duration: 0.8,
+      stagger: 0.1,
+      ease: 'power4.out',
+    })
+
+    // Infinite Pulse
+    gsap.to(logoRef.current, {
+      scale: 1.05,
+      opacity: 0.9,
+      duration: 1.5,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut'
+    })
+  }, { scope: container })
+
   return (
-    <div className="bg-background fixed inset-0 z-50 flex flex-col items-center justify-center gap-4">
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="relative"
-      >
-        <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [1, 0.8, 1],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="bg-primary flex h-20 w-20 items-center justify-center rounded-2xl shadow-lg"
+    <div ref={container} className="bg-background fixed inset-0 z-50 flex flex-col items-center justify-center gap-6">
+      <div className="gsap-reveal relative">
+        <div
+          ref={logoRef}
+          className="bg-primary flex h-24 w-24 items-center justify-center rounded-[2rem] shadow-2xl shadow-primary/20"
         >
-          <span className="text-primary-foreground text-4xl font-bold">{logoLetter}</span>
-        </motion.div>
+          <span className="text-primary-foreground text-5xl font-black">{logoLetter}</span>
+        </div>
 
-        <motion.div
-          className="absolute -right-2 -bottom-2"
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          <div className="bg-background rounded-full p-1 shadow-md">
-            <Loader2 className="text-primary h-6 w-6 animate-spin" />
+        <div className="absolute -right-2 -bottom-2">
+          <div className="bg-background rounded-full p-1.5 shadow-xl ring-1 ring-border/10">
+            <Loader2 className="text-primary h-7 w-7 animate-spin" />
           </div>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
 
-      <motion.h1
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
-        className="text-foreground text-xl font-medium tracking-wide"
-      >
-        {siteName}
-      </motion.h1>
-
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.6 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
-        className="text-muted-foreground text-sm"
-      >
-        正在加载资源...
-      </motion.p>
+      <div className="space-y-2 text-center">
+        <h1 className="gsap-reveal text-foreground text-2xl font-black tracking-tighter uppercase mb-1">
+          {siteName}
+        </h1>
+        <p className="gsap-reveal text-muted-foreground text-xs font-bold tracking-[0.3em] uppercase opacity-60">
+          正在加载资源...
+        </p>
+      </div>
     </div>
   )
 }

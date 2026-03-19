@@ -75,7 +75,7 @@ export function CommentInput({
               value={content}
               onChange={e => setContent(e.target.value)}
               placeholder={placeholder}
-              className="bg-card/30 border-border/40 focus:border-primary/20 focus:bg-background/80 focus:ring-[6px] focus:ring-primary/5 min-h-[140px] resize-none rounded-3xl p-6 text-base shadow-sm transition-all duration-300 placeholder:text-foreground/20 placeholder:font-bold leading-relaxed overflow-hidden"
+              className="bg-card/40 border-border/10 focus:border-primary/30 focus:bg-background/90 focus:ring-0 min-h-[160px] resize-none rounded-[2rem] p-8 text-base shadow-sm transition-all duration-500 placeholder:text-foreground/10 placeholder:font-black leading-relaxed overflow-hidden"
               autoFocus={autoFocus}
             />
           </div>
@@ -95,17 +95,17 @@ export function CommentInput({
               size="lg"
               onClick={handleSubmit}
               disabled={!content.trim() || submitting}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-8 h-12 shadow-xl shadow-primary/10 hover:shadow-primary/20 transition-all font-black tracking-tight"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-10 h-14 shadow-2xl shadow-primary/20 hover:shadow-primary/40 transition-all font-black tracking-tight"
             >
               {submitting ? (
                 <>
-                  <Loader2 className="mr-3 h-4 w-4 animate-spin" />
+                  <Loader2 className="mr-3 h-5 w-5 animate-spin" />
                   见解同步中
                 </>
               ) : (
                 <>
                   发布见解
-                  <Send className="ml-3 h-4 w-4" />
+                  <Send className="ml-3 h-4 w-4 transition-transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1" />
                 </>
               )}
             </Button>

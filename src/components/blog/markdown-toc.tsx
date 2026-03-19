@@ -1,10 +1,11 @@
 'use client'
 
 import * as React from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { Eye, EyeOff, List } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
 
 interface Heading {
   id: string
@@ -20,6 +21,7 @@ export function MarkdownToc({ content }: TOCProps) {
   const [headings, setHeadings] = React.useState<Heading[]>([])
   const [activeId, setActiveId] = React.useState<string>('')
   const [isOpen, setIsOpen] = React.useState(true)
+  const navRef = React.useRef<HTMLDivElement>(null)
 
   // 提取目录
   React.useEffect(() => {
@@ -71,6 +73,18 @@ export function MarkdownToc({ content }: TOCProps) {
     return () => observer.disconnect()
   }, [headings])
 
+  useGSAP(() => {
+    if (navRef.current) {
+      gsap.to(navRef.current, {
+        height: isOpen ? 'auto' : 0,
+        opacity: isOpen ? 1 : 0,
+        duration: 0.4,
+        ease: 'power3.inOut',
+        overflow: 'hidden'
+      })
+    }
+  }, { dependencies: [isOpen] })
+
   if (headings.length === 0) return null
 
   return (
@@ -89,55 +103,41 @@ export function MarkdownToc({ content }: TOCProps) {
         </Button>
       </div>
 
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.nav
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="overflow-hidden"
-          >
-            <div className="relative border-l border-border/40 pl-0">
-              {headings.map(heading => {
-                const isActive = activeId === heading.id
-                return (
-                  <a
-                    key={heading.id}
-                    href={`#${heading.id}`}
-                    onClick={e => {
-                      e.preventDefault()
-                      document.getElementById(heading.id)?.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start',
-                      })
-                    }}
-                    className={cn(
-                      'block relative py-1.5 transition-colors -ml-[1px] pr-3 border-l-2',
-                      isActive ? 'border-primary text-foreground font-medium' : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground',
-                      heading.level === 1 && 'pl-4 font-semibold mt-1 tracking-tight',
-                      heading.level === 2 && 'pl-4',
-                      heading.level === 3 && 'pl-7 text-[13px]',
-                      heading.level === 4 && 'pl-10 text-[12px]'
-                    )}
-                  >
-                    <span className="line-clamp-2 leading-snug">{heading.text}</span>
-                  </a>
-                )
-              })}
-            </div>
-          </motion.nav>
-        )}
-      </AnimatePresence>
+      <nav ref={navRef} className="overflow-hidden">
+        <div className="relative border-l border-border/40 pl-0">
+          {headings.map(heading => {
+            const isActive = activeId === heading.id
+            return (
+              <a
+                key={heading.id}
+                href={`#${heading.id}`}
+                onClick={e => {
+                  e.preventDefault()
+                  document.getElementById(heading.id)?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                  })
+                }}
+                className={cn(
+                  'block relative py-1.5 transition-colors -ml-[1px] pr-3 border-l-2',
+                  isActive ? 'border-primary text-foreground font-medium' : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground',
+                  heading.level === 1 && 'pl-4 font-semibold mt-1 tracking-tight',
+                  heading.level === 2 && 'pl-4',
+                  heading.level === 3 && 'pl-7 text-[13px]',
+                  heading.level === 4 && 'pl-10 text-[12px]'
+                )}
+              >
+                <span className="line-clamp-2 leading-snug">{heading.text}</span>
+              </a>
+            )
+          })}
+        </div>
+      </nav>
 
       {!isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="pt-2 text-center"
-        >
+        <div className="pt-2 text-center">
           <p className="text-muted-foreground/50 text-xs italic">已折叠</p>
-        </motion.div>
+        </div>
       )}
     </div>
   )

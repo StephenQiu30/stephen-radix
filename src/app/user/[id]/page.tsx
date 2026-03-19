@@ -22,6 +22,8 @@ import { Button } from '@/components/ui/button'
 import { searchUserByPage, searchPostByPage } from '@/api/search/searchController'
 import { PostCard } from '@/components/blog/post-card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useAppSelector } from '@/store/hooks'
+import type { RootState } from '@/store'
 
 export default function UserDetailPage() {
   const containerRef = React.useRef<HTMLDivElement>(null)
@@ -29,6 +31,7 @@ export default function UserDetailPage() {
   const router = useRouter()
   const userId = params.id as string
 
+  const { user: loginUser } = useAppSelector((state: RootState) => state.user)
   const [user, setUser] = React.useState<UserAPI.UserVO | null>(null)
   const [posts, setPosts] = React.useState<PostAPI.PostVO[]>([])
   const [loading, setLoading] = React.useState(true)
@@ -77,32 +80,6 @@ export default function UserDetailPage() {
     fetchData()
   }, [userId])
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="text-secondary-foreground/50 h-8 w-8 animate-spin" />
-      </div>
-    )
-  }
-
-  if (error || !user) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-6 p-4 text-center">
-        <FileWarning className="text-muted-foreground/30 h-16 w-16" />
-        <h2 className="text-foreground text-2xl font-semibold">{error || 'User not found'}</h2>
-        <Link href="/">
-          <Button variant="outline" className="rounded-full">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back Home
-          </Button>
-        </Link>
-      </div>
-    )
-  }
-
-  // Use dayjs for dates and relative time
-  const joinedDate = user.createTime ? dayjs(user.createTime).format('MMMM D, YYYY') : 'Unknown'
-  const joinedAgo = user.createTime ? dayjs(user.createTime).fromNow(true) : '0 days'
   useGSAP(
     () => {
       if (!loading && user) {
@@ -117,6 +94,33 @@ export default function UserDetailPage() {
     },
     { scope: containerRef, dependencies: [loading, user] }
   )
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="text-secondary-foreground/50 h-8 w-8 animate-spin" />
+      </div>
+    )
+  }
+
+  if (error || !user) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-6 p-4 text-center">
+        <FileWarning className="text-muted-foreground/30 h-16 w-16" />
+        <h2 className="text-foreground text-2xl font-black tracking-tight">{error || '用户不存在'}</h2>
+        <Link href="/">
+          <Button variant="outline" className="rounded-full px-8 h-12 font-bold tracking-tight">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            返回首页
+          </Button>
+        </Link>
+      </div>
+    )
+  }
+
+  // Use dayjs for dates and relative time
+  const joinedDate = user.createTime ? dayjs(user.createTime).format('MMMM D, YYYY') : 'Unknown'
+  const joinedAgo = user.createTime ? dayjs(user.createTime).fromNow(true) : '0 days'
 
   // Role config (Read-Only)
   const roleConfig = {
@@ -141,53 +145,59 @@ export default function UserDetailPage() {
   const RoleIcon = roleInfo.icon
 
   return (
-    <div ref={containerRef} className="container mx-auto px-6 max-w-7xl py-12 md:py-24 space-y-20 selection:bg-primary/20">
+    <div ref={containerRef} className="container mx-auto px-6 max-w-7xl py-8 md:py-16 space-y-12 md:space-y-16 selection:bg-primary/20">
       {/* Header - Back Button Only */}
       <div className="animate-in flex items-center justify-between">
         <button
           onClick={() => router.back()}
-          className="group flex items-center text-[13px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-all duration-300"
+          className="group flex items-center text-[11px] font-black uppercase tracking-[0.25em] text-foreground/30 hover:text-foreground transition-all duration-300"
         >
-          <ArrowLeft className="h-4 w-4 mr-1 transition-transform group-hover:-translate-x-1" />
-          Back
+          <ArrowLeft className="h-4 w-4 mr-1.5 transition-transform group-hover:-translate-x-1" />
+          返回
         </button>
       </div>
 
       {/* Huge Typography Profile Header */}
-      <div className="animate-in space-y-12">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
-          <div className="space-y-6">
-            <Badge variant="secondary" className="animate-in bg-muted/50 text-muted-foreground font-bold px-4 py-1.5 rounded-full text-[10px] tracking-widest uppercase mb-4">
-              {roleInfo.label} • Lv.1 Member
+      <div className="animate-in relative">
+        {/* Subtle Background Accent */}
+        <div className="absolute -top-12 -left-20 w-80 h-80 bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute -bottom-10 -right-20 w-60 h-60 bg-indigo-500/5 rounded-full blur-[80px] pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-12">
+          <div className="space-y-8 flex-1">
+            <Badge variant="secondary" className="animate-in bg-primary/10 text-primary font-black px-5 py-2 rounded-full text-[10px] tracking-[0.2em] uppercase mb-4 border border-primary/20 shadow-sm">
+              {roleInfo.label} • LV.1 成员
             </Badge>
-            <h1 className="animate-in text-foreground text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-[0.85] text-balance">
-              {user.userName || 'Unknown'}
+            <h1 className={`animate-in text-foreground font-black tracking-tighter leading-[0.8] text-balance ${
+              user.userName?.length && user.userName.length > 10 ? 'text-5xl md:text-6xl lg:text-7xl' : 'text-8xl md:text-9xl lg:text-[10rem]'
+            }`}>
+              {user.userName || '匿名用户'}
             </h1>
-            <p className="animate-in text-muted-foreground/60 max-w-xl text-xl font-medium tracking-tight leading-relaxed">
-              {user.userProfile || 'No description provided.'}
+            <p className="animate-in text-foreground/40 max-w-xl text-xl font-bold tracking-tight leading-relaxed italic">
+              {user.userProfile || '目前还没有填写个性签名。'}
             </p>
           </div>
-          <div className="animate-in shrink-0">
-            <div className="relative group">
-              <UserAvatar
-                user={user}
-                size="xl"
-                className="h-32 w-32 md:h-48 md:w-48 border-4 border-background shadow-2xl transition-transform duration-500 group-hover:scale-105"
-              />
-            </div>
+          <div className="animate-in shrink-0 relative group">
+            <div className="absolute inset-0 bg-primary/20 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+            <UserAvatar
+              user={user}
+              size="xl"
+              className="h-40 w-40 md:h-56 md:w-56 border-4 border-background shadow-2xl transition-all duration-700 ease-out group-hover:scale-105 group-hover:rotate-3 relative z-10"
+            />
+            <div className="absolute -inset-2 rounded-full border border-primary/10 scale-95 opacity-0 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700" />
           </div>
         </div>
 
         {/* Action Buttons & Quick Stats */}
-        <div className="animate-in flex flex-wrap items-center gap-12 pt-8 border-t border-border/10">
-          <StatItem label="Joined" value={joinedAgo} />
-          <StatItem label="Stories" value={posts.length} />
-          <StatItem label="Likes" value={0} />
+        <div className="animate-in flex flex-wrap items-center gap-12 mt-16 pt-12 border-t border-border/5">
+          <StatItem label="加入时间" value={joinedAgo} icon={<Calendar className="h-4 w-4" />} />
+          <StatItem label="发布见解" value={posts.length} icon={<Zap className="h-4 w-4" />} />
+          <StatItem label="获赞总数" value={0} icon={<Award className="h-4 w-4" />} />
           <div className="ml-auto">
-            {user.id === (params as any).id && (
+            {loginUser && String(loginUser.id) === String(user.id) && (
               <Link href="/user/settings">
-                <Button variant="outline" className="rounded-full px-8 h-12 font-bold tracking-tight border-2 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300">
-                  Edit Profile
+                <Button variant="outline" className="rounded-full px-8 h-12 font-black tracking-tight border-2 border-border/10 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 shadow-sm hover:shadow-primary/20">
+                  编辑个人资料
                 </Button>
               </Link>
             )}
@@ -200,32 +210,32 @@ export default function UserDetailPage() {
           <TabsList className="bg-transparent h-auto p-0 gap-8 border-b border-border/10 rounded-none w-full justify-start">
             <TabsTrigger
               value="posts"
-              className="data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:border-primary border-b-2 border-transparent px-0 pb-4 rounded-none text-xl font-bold tracking-tight text-muted-foreground transition-all"
+              className="data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:border-primary border-b-2 border-transparent px-0 pb-4 rounded-none text-xl font-black tracking-tight text-muted-foreground/40 transition-all"
             >
-              Published Stories ({posts.length})
+              已发布见解 ({posts.length})
             </TabsTrigger>
             <TabsTrigger
               value="about"
-              className="data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:border-primary border-b-2 border-transparent px-0 pb-4 rounded-none text-xl font-bold tracking-tight text-muted-foreground transition-all"
+              className="data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:border-primary border-b-2 border-transparent px-0 pb-4 rounded-none text-xl font-black tracking-tight text-muted-foreground/40 transition-all"
             >
-              Member Info
+              成员资料
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="about" className="animate-in space-y-12 outline-none pt-4">
             <div className="grid gap-16 md:grid-cols-2">
               <InfoItem
-                label="Display Name"
-                value={user.userName || 'Not set'}
-                description="The name visible to the community."
+                label="昵称"
+                value={user.userName || '未设置'}
+                description="在社区中显示的公开名称。"
               />
               <InfoItem
-                label="Unique Identifier"
-                value={user.id ? `#${user.id}` : 'Unknown'}
-                description="System identification code."
+                label="用户 ID"
+                value={user.id ? `#${user.id}` : '未知'}
+                description="系统的唯一标识代码。"
               />
               <InfoItem
-                label="Member Since"
+                label="入驻日期"
                 value={joinedDate}
               />
             </div>
@@ -244,8 +254,8 @@ export default function UserDetailPage() {
               </div>
             ) : (
               <div className="flex min-h-[400px] flex-col items-center justify-center gap-6 text-center">
-                <FileWarning className="text-muted-foreground/20 h-16 w-16" />
-                <p className="text-muted-foreground/60 text-lg font-medium">No published stories yet.</p>
+                <FileWarning className="text-muted-foreground/10 h-16 w-16" />
+                <p className="text-muted-foreground/40 text-lg font-bold tracking-tight">尚未发布任何见解。</p>
               </div>
             )}
           </TabsContent>
@@ -258,14 +268,21 @@ export default function UserDetailPage() {
 function StatItem({
   label,
   value,
+  icon,
 }: {
   label: string
   value: number | string
+  icon?: React.ReactNode
 }) {
   return (
-    <div className="flex flex-col gap-1">
-      <div className="text-foreground text-3xl font-bold tracking-tighter">{value}</div>
-      <div className="text-muted-foreground text-[10px] font-bold tracking-widest uppercase">{label}</div>
+    <div className="group flex items-center gap-5 transition-all duration-500 hover:translate-y-[-2px]">
+      <div className="flex h-14 w-14 items-center justify-center rounded-[20px] bg-primary/5 text-primary/30 border border-primary/5 transition-all duration-500 group-hover:bg-primary group-hover:text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/20">
+        {icon}
+      </div>
+      <div className="flex flex-col gap-0.5">
+        <div className="text-foreground text-4xl font-black tracking-tighter leading-none">{value}</div>
+        <div className="text-foreground/30 text-[10px] font-black tracking-[0.25em] uppercase">{label}</div>
+      </div>
     </div>
   )
 }

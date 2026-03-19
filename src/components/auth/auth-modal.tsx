@@ -15,11 +15,13 @@ import {
   sendEmailLoginCode,
   userLoginByEmail,
 } from '@/api/user/userController'
-import { User as UserIcon } from 'lucide-react'
+import { User as UserIcon, X } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { MethodSelector } from './method-selector'
 import { EmailLogin } from './email-login'
 import { WeChatLogin } from './wechat-login'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
 
 interface AuthModalProps {
   open: boolean
@@ -40,6 +42,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
     code: '',
   })
   const [countdown, setCountdown] = React.useState(0)
+  const containerRef = React.useRef<HTMLDivElement>(null)
 
   // Reset view when modal opens
   React.useEffect(() => {
@@ -66,15 +69,12 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
       setError('请输入邮箱地址')
       return
     }
-    // Basic email validation
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailForm.email)) {
       setError('请输入有效的邮箱地址')
       return
     }
-
     setLoading(true)
     setError('')
-
     try {
       const res = (await sendEmailLoginCode({
         email: emailForm.email,
@@ -97,17 +97,14 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
     setError('')
     setSuccess('')
     setLoading(true)
-
     if (!emailForm.email || !emailForm.code) {
       setError('请输入邮箱和验证码')
       setLoading(false)
       return
     }
-
     try {
       const res = (await userLoginByEmail(emailForm)) as unknown as UserAPI.BaseResponseLoginUserVO
       if (res.code === 0 && res.data) {
-        // Save token if exists
         if (res.data.token && typeof window !== 'undefined') {
           localStorage.setItem('token', res.data.token)
         }
@@ -138,7 +135,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
   }
 
   const handleWeChatLoginSuccess = (loginUser: UserAPI.LoginUserVO) => {
-    // Save token if exists
     if (loginUser.token && typeof window !== 'undefined') {
       localStorage.setItem('token', loginUser.token)
     }
@@ -146,105 +142,101 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
     onOpenChange(false)
   }
 
+  useGSAP(() => {
+    if (open) {
+      gsap.from('.auth-modal-content', {
+        y: 40,
+        opacity: 0,
+        duration: 1,
+        ease: 'power4.out',
+      })
+    }
+  }, { scope: containerRef, dependencies: [open, view] })
+
   const getTitle = () => {
     switch (view) {
-      case 'email':
-        return '邮箱登录'
-      case 'wechat':
-        return '微信扫码登录'
-      default:
-        return '欢迎回来'
-    }
-  }
-
-  const getDescription = () => {
-    switch (view) {
-      case 'email':
-        return '输入您的邮箱地址以继续'
-      case 'wechat':
-        return '使用微信扫描二维码登录'
-      default:
-        return '选择一种方式登录您的账户'
+      case 'email': return '邮箱登录'
+      case 'wechat': return '扫码登录'
+      default: return '欢迎回来'
     }
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="overflow-hidden border-none bg-white p-0 shadow-2xl sm:max-w-[420px] dark:bg-[#1c1c1e]">
-        <div className="absolute top-0 left-0 h-1.5 w-full bg-gradient-to-r from-[#0071e3] via-[#42a5f5] to-[#0077ed]" />
+      <DialogContent className="overflow-hidden border-none bg-background/50 backdrop-blur-3xl p-0 shadow-2xl sm:max-w-[440px] rounded-[2.5rem] selection:bg-primary/20">
+        <div ref={containerRef} className="auth-modal-content relative flex flex-col">
+          <div className="absolute top-8 right-8 z-20">
+            <button
+               onClick={() => onOpenChange(false)}
+               className="group p-2 rounded-full hover:bg-muted/50 transition-all duration-300"
+            >
+              <X className="h-5 w-5 text-foreground/20 group-hover:text-foreground transition-colors" />
+            </button>
+          </div>
 
-        <DialogHeader className="space-y-6 px-8 pt-10">
-          <div className="flex flex-col items-center justify-center gap-5">
-            <div className="relative">
-              <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-[#0071e3]/20 to-[#0077ed]/0 blur-sm" />
-              <Avatar className="relative h-20 w-20 shadow-lg ring-4 ring-white dark:ring-[#1c1c1e]">
-                <AvatarImage src={user?.userAvatar} alt={user?.userName || '用户头像'} />
-                <AvatarFallback className="bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-900">
-                  <UserIcon className="h-10 w-10 text-gray-400 dark:text-gray-500" />
-                </AvatarFallback>
-              </Avatar>
+          <DialogHeader className="space-y-6 px-10 pt-16">
+            <div className="flex flex-col items-center justify-center gap-6">
+              <div className="relative group">
+                <div className="absolute -inset-4 bg-primary/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                <Avatar className="relative h-24 w-24 border-[6px] border-background shadow-2xl transition-transform duration-700 group-hover:scale-110">
+                  <AvatarImage src={user?.userAvatar} alt={user?.userName || '用户头像'} />
+                  <AvatarFallback className="bg-muted backdrop-blur-2xl">
+                    <UserIcon className="h-10 w-10 text-foreground/20" />
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+              <div className="space-y-2 text-center">
+                <DialogTitle className="text-3xl font-black tracking-tight text-foreground">
+                  {getTitle()}
+                </DialogTitle>
+                <DialogDescription className="text-foreground/40 text-sm font-bold tracking-tight px-4">
+                  {view === 'choice' ? '选择您偏好的方式登录账户' : '请根据指示完成身份验证'}
+                </DialogDescription>
+              </div>
             </div>
-            <div className="space-y-2 text-center">
-              <DialogTitle className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                {getTitle()}
-              </DialogTitle>
-              <DialogDescription className="text-muted-foreground text-base">
-                {getDescription()}
-              </DialogDescription>
+          </DialogHeader>
+
+          <div className="px-10 pt-10 pb-12">
+            <div className="min-h-[160px]">
+              {view === 'choice' && (
+                <MethodSelector
+                  onGitHubLogin={handleGitHubLogin}
+                  onEmailClick={() => setView('email')}
+                  onWeChatClick={() => setView('wechat')}
+                />
+              )}
+              {view === 'email' && (
+                <EmailLogin
+                  emailForm={emailForm}
+                  setEmailForm={setEmailForm}
+                  onSendCode={handleSendCode}
+                  onSubmit={handleEmailLogin}
+                  onBack={() => setView('choice')}
+                  loading={loading}
+                  countdown={countdown}
+                  error={error}
+                  success={success}
+                />
+              )}
+              {view === 'wechat' && (
+                <WeChatLogin
+                  onBack={() => setView('choice')}
+                  onLoginSuccess={handleWeChatLoginSuccess}
+                  error={error}
+                  setError={setError}
+                />
+              )}
             </div>
           </div>
-        </DialogHeader>
 
-        <div className="px-8 pt-6 pb-10">
-          <div className="min-h-[120px]">
-            {view === 'choice' && (
-              <MethodSelector
-                onGitHubLogin={handleGitHubLogin}
-                onEmailClick={() => setView('email')}
-                onWeChatClick={() => setView('wechat')}
-              />
-            )}
-            {view === 'email' && (
-              <EmailLogin
-                emailForm={emailForm}
-                setEmailForm={setEmailForm}
-                onSendCode={handleSendCode}
-                onSubmit={handleEmailLogin}
-                onBack={() => setView('choice')}
-                loading={loading}
-                countdown={countdown}
-                error={error}
-                success={success}
-              />
-            )}
-            {view === 'wechat' && (
-              <WeChatLogin
-                onBack={() => setView('choice')}
-                onLoginSuccess={handleWeChatLoginSuccess}
-                error={error}
-                setError={setError}
-              />
-            )}
+          <div className="bg-muted/20 px-10 py-6 text-center border-t border-border/5">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] leading-relaxed text-foreground/20 italic">
+              登录即代表您同意
+              <a href="#" className="mx-1 text-foreground/40 hover:text-primary transition-colors underline underline-offset-4 decoration-border/10">服务条款</a>
+              与
+              <a href="#" className="mx-1 text-foreground/40 hover:text-primary transition-colors underline underline-offset-4 decoration-border/10">隐私政策</a>
+            </p>
           </div>
-        </div>
-
-        <div className="bg-gray-50/80 px-8 py-5 text-center backdrop-blur-sm dark:bg-gray-800/50">
-          <p className="text-muted-foreground text-center text-xs leading-relaxed">
-            登录即代表您同意我们的
-            <a
-              href="#"
-              className="hover:text-primary mx-1 font-medium text-gray-700 underline underline-offset-2 transition-colors hover:text-[#0071e3] dark:text-gray-300 dark:hover:text-[#0071e3]"
-            >
-              服务条款
-            </a>
-            和
-            <a
-              href="#"
-              className="hover:text-primary mx-1 font-medium text-gray-700 underline underline-offset-2 transition-colors hover:text-[#0071e3] dark:text-gray-300 dark:hover:text-[#0071e3]"
-            >
-              隐私政策
-            </a>
-          </p>
         </div>
       </DialogContent>
     </Dialog>

@@ -25,13 +25,13 @@ export interface MenuItem {
 const menuItems: MenuItem[] = [
   { title: '首页', href: '/', icon: <Home className="h-4 w-4" /> },
   {
-    title: '阅读博客',
+    title: '阅读博文',
     href: '/blog',
     activePrefix: '/blog',
     icon: <BookOpen className="h-4 w-4" />,
   },
   {
-    title: '我的空间',
+    title: '个人主页',
     href: '/user/profile',
     activePrefix: '/user',
     icon: <User className="h-4 w-4" />,
@@ -61,7 +61,7 @@ export function Menus({ className, vertical = false }: { className?: string; ver
               key={item.href}
               href={item.href || '#'}
               className={cn(
-                'flex items-center gap-3 rounded-xl px-4 py-3.5 text-base font-medium transition-colors duration-200',
+                'menu-item flex items-center gap-3 rounded-xl px-4 py-3.5 text-base font-medium transition-colors duration-200',
                 active
                   ? 'bg-accent/50 text-accent-foreground'
                   : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
@@ -88,7 +88,7 @@ export function Menus({ className, vertical = false }: { className?: string; ver
                   href={item.href || '#'}
                   className={cn(
                     navigationMenuTriggerStyle(),
-                    'h-9 bg-transparent px-3 text-sm font-medium transition-colors hover:bg-transparent hover:text-foreground focus:bg-transparent data-[active]:bg-transparent',
+                    'menu-item h-9 bg-transparent px-3 text-sm font-medium transition-colors hover:bg-transparent hover:text-foreground focus:bg-transparent data-[active]:bg-transparent',
                     active ? 'text-foreground font-semibold' : 'text-foreground/60 font-medium'
                   )}
                 >

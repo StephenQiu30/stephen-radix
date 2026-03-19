@@ -2,7 +2,6 @@
 
 import * as React from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { motion, useScroll, useSpring } from 'framer-motion'
 import {
   CommentSection,
   MarkdownRender,
@@ -12,7 +11,7 @@ import {
 } from '@/components/blog'
 import { UserAvatar } from '@/components/header/user-avatar'
 import { Button } from '@/components/ui/button'
-import { getPostVoById } from '@/api/post/postController'
+import { searchPostByPage } from '@/api/search/searchController'
 import { doThumb } from '@/api/post/postThumbController'
 import { doFavour } from '@/api/post/postFavourController'
 import { useAppSelector } from '@/store/hooks'
@@ -21,9 +20,13 @@ import { ArrowLeft, ChevronLeft, FileWarning, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
 
 export default function PostDetailPage() {
   const container = React.useRef<HTMLDivElement>(null)
+  const progressBarRef = React.useRef<HTMLDivElement>(null)
   const params = useParams()
   const router = useRouter()
   const postId = params.id as string
@@ -39,14 +42,6 @@ export default function PostDetailPage() {
   const [favourNum, setFavourNum] = React.useState(0)
   const [commentNum, setCommentNum] = React.useState(0)
 
-  // Scroll Progress
-  const { scrollYProgress } = useScroll()
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  })
-
   // 获取文章详情
   React.useEffect(() => {
     if (!postId) return
@@ -55,18 +50,20 @@ export default function PostDetailPage() {
       setLoading(true)
       setError(null)
       try {
-        const res = await getPostVoById({
+        const res = await searchPostByPage({
           id: postId as any,
+          current: 1,
+          pageSize: 1,
         })
-        if (res && res.code === 0 && res.data) {
-          const postData = res.data
+        if (res && res.code === 0 && res.data?.records && (res.data.records as any).length > 0) {
+          const postData = (res.data.records as any)[0] as PostAPI.PostVO
           setPost(postData)
           setHasThumb(postData.hasThumb || false)
           setHasFavour(postData.hasFavour || false)
           setThumbNum(postData.thumbNum || 0)
           setFavourNum(postData.favourNum || 0)
         } else {
-          setError(`${res?.message || 'Story not found'} (ID: ${postId})`)
+          setError(`${res?.message || '见解已飞往星际'} (ID: ${postId})`)
           setPost(null)
         }
       } catch (err: any) {
@@ -126,12 +123,25 @@ export default function PostDetailPage() {
   useGSAP(
     () => {
       if (!loading && post) {
+        // Entrance reveals
         gsap.from('.gsap-reveal', {
           opacity: 0,
           y: 20,
           duration: 0.8,
           stagger: 0.1,
           ease: 'power3.out',
+        })
+
+        // Scroll Progress Bar
+        gsap.to(progressBarRef.current, {
+          scaleX: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: document.documentElement,
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 0.3,
+          },
         })
       }
     },
@@ -163,9 +173,9 @@ export default function PostDetailPage() {
 
   return (
     <div ref={container} className="bg-background relative min-h-screen pb-40 pt-16 md:pt-20">
-      <motion.div
-        className="bg-gradient-to-r from-primary to-indigo-500 fixed top-0 right-0 left-0 z-50 h-[3px] origin-left shadow-[0_0_10px_rgba(var(--primary),0.5)]"
-        style={{ scaleX }}
+      <div
+        ref={progressBarRef}
+        className="bg-gradient-to-r from-primary to-indigo-500 fixed top-0 right-0 left-0 z-50 h-[3px] origin-left shadow-[0_0_10px_rgba(var(--primary),0.5)] scale-x-0"
       />
 
       {/* Mobile Navbar */}
@@ -197,39 +207,45 @@ export default function PostDetailPage() {
             {/* Author Bio Footer (Minimalist) */}
             <hr className="my-16 border-border/40" />
             <div className="mx-auto w-full gsap-reveal">
-              <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-6 rounded-2xl border border-border/50 bg-muted/20 p-6 sm:p-8 hover:bg-muted/40 transition-colors duration-300">
-                <div className="flex flex-col sm:flex-row items-center sm:items-center gap-5 text-center sm:text-left">
-                  <Link href={`/user/${post.userVO?.id}`} className="shrink-0 group">
+              <div className="flex flex-col sm:flex-row items-center sm:items-stretch justify-between gap-8 rounded-[2rem] border border-border/10 bg-card/30 p-8 backdrop-blur-xl transition-all duration-500 hover:bg-card/40 hover:shadow-2xl hover:shadow-primary/5 group/author">
+                <div className="flex flex-col sm:flex-row items-center sm:items-center gap-8 text-center sm:text-left flex-1">
+                  <Link href={`/user/${post.userVO?.id}`} className="shrink-0 relative">
+                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl opacity-0 group-hover/author:opacity-100 transition-opacity duration-700" />
                     <UserAvatar
                       user={post.userVO}
                       size="xl"
-                      className="h-20 w-20 border-border/10 shadow-xl transition-transform duration-500 group-hover:scale-110"
+                      className="relative h-24 w-24 border-2 border-background shadow-2xl transition-transform duration-700 ease-out group-hover/author:rotate-3 group-hover/author:scale-105"
                     />
                   </Link>
                   <div className="space-y-4 flex-1">
                     <div>
-                      <p className="text-foreground/30 text-[10px] font-black tracking-[0.25em] uppercase mb-1.5">
-                        发布见解于轨迹
-                      </p>
+                      <div className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 mb-3">
+                        <p className="text-primary text-[10px] font-black tracking-[0.2em] uppercase">
+                          发布见解于轨迹
+                        </p>
+                      </div>
                       <Link href={`/user/${post.userVO?.id}`}>
-                        <h3 className="text-foreground hover:text-primary text-2xl font-black tracking-tight transition-all">
+                        <h3 className="text-foreground hover:text-primary text-3xl font-black tracking-tight transition-all">
                           {post.userVO?.userName || '匿名用户'}
                         </h3>
                       </Link>
                     </div>
-                    <p className="text-foreground/60 text-base font-bold leading-relaxed max-w-[480px]">
+                    <p className="text-foreground/60 text-[15px] font-medium leading-relaxed max-w-[520px]">
                       {post.userVO?.userProfile || '致力于构建更美好的数字化世界，感谢并见证每一次阅读与成长。'}
                     </p>
                   </div>
                 </div>
-                <Link href={`/user/${post.userVO?.id}`} className="self-stretch sm:self-auto flex items-center mt-4 sm:mt-0">
-                  <Button
-                    variant="outline"
-                    className="w-full sm:w-auto rounded-full px-6 h-10 font-medium"
-                  >
-                    查看主页
-                  </Button>
-                </Link>
+                <div className="flex items-center">
+                  <Link href={`/user/${post.userVO?.id}`} className="w-full sm:w-auto">
+                    <Button
+                      variant="outline"
+                      className="w-full sm:w-auto rounded-full bg-background/50 px-8 h-12 border-border/20 font-bold hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 shadow-sm hover:shadow-primary/20 group/btn"
+                    >
+                      查看主页
+                      <ChevronLeft className="ml-2 h-4 w-4 rotate-180 transition-transform group-hover/btn:translate-x-1" />
+                    </Button>
+                  </Link>
+                </div>
               </div>
 
               {/* Comment Section */}

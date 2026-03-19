@@ -9,7 +9,8 @@ import {
 } from '@/components/ui/card'
 import { ArrowRight, Lock, Sparkles } from 'lucide-react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
 
 interface LoginPromptCardProps {
   onLoginClick: () => void
@@ -21,68 +22,90 @@ interface LoginPromptCardProps {
 export function LoginPromptCard({
   onLoginClick,
   title = '需要登录',
-  description = '请登录以查看系统通知',
+  description = '请登录以查看个人资料',
   icon,
 }: LoginPromptCardProps) {
+  const containerRef = React.useRef<HTMLDivElement>(null)
+
+  useGSAP(() => {
+    const tl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1.2 } })
+    
+    tl.from('.prompt-card', {
+      y: 40,
+      opacity: 0,
+      scale: 0.98,
+      delay: 0.1,
+    })
+    .from('.prompt-icon', {
+      scale: 0,
+      rotate: -15,
+      opacity: 0,
+      duration: 1,
+      ease: 'back.out(1.7)',
+    }, '-=0.8')
+    .from('.prompt-text', {
+      y: 20,
+      opacity: 0,
+      stagger: 0.1,
+      duration: 1,
+    }, '-=0.8')
+    .from('.prompt-actions', {
+      y: 20,
+      opacity: 0,
+      stagger: 0.1,
+      duration: 1,
+    }, '-=0.8')
+  }, { scope: containerRef })
+
   return (
-    <div className="flex w-full items-center justify-center py-12">
-      {/* Card Content */}
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0, y: 10 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-        className="w-full max-w-md"
-      >
-        <Card className="border-white/40 bg-white/60 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] backdrop-blur-3xl dark:border-white/10 dark:bg-zinc-900/60">
-          <CardHeader className="flex flex-col items-center space-y-10 pt-16 pb-8">
-            {/* Icon Container - Squircle with superellipse-like feel */}
-            <div className="relative">
-              <div className="flex h-24 w-24 items-center justify-center rounded-[24px] bg-white text-[#007AFF] shadow-[0_10px_20px_rgba(0,0,0,0.04)] ring-1 ring-black/[0.03] dark:bg-zinc-800 dark:text-blue-400 dark:ring-white/[0.05]">
-                {icon || <Lock className="h-10 w-10 stroke-[1.5]" />}
+    <div ref={containerRef} className="flex w-full items-center justify-center py-12">
+      <div className="w-full max-w-lg p-6 prompt-card">
+        <div className="relative group">
+          {/* Decorative Glows */}
+          <div className="absolute -inset-4 bg-primary/5 rounded-[3rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+          
+          <Card className="relative border-border/10 bg-background/40 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] backdrop-blur-3xl rounded-[2.5rem] overflow-hidden">
+            <CardHeader className="flex flex-col items-center space-y-10 pt-16 pb-8">
+              {/* Icon Container */}
+              <div className="relative prompt-icon">
+                <div className="flex h-28 w-28 items-center justify-center rounded-[32px] bg-primary/5 text-primary border border-primary/10 shadow-inner">
+                  {icon || <Lock className="h-12 w-12 stroke-[1.25]" />}
+                </div>
+                <div className="absolute -top-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
+                  <Sparkles className="h-4 w-4" />
+                </div>
               </div>
-              <motion.div
-                className="absolute -top-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-[#FFBC00] text-[#1D1D1F] shadow-sm"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.4, type: 'spring' }}
-              >
-                <Sparkles className="h-3.5 w-3.5" />
-              </motion.div>
-            </div>
 
-            {/* Typography Section */}
-            <div className="space-y-4 text-center">
-              <h2 className="text-[#1D1D1F] text-[34px] leading-tight font-bold tracking-[-0.03em] dark:text-[#F5F5F7]">
-                {title}
-              </h2>
-              <p className="text-[#86868B] mx-auto max-w-[260px] text-[17px] font-medium leading-relaxed tracking-tight">
-                {description}
-              </p>
-            </div>
-          </CardHeader>
+              {/* Typography Section */}
+              <div className="space-y-4 text-center">
+                <h2 className="prompt-text text-foreground text-4xl font-black tracking-tighter leading-none">
+                  {title}
+                </h2>
+                <p className="prompt-text text-foreground/40 mx-auto max-w-[280px] text-lg font-bold tracking-tight leading-relaxed italic">
+                  {description}
+                </p>
+              </div>
+            </CardHeader>
 
-          <CardFooter className="flex flex-col gap-4 p-10 pt-4">
-            <Button
-              onClick={onLoginClick}
-              size="lg"
-              className="h-14 w-full rounded-2xl bg-[#007AFF] text-[17px] font-semibold tracking-tight text-white shadow-[0_15px_30px_rgba(0,122,255,0.25)] transition-all hover:scale-[1.01] hover:bg-[#007AFF]/90 active:scale-[0.99]"
-            >
-              立即登录
-              <ArrowRight className="ml-2 h-5 w-5 stroke-[2.5]" />
-            </Button>
-
-            <Link href="/" className="w-full">
+            <CardFooter className="flex flex-col gap-6 p-12 pt-0 prompt-actions">
               <Button
-                variant="ghost"
+                onClick={onLoginClick}
                 size="lg"
-                className="h-14 w-full rounded-2xl text-[17px] font-semibold tracking-tight text-[#007AFF] transition-all hover:bg-[#007AFF]/5 active:scale-[0.99]"
+                className="h-16 w-full rounded-2xl bg-primary text-primary-foreground text-lg font-black tracking-tight shadow-xl shadow-primary/20 transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/30 active:scale-[0.98]"
               >
-                返回首页
+                立即登录
+                <ArrowRight className="ml-2 h-5 w-5 stroke-[3]" />
               </Button>
-            </Link>
-          </CardFooter>
-        </Card>
-      </motion.div>
+              
+              <Link href="/" className="w-full text-center">
+                <span className="text-foreground/20 text-[11px] font-black uppercase tracking-[0.4em] hover:text-primary transition-colors cursor-pointer block">
+                  返回首页 ARCHIVE
+                </span>
+              </Link>
+            </CardFooter>
+          </Card>
+        </div>
+      </div>
     </div>
   )
 }

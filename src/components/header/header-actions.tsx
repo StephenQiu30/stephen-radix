@@ -50,7 +50,7 @@ export function HeaderActions({ onAuthModalOpenChange, authModalOpen }: HeaderAc
           <Button
             variant="ghost"
             size="icon"
-            className="text-muted-foreground hover:bg-transparent hover:text-foreground h-9 w-9 rounded-full transition-colors"
+            className="action-item text-muted-foreground hover:bg-transparent hover:text-foreground h-9 w-9 rounded-full transition-colors"
             onClick={() => setOpen(true)}
           >
             <Search className="h-4 w-4" />
@@ -60,13 +60,16 @@ export function HeaderActions({ onAuthModalOpenChange, authModalOpen }: HeaderAc
             href={process.env.NEXT_PUBLIC_AUTHOR_GITHUB || 'https://github.com/StephenQiu30'}
             target="_blank"
             rel="noopener noreferrer"
+            className="action-item"
           >
             <Button variant="ghost" size="icon" className="text-muted-foreground hover:bg-transparent hover:text-foreground h-9 w-9 rounded-full transition-colors">
               <Github className="h-4 w-4" />
               <span className="sr-only">GitHub</span>
             </Button>
           </Link>
-          <ThemeToggle />
+          <div className="action-item">
+            <ThemeToggle />
+          </div>
         </div>
 
         {/* Mobile Search Button */}
@@ -81,7 +84,7 @@ export function HeaderActions({ onAuthModalOpenChange, authModalOpen }: HeaderAc
 
         {user ? (
           <div className="flex items-center gap-1">
-            <Link href="/blog/create">
+            <Link href="/blog/create" className="action-item">
               <Button
                 variant="ghost"
                 size="sm"
@@ -91,7 +94,7 @@ export function HeaderActions({ onAuthModalOpenChange, authModalOpen }: HeaderAc
                 写文章
               </Button>
             </Link>
-            <Link href="/user/notifications">
+            <Link href="/user/notifications" className="action-item">
               <Button variant="ghost" size="icon" className="text-muted-foreground hover:bg-transparent hover:text-foreground h-9 w-9 rounded-full transition-colors relative">
                 <Bell className="h-4 w-4" />
                 {unreadCount > 0 && (
@@ -100,7 +103,7 @@ export function HeaderActions({ onAuthModalOpenChange, authModalOpen }: HeaderAc
                 <span className="sr-only">通知</span>
               </Button>
             </Link>
-            <div className="flex items-center h-9 ml-0.5">
+            <div className="action-item flex items-center h-9 ml-0.5">
               <UserDropdown />
             </div>
           </div>
@@ -109,7 +112,7 @@ export function HeaderActions({ onAuthModalOpenChange, authModalOpen }: HeaderAc
             variant="ghost"
             size="sm"
             onClick={() => onAuthModalOpenChange(true)}
-            className="h-9 rounded-full px-4 text-[13px] font-medium text-foreground hover:bg-transparent hover:text-foreground/80 transition-all"
+            className="action-item h-9 rounded-full px-4 text-[13px] font-medium text-foreground hover:bg-transparent hover:text-foreground/80 transition-all"
           >
             <UserCircle className="mr-1.5 h-4 w-4" />
             <span className="hidden sm:inline">登录</span>

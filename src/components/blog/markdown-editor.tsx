@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { MarkdownRender } from '@/components/blog/markdown-render'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import { uploadFile } from '@/api/file/fileController'
 import { FileUploadBizEnum } from '@/enums/FileUploadBizEnum'
@@ -154,7 +155,7 @@ export function MarkdownEditor({
               key={idx}
               variant="ghost"
               size="icon"
-              className="text-muted-foreground hover:bg-muted hover:text-foreground h-8 w-8 rounded-lg"
+              className="text-muted-foreground hover:bg-primary/10 hover:text-primary h-8 w-8 rounded-lg"
               onClick={item.action}
               title={item.label}
             >
@@ -164,38 +165,19 @@ export function MarkdownEditor({
         </div>
 
         <div className="flex items-center gap-2 pl-4">
-          {/* View Switcher */}
-          <div className="bg-muted/30 hidden items-center rounded-lg p-1 lg:flex">
-            <Button
-              variant={view === 'edit' ? 'secondary' : 'ghost'}
-              size="sm"
-              className="h-7 gap-1.5 px-3 text-xs"
-              onClick={() => setView('edit')}
-            >
-              编辑
-            </Button>
-            <Button
-              variant={view === 'split' ? 'secondary' : 'ghost'}
-              size="sm"
-              className="h-7 gap-1.5 px-3 text-xs"
-              onClick={() => setView('split')}
-            >
-              分栏
-            </Button>
-            <Button
-              variant={view === 'preview' ? 'secondary' : 'ghost'}
-              size="sm"
-              className="h-7 gap-1.5 px-3 text-xs"
-              onClick={() => setView('preview')}
-            >
-              预览
-            </Button>
-          </div>
+          {/* View Switcher using Radix Tabs */}
+          <Tabs value={view} onValueChange={(v) => setView(v as any)} className="hidden lg:block">
+            <TabsList className="bg-muted/10 h-8 p-1">
+              <TabsTrigger value="edit" className="h-6 px-3 text-[11px] font-bold uppercase tracking-wider">编辑</TabsTrigger>
+              <TabsTrigger value="split" className="h-6 px-3 text-[11px] font-bold uppercase tracking-wider">分栏</TabsTrigger>
+              <TabsTrigger value="preview" className="h-6 px-3 text-[11px] font-bold uppercase tracking-wider">预览</TabsTrigger>
+            </TabsList>
+          </Tabs>
 
           <Button
             variant="ghost"
             size="icon"
-            className="text-muted-foreground h-8 w-8 rounded-lg"
+            className="text-muted-foreground hover:bg-primary/10 hover:text-primary h-8 w-8 rounded-lg"
             onClick={() => setIsFullscreen(!isFullscreen)}
           >
             {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
@@ -282,11 +264,14 @@ export function MarkdownEditor({
 
       {/* 底部状态栏 */}
       {!isFullscreen && (
-        <div className="border-border/40 bg-muted/10 text-muted-foreground flex items-center justify-between border-t px-4 py-1.5 text-[10px] font-bold tracking-widest uppercase">
+        <div className="border-border/40 bg-muted/10 text-muted-foreground/60 flex items-center justify-between border-t px-4 py-1.5 text-[9px] font-black tracking-[0.2em] uppercase">
           <div className="flex items-center gap-4">
-            <span>字数: {value.length}</span>
+            <span className="flex items-center gap-1.5">
+              <div className="h-1 w-1 rounded-full bg-primary/40" />
+              字数: {value.length}
+            </span>
           </div>
-          <span>支持 Markdown · 图片拖拽/粘贴</span>
+          <span>Built with Passion · Markdown Supported</span>
         </div>
       )}
     </div>

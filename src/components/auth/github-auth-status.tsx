@@ -4,9 +4,10 @@ import * as React from 'react'
 import { Card } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { AnimatePresence, motion } from 'framer-motion'
 import { CheckCircle2, Command, Github, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
 
 interface GitHubAuthStatusProps {
   status: 'loading' | 'success' | 'error'
@@ -16,39 +17,76 @@ interface GitHubAuthStatusProps {
 }
 
 export function GitHubAuthStatus({ status, message, progress, onRetry }: GitHubAuthStatusProps) {
+  const container = React.useRef<HTMLDivElement>(null)
+  const cardRef = React.useRef<HTMLDivElement>(null)
+  const progressBarRef = React.useRef<HTMLDivElement>(null)
+  const statusIconRef = React.useRef<HTMLDivElement>(null)
+
+  useGSAP(() => {
+    // Initial Entrance
+    gsap.from(cardRef.current, {
+      scale: 0.9,
+      opacity: 0,
+      y: 20,
+      duration: 1.2,
+      ease: 'power4.out',
+    })
+
+    gsap.from('.gsap-avatar', {
+      x: (i) => (i === 0 ? -20 : 20),
+      opacity: 0,
+      duration: 0.8,
+      delay: 0.2,
+      ease: 'power3.out',
+    })
+  }, { scope: container })
+
+  // Animate Progress Bar
+  useGSAP(() => {
+    gsap.to(progressBarRef.current, {
+      width: `${progress}%`,
+      duration: 0.6,
+      ease: 'power2.out',
+    })
+  }, { dependencies: [progress] })
+
+  // Animate Status Transitions
+  useGSAP(() => {
+    if (status === 'success') {
+      gsap.from(statusIconRef.current, {
+        scale: 0,
+        opacity: 0,
+        duration: 0.5,
+        ease: 'back.out(1.7)',
+      })
+    }
+  }, { dependencies: [status] })
+
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-[#F5F5F7] p-4 text-[#1D1D1F] dark:bg-[#000000] dark:text-[#F5F5F7]">
+    <div ref={container} className="flex min-h-screen w-full items-center justify-center bg-[#F5F5F7] p-4 text-[#1D1D1F] dark:bg-[#000000] dark:text-[#F5F5F7]">
       {/* 动态背景光效 */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-blue-500/10 blur-[120px] dark:bg-blue-500/5" />
       </div>
 
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0, y: 20 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-        className="relative z-10 w-full max-w-[420px]"
-      >
+      <div ref={cardRef} className="relative z-10 w-full max-w-[420px]">
         <Card className="relative overflow-hidden rounded-[32px] border-white/20 bg-white/70 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-black/60">
           <div className="flex flex-col items-center p-10 text-center">
             {/* Logo 连接区域 */}
             <div className="relative mb-10 flex w-full items-center justify-center gap-6">
               {/* GitHub Avatar */}
-              <motion.div
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.1 }}
-              >
+              <div className="gsap-avatar">
                 <Avatar className="h-20 w-20 rounded-[22px] shadow-lg ring-1 ring-black/5 dark:ring-white/10">
                   <AvatarFallback className="bg-[#24292f] text-2xl text-white">
                     <Github className="h-10 w-10" />
                   </AvatarFallback>
                 </Avatar>
-              </motion.div>
+              </div>
 
               {/* 连接进度条 */}
               <div className="relative h-1.5 w-16 overflow-hidden rounded-full bg-black/5 dark:bg-white/10">
-                <motion.div
+                <div
+                  ref={progressBarRef}
                   className={`absolute inset-y-0 left-0 rounded-full transition-colors duration-500 ${
                     status === 'error'
                       ? 'bg-red-500'
@@ -56,99 +94,78 @@ export function GitHubAuthStatus({ status, message, progress, onRetry }: GitHubA
                         ? 'bg-[#34C759]'
                         : 'bg-[#0071E3]'
                   }`}
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ ease: 'easeInOut' }}
+                  style={{ width: `${progress}%` }}
                 />
               </div>
 
               {/* App Avatar */}
-              <motion.div
-                initial={{ x: 20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.1 }}
-              >
+              <div className="gsap-avatar">
                 <Avatar className="h-20 w-20 rounded-[22px] bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg ring-1 ring-black/5 dark:ring-white/10">
                   <AvatarFallback className="bg-transparent text-white">
                     <Command className="h-10 w-10" />
                   </AvatarFallback>
                 </Avatar>
-              </motion.div>
+              </div>
 
               {/* 状态图标覆盖 */}
-              <AnimatePresence>
-                {status === 'success' && (
-                  <motion.div
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0, opacity: 0 }}
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white p-1 shadow-sm dark:bg-black"
-                  >
-                    <CheckCircle2 className="h-6 w-6 fill-current text-[#34C759]" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {status === 'success' && (
+                <div
+                  ref={statusIconRef}
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white p-1 shadow-sm dark:bg-black"
+                >
+                  <CheckCircle2 className="h-6 w-6 fill-current text-[#34C759]" />
+                </div>
+              )}
             </div>
 
             {/* 状态文本 */}
-            <motion.div layout className="mb-8 space-y-3">
-              <h2 className="text-2xl font-semibold tracking-tight">
+            <div className="mb-8 space-y-3">
+              <h2 className="text-2xl font-black tracking-tight">
                 {status === 'loading'
                   ? '正在连接 GitHub...'
                   : status === 'success'
                     ? '验证成功'
                     : '验证失败'}
               </h2>
-              <p className="text-[15px] font-medium text-black/50 dark:text-white/50">{message}</p>
-            </motion.div>
+              <p className="text-[15px] font-bold text-black/50 dark:text-white/50">{message}</p>
+            </div>
 
             {/* 操作按钮 */}
-            <AnimatePresence mode="wait">
-              {status === 'error' && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="flex w-full flex-col gap-3"
+            {status === 'error' && (
+              <div className="flex w-full flex-col gap-3">
+                <Button
+                  onClick={onRetry}
+                  className="h-14 w-full rounded-[20px] bg-[#0071E3] text-[15px] font-black uppercase tracking-widest text-white shadow-xl shadow-blue-500/20 transition-all hover:bg-[#0077ED] hover:scale-[1.02] active:scale-95"
                 >
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  重试连接
+                </Button>
+                <Link href="/" className="w-full">
                   <Button
-                    onClick={onRetry}
-                    className="h-12 w-full rounded-2xl bg-[#0071E3] text-[15px] font-medium text-white shadow-sm transition-all hover:bg-[#0077ED] hover:shadow-md active:scale-95"
+                    variant="ghost"
+                    className="h-12 w-full rounded-2xl text-[15px] font-bold hover:bg-black/5 dark:hover:bg-white/10"
                   >
-                    <RefreshCw className="mr-2 h-4 w-4" />
-                    重试连接
+                    返回首页
                   </Button>
-                  <Link href="/" className="w-full">
-                    <Button
-                      variant="ghost"
-                      className="h-12 w-full rounded-2xl text-[15px] font-medium hover:bg-black/5 dark:hover:bg-white/10"
-                    >
-                      返回首页
-                    </Button>
-                  </Link>
-                </motion.div>
-              )}
+                </Link>
+              </div>
+            )}
 
-              {status === 'success' && (
-                <motion.div
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="flex justify-center"
-                >
-                  <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#34C759] border-t-transparent" />
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {status === 'success' && (
+              <div className="flex justify-center">
+                <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#34C759] border-t-transparent" />
+              </div>
+            )}
           </div>
         </Card>
-      </motion.div>
+      </div>
 
       {/* 底部版权信息 - Apple Style */}
-      <div className="absolute bottom-8 text-center text-xs font-medium text-black/30 dark:text-white/30">
+      <div className="absolute bottom-8 text-center text-[10px] font-black uppercase tracking-[0.2em] text-black/30 dark:text-white/30">
         <p>&copy; 2026 Stephen Radix. All rights reserved.</p>
-        <p className="mt-1 flex justify-center gap-4">
-          <span>Privacy</span>
-          <span>Terms</span>
+        <p className="mt-2 flex justify-center gap-6">
+          <span className="cursor-pointer hover:text-primary transition-colors">Privacy</span>
+          <span className="cursor-pointer hover:text-primary transition-colors">Terms</span>
         </p>
       </div>
     </div>

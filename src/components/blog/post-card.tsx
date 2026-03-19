@@ -1,12 +1,16 @@
 'use client'
 
+import * as React from 'react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { Badge } from '@/components/ui/badge'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { UserAvatar } from '@/components/header/user-avatar'
-import { ArrowRight, ArrowUpRight, Bookmark, Heart, FileText } from 'lucide-react'
+import { ArrowUpRight, Bookmark, Heart } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import dayjs from '@/lib/dayjs'
+
+gsap.registerPlugin(ScrollTrigger)
 
 interface PostCardProps {
   post: PostAPI.PostVO
@@ -14,7 +18,41 @@ interface PostCardProps {
 }
 
 export function PostCard({ post, className }: PostCardProps) {
-  const { id, title, content, cover, tags, thumbNum = 0, favourNum = 0, createTime, userVO } = post
+  const cardRef = React.useRef<HTMLDivElement>(null)
+  const { id, title, content, cover, thumbNum = 0, favourNum = 0, createTime, userVO } = post
+
+  useGSAP(() => {
+    // Entrance Animation
+    gsap.from(cardRef.current, {
+      opacity: 0,
+      y: 20,
+      duration: 1,
+      ease: 'power4.out',
+      scrollTrigger: {
+        trigger: cardRef.current,
+        start: 'top 95%',
+        toggleActions: 'play none none none'
+      }
+    })
+  }, { scope: cardRef })
+
+  const onMouseEnter = () => {
+    gsap.to(cardRef.current, {
+      y: -4,
+      scale: 1.005,
+      duration: 0.4,
+      ease: 'power2.out'
+    })
+  }
+
+  const onMouseLeave = () => {
+    gsap.to(cardRef.current, {
+      y: 0,
+      scale: 1,
+      duration: 0.4,
+      ease: 'power2.out'
+    })
+  }
 
   const excerpt =
     (
@@ -28,13 +66,11 @@ export function PostCard({ post, className }: PostCardProps) {
   const formattedDate = createTime ? dayjs(createTime).format('LL') : ''
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -4, scale: 1.005 }}
-      className={cn('group h-full relative', className)}
+    <div
+      ref={cardRef}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      className={cn('group h-full relative cursor-pointer', className)}
     >
       <div className="relative flex h-full flex-col overflow-hidden rounded-[24px] border border-border/10 bg-card/40 transition-all duration-500 hover:border-primary/20 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] group">
         {/* Cover Area */}
@@ -78,7 +114,7 @@ export function PostCard({ post, className }: PostCardProps) {
         {/* Footer with Stats */}
         <div className="flex items-center justify-between px-6 pb-5 pt-1">
           <div className="flex items-center gap-4 text-foreground/40">
-            <div className="flex items-center gap-1.5 transition-colors hover:text-red-500/70">
+            <div className="flex items-center gap-1.5 transition-colors hover:text-primary/70">
               <Heart className="h-3.5 w-3.5" />
               <span className="text-[11px] font-black">{thumbNum}</span>
             </div>
@@ -98,13 +134,16 @@ export function PostCard({ post, className }: PostCardProps) {
           <span className="sr-only">查看全文</span>
         </Link>
       </div>
-    </motion.div>
+    </div>
   )
 }
 
-export function PostCardSkeleton() {
+export function PostCardSkeleton({ index = 0 }: { index?: number }) {
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-[24px] border border-border/10 bg-card/40 animate-pulse">
+    <div 
+      className="shimmer flex h-full flex-col overflow-hidden rounded-[24px] border border-border/10 bg-card/40"
+      style={{ animationDelay: `${index * 0.15}s` }}
+    >
       <div className="aspect-[16/10] w-full bg-muted/20" />
       <div className="flex flex-1 flex-col p-6 space-y-4">
         <div className="flex items-center gap-2">
