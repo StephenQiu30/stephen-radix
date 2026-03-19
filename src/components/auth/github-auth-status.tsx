@@ -63,57 +63,52 @@ export function GitHubAuthStatus({ status, message, progress, onRetry }: GitHubA
   }, { dependencies: [status] })
 
   return (
-    <div ref={container} className="flex min-h-screen w-full items-center justify-center bg-[#F5F5F7] p-4 text-[#1D1D1F] dark:bg-[#000000] dark:text-[#F5F5F7]">
-      {/* 动态背景光效 */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-blue-500/10 blur-[120px] dark:bg-blue-500/5" />
-      </div>
-
+    <div ref={container} className="flex min-h-screen w-full items-center justify-center bg-background p-4 text-foreground transition-colors duration-500">
       <div ref={cardRef} className="relative z-10 w-full max-w-[420px]">
-        <Card className="relative overflow-hidden rounded-[32px] border-white/20 bg-white/70 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-black/60">
+        <Card className="relative overflow-hidden rounded-[32px] border-border/40 bg-card/50 shadow-xl backdrop-blur-md">
           <div className="flex flex-col items-center p-10 text-center">
             {/* Logo 连接区域 */}
-            <div className="relative mb-10 flex w-full items-center justify-center gap-6">
+            <div className="relative mb-8 flex w-full items-center justify-center gap-6">
               {/* GitHub Avatar */}
               <div className="gsap-avatar">
-                <Avatar className="h-20 w-20 rounded-[22px] shadow-lg ring-1 ring-black/5 dark:ring-white/10">
-                  <AvatarFallback className="bg-[#24292f] text-2xl text-white">
-                    <Github className="h-10 w-10" />
+                <Avatar className="h-16 w-16 rounded-[20px] shadow-sm ring-1 ring-border/10">
+                  <AvatarFallback className="bg-[#24292f] text-white">
+                    <Github className="h-8 w-8" />
                   </AvatarFallback>
                 </Avatar>
               </div>
-
+ 
               {/* 连接进度条 */}
-              <div className="relative h-1.5 w-16 overflow-hidden rounded-full bg-black/5 dark:bg-white/10">
+              <div className="relative h-1 w-12 overflow-hidden rounded-full bg-border/20">
                 <div
                   ref={progressBarRef}
                   className={`absolute inset-y-0 left-0 rounded-full transition-colors duration-500 ${
                     status === 'error'
-                      ? 'bg-red-500'
+                      ? 'bg-destructive'
                       : status === 'success'
-                        ? 'bg-[#34C759]'
-                        : 'bg-[#0071E3]'
+                        ? 'bg-primary'
+                        : 'bg-primary/60'
                   }`}
                   style={{ width: `${progress}%` }}
                 />
               </div>
-
+ 
               {/* App Avatar */}
               <div className="gsap-avatar">
-                <Avatar className="h-20 w-20 rounded-[22px] bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg ring-1 ring-black/5 dark:ring-white/10">
-                  <AvatarFallback className="bg-transparent text-white">
-                    <Command className="h-10 w-10" />
+                <Avatar className="h-16 w-16 rounded-[20px] bg-primary/10 text-primary shadow-sm ring-1 ring-primary/20">
+                  <AvatarFallback className="bg-transparent">
+                    <Command className="h-8 w-8" />
                   </AvatarFallback>
                 </Avatar>
               </div>
-
+ 
               {/* 状态图标覆盖 */}
               {status === 'success' && (
                 <div
                   ref={statusIconRef}
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white p-1 shadow-sm dark:bg-black"
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-background p-1 shadow-sm ring-1 ring-border/20"
                 >
-                  <CheckCircle2 className="h-6 w-6 fill-current text-[#34C759]" />
+                  <CheckCircle2 className="h-5 w-5 fill-current text-primary" />
                 </div>
               )}
             </div>

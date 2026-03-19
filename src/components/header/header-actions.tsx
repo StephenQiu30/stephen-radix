@@ -46,28 +46,30 @@ export function HeaderActions({ onAuthModalOpenChange, authModalOpen }: HeaderAc
   return (
     <>
       <div className="flex items-center gap-1.5 md:gap-2">
-        <div className="hidden sm:flex items-center gap-1">
+        <div className="hidden sm:flex items-center gap-1.5 h-9">
           <Button
             variant="ghost"
             size="icon"
-            className="action-item text-muted-foreground hover:bg-transparent hover:text-foreground h-9 w-9 rounded-full transition-colors"
+            className="action-item h-9 w-9 rounded-full shrink-0 flex items-center justify-center m-0 p-0 text-muted-foreground hover:bg-transparent hover:text-foreground transition-colors"
             onClick={() => setOpen(true)}
           >
             <Search className="h-4 w-4" />
-            <span className="sr-only">搜索</span>
           </Button>
-          <Link
-            href={process.env.NEXT_PUBLIC_AUTHOR_GITHUB || 'https://github.com/StephenQiu30'}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="action-item"
+          <Button
+            variant="ghost"
+            size="icon"
+            asChild
+            className="action-item h-9 w-9 rounded-full shrink-0 flex items-center justify-center m-0 p-0 text-muted-foreground hover:bg-transparent hover:text-foreground transition-colors"
           >
-            <Button variant="ghost" size="icon" className="text-muted-foreground hover:bg-transparent hover:text-foreground h-9 w-9 rounded-full transition-colors">
+            <Link
+              href={process.env.NEXT_PUBLIC_AUTHOR_GITHUB || 'https://github.com/StephenQiu30'}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Github className="h-4 w-4" />
-              <span className="sr-only">GitHub</span>
-            </Button>
-          </Link>
-          <div className="action-item">
+            </Link>
+          </Button>
+          <div className="action-item h-9 w-9 flex items-center justify-center">
             <ThemeToggle />
           </div>
         </div>
@@ -76,7 +78,7 @@ export function HeaderActions({ onAuthModalOpenChange, authModalOpen }: HeaderAc
         <Button
           variant="ghost"
           size="icon"
-          className="sm:hidden text-muted-foreground hover:bg-transparent hover:text-foreground h-9 w-9 rounded-full transition-colors"
+          className="action-item sm:hidden text-muted-foreground hover:bg-transparent hover:text-foreground h-9 w-9 rounded-full transition-colors"
           onClick={() => setOpen(true)}
         >
           <Search className="h-4 w-4" />
@@ -84,25 +86,31 @@ export function HeaderActions({ onAuthModalOpenChange, authModalOpen }: HeaderAc
 
         {user ? (
           <div className="flex items-center gap-1">
-            <Link href="/blog/create" className="action-item">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="hidden md:flex h-9 rounded-full px-3 text-[13px] font-medium text-muted-foreground hover:bg-transparent hover:text-foreground transition-all duration-300"
-              >
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="action-item hidden md:flex h-9 rounded-full px-3 text-[13px] font-medium text-muted-foreground hover:bg-transparent hover:text-foreground transition-colors"
+            >
+              <Link href="/blog/create">
                 <PenSquare className="mr-1.5 h-3.5 w-3.5" />
                 写文章
-              </Button>
-            </Link>
-            <Link href="/user/notifications" className="action-item">
-              <Button variant="ghost" size="icon" className="text-muted-foreground hover:bg-transparent hover:text-foreground h-9 w-9 rounded-full transition-colors relative">
+              </Link>
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              asChild
+              className="action-item text-muted-foreground hover:bg-transparent hover:text-foreground h-9 w-9 rounded-full relative transition-colors"
+            >
+              <Link href="/user/notifications">
                 <Bell className="h-4 w-4" />
                 {unreadCount > 0 && (
                   <span className="absolute right-2.5 top-2.5 flex h-2 w-2 rounded-full bg-red-500 shadow-sm ring-1 ring-background" />
                 )}
                 <span className="sr-only">通知</span>
-              </Button>
-            </Link>
+              </Link>
+            </Button>
             <div className="action-item flex items-center h-9 ml-0.5">
               <UserDropdown />
             </div>
@@ -112,10 +120,10 @@ export function HeaderActions({ onAuthModalOpenChange, authModalOpen }: HeaderAc
             variant="ghost"
             size="sm"
             onClick={() => onAuthModalOpenChange(true)}
-            className="action-item h-9 rounded-full px-4 text-[13px] font-medium text-foreground hover:bg-transparent hover:text-foreground/80 transition-all"
+            className="action-item h-9 rounded-full px-4 flex items-center justify-center m-0 text-muted-foreground hover:bg-transparent hover:text-foreground transition-colors group"
           >
-            <UserCircle className="mr-1.5 h-4 w-4" />
-            <span className="hidden sm:inline">登录</span>
+            <UserCircle className="mr-2 h-4 w-4 shrink-0 transition-colors group-hover:text-foreground" />
+            <span className="text-[13px] font-medium leading-none">登录</span>
           </Button>
         )}
       </div>

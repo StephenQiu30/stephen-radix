@@ -165,15 +165,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="overflow-hidden border-none bg-background/50 backdrop-blur-3xl p-0 shadow-2xl sm:max-w-[440px] rounded-[2.5rem] selection:bg-primary/20">
         <div ref={containerRef} className="auth-modal-content relative flex flex-col">
-          <div className="absolute top-8 right-8 z-20">
-            <button
-               onClick={() => onOpenChange(false)}
-               className="group p-2 rounded-full hover:bg-muted/50 transition-all duration-300"
-            >
-              <X className="h-5 w-5 text-foreground/20 group-hover:text-foreground transition-colors" />
-            </button>
-          </div>
-
           <DialogHeader className="space-y-6 px-10 pt-16">
             <div className="flex flex-col items-center justify-center gap-6">
               <div className="relative group">

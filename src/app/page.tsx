@@ -27,7 +27,7 @@ const HeroSection = memo(() => {
   }, { scope: container })
 
   return (
-    <section ref={container} className="relative flex flex-col lg:flex-row items-start justify-between gap-16 mb-80">
+    <section ref={container} className="relative flex flex-col lg:flex-row items-start justify-between gap-16 mb-32">
       <div className="flex-1">
         <div className="hero-reveal bg-primary h-1.5 w-16 mb-12 rounded-full" />
         <h1 className="hero-reveal text-foreground text-7xl md:text-8xl lg:text-[10rem] font-black tracking-tighter leading-[0.9] mb-12 select-none">
@@ -110,7 +110,7 @@ const PhilosophySection = memo(() => {
   }, { scope: sectionRef })
 
   return (
-    <section ref={sectionRef} className="section-reveal mb-80 w-full py-24 border-y border-border/10">
+    <section ref={sectionRef} className="section-reveal mb-32 w-full py-24 border-y border-border/10">
       <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] text-foreground">
         「所谓极致，<br />
         是把微不足道的细节做到<span className="text-foreground underline underline-offset-[20px] decoration-border/40 decoration-4">完美</span>。」
@@ -168,7 +168,7 @@ const FeaturedPosts = () => {
   }, { scope: containerRef, dependencies: [isLoading] })
 
   return (
-    <section ref={containerRef} className="mb-80 w-full">
+    <section ref={containerRef} className="mb-32 w-full">
       <div className="flex items-center justify-between mb-24">
         <div className="flex items-baseline gap-4">
           <h3 className="text-[11px] font-black uppercase tracking-[0.8em] text-foreground/60">
@@ -182,7 +182,7 @@ const FeaturedPosts = () => {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-40 min-h-[400px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-20 min-h-[400px]">
         {isLoading ? (
           Array.from({ length: 6 }).map((_, i) => (
             <PostCardSkeleton key={i} index={i} />
@@ -203,11 +203,10 @@ const FeaturedPosts = () => {
 
 export default function LandingPage() {
   return (
-    <main className="container mx-auto min-h-screen pt-32 pb-40 px-6 selection:bg-foreground selection:text-background relative">
+    <main className="container mx-auto min-h-screen pt-32 pb-24 px-6 selection:bg-foreground selection:text-background relative">
       <HeroSection />
       <PhilosophySection />
       <FeaturedPosts />
-      <div className="h-24" />
     </main>
   )
 }
